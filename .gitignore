@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # migration
 postgres_data
+
+.env
