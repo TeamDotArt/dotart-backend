@@ -38,3 +38,5 @@ lerna-debug.log*
 postgres_data
 
 .env
+
+prisma/migrations
