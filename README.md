@@ -57,6 +57,11 @@ $ yarn build
 $ yarn prebuild
 ```
 
+prisma studio
+```bash
+$ yarn prisma studio
+```
+
 ## マイグレーション
 
 マイグレーション
