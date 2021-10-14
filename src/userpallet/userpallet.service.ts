@@ -26,7 +26,9 @@ export class UserpalletService {
     return `This action updates a #${id} userpallet`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userpallet`;
+  async remove(id: number): Promise<UserPallet> {
+    return this.prisma.userPallet.delete({
+      where: { id: id },
+    });
   }
 }
