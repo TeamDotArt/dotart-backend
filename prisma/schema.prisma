@@ -40,3 +40,15 @@ model BasicPallet {
   data          String
   createdAt     DateTime @default(now())
 }
+
+model Canvases{
+  id            Int      @default(autoincrement()) @id
+  canvasId      Int      @unique
+  userId        Int
+  canvasName    String
+  canvasRange   Int
+  pallet        String
+  indexData     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
