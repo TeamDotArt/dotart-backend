@@ -22,8 +22,14 @@ export class UserpalletService {
     });
   }
 
-  update(id: number, updateUserpalletDto: UpdateUserpalletDto) {
-    return `This action updates a #${id} userpallet`;
+  async update(
+    id: number,
+    data: Prisma.UserPalletUpdateInput,
+  ): Promise<UserPallet> {
+    return this.prisma.userPallet.update({
+      where: { id: id },
+      data,
+    });
   }
 
   async remove(id: number): Promise<UserPallet> {
