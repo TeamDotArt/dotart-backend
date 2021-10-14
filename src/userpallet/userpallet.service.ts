@@ -3,6 +3,7 @@ import { CreateUserpalletDto } from './dto/create-userpallet.dto';
 import { UpdateUserpalletDto } from './dto/update-userpallet.dto';
 import { UserPallet, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { Userpallet } from './entities/userpallet.entity';
 
 @Injectable()
 export class UserpalletService {
@@ -22,8 +23,14 @@ export class UserpalletService {
     });
   }
 
-  update(id: number, updateUserpalletDto: UpdateUserpalletDto) {
-    return `This action updates a #${id} userpallet`;
+  async update(
+    id: number,
+    data: Prisma.UserPalletUpdateInput,
+  ): Promise<Userpallet> {
+    return this.prisma.userPallet.update({
+      where: { id: id },
+      data,
+    });
   }
 
   async remove(id: number): Promise<UserPallet> {
