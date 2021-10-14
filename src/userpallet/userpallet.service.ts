@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserpalletDto } from './dto/create-userpallet.dto';
 import { UpdateUserpalletDto } from './dto/update-userpallet.dto';
-import { PrismaService } from './../prisma.service';
 import { UserPallet, Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class UserpalletService {
   constructor(private prisma: PrismaService) {}
-  create(createUserpalletDto: CreateUserpalletDto) {
-    return 'This action adds a new userpallet';
+
+  create(data: Prisma.UserPalletCreateInput) {
+    return this.prisma.userPallet.create({ data });
   }
 
   findAll() {
