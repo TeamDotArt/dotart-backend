@@ -31,3 +31,12 @@ model UserPallet {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model BasicPallet {
+  id            Int      @default(autoincrement()) @id
+  palletId      Int      @unique
+  name          String
+  description   String?
+  data          String
+  createdAt     DateTime @default(now())
+}
