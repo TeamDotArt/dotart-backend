@@ -13,7 +13,7 @@ export class UserpalletService {
   }
 
   findAll() {
-    return `This action returns all userpallet`;
+    return this.prisma.userPallet.findMany();
   }
 
   findOne(id: number) {
