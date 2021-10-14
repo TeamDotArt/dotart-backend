@@ -16,8 +16,10 @@ export class UserpalletService {
     return this.prisma.userPallet.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userpallet`;
+  async findOne(id: number) {
+    return this.prisma.userPallet.findUnique({
+      where: { id: id },
+    });
   }
 
   update(id: number, updateUserpalletDto: UpdateUserpalletDto) {
