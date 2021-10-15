@@ -9,6 +9,7 @@ import { BasicPalletModule } from './basic-pallet/basic-pallet.module';
 import { CanvasesModule } from './canvases/canvases.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     AuthModule,
+    TokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

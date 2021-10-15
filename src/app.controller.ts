@@ -8,10 +8,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from '@prisma/client';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
@@ -22,19 +22,17 @@ export class AppController {
     private readonly authService: AuthService,
   ) {}
 
-  @UseGuards(AuthGuard('local')) // passport-local戦略を付与する
   @Post('login')
-  async login(@Request() req: { user: PasswordOmitUser }) {
-    console.log(req.user);
-    // LocalStrategy.validate()で認証して返した値がreq.userに入ってる
-    const user = req.user;
-
+  async login(@Body() req: User) {
+    console.log(req.userId);
     // JwtToken を返す
-    return this.authService.login(user);
+    return this.authService.login(req);
   }
 
+  // TODO: RefreshTokenの実装を行いトークンの無効化も行う
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(@Request() req) {
+  logout(@Req() req) {
     return this.authService.logout(req);
   }
 
@@ -51,10 +49,9 @@ export class AppController {
   /**
    * @description JWT認証を用いたサンプルAPI
    */
-  @UseGuards(AuthGuard('jwt')) // passport-jwt戦略を付与する
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req: { user: PasswordOmitUser }) {
-    // JwtStrategy.validate()で認証して返した値がreq.userに入ってる
     const user = req.user;
 
     // 認証に成功したユーザーの情報を返す
