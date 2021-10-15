@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserpalletDto } from './dto/create-userpallet.dto';
-import { UpdateUserpalletDto } from './dto/update-userpallet.dto';
 import { UserPallet, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
@@ -8,11 +6,11 @@ import { PrismaService } from 'src/prisma.service';
 export class UserpalletService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: Prisma.UserPalletCreateInput) {
+  async create(data: Prisma.UserPalletCreateInput): Promise<UserPallet> {
     return this.prisma.userPallet.create({ data });
   }
 
-  findAll() {
+  async findAll(): Promise<UserPallet[]> {
     return this.prisma.userPallet.findMany();
   }
 
@@ -22,8 +20,14 @@ export class UserpalletService {
     });
   }
 
-  update(id: number, updateUserpalletDto: UpdateUserpalletDto) {
-    return `This action updates a #${id} userpallet`;
+  async update(
+    id: number,
+    data: Prisma.UserPalletUpdateInput,
+  ): Promise<UserPallet> {
+    return this.prisma.userPallet.update({
+      where: { id: id },
+      data,
+    });
   }
 
   async remove(id: number): Promise<UserPallet> {

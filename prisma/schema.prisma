@@ -44,6 +44,19 @@ model UserPallet {
   updatedAt     DateTime @updatedAt
 }
 
+// キャンバス情報
+model Canvases {
+  id            Int      @default(autoincrement()) @id
+  canvasId      Int      @unique
+  userId        Int
+  canvasName    String
+  canvasRange   Int
+  pallet        String
+  indexData     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 // 前もって用意するベーシックなパレット情報
 model BasicPallet {
   id            Int      @default(autoincrement()) @id
