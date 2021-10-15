@@ -10,6 +10,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ユーザ情報
 model User {
   // アカウント情報
   id            Int     @default(autoincrement()) @id
@@ -31,6 +32,7 @@ model User {
   role          Role     @default(USER)
 }
 
+// ユーザパレット情報
 model UserPallet {
   id            Int      @default(autoincrement()) @id
   palletId      Int      @unique
@@ -42,6 +44,17 @@ model UserPallet {
   updatedAt     DateTime @updatedAt
 }
 
+// 前もって用意するベーシックなパレット情報
+model BasicPallet {
+  id            Int      @default(autoincrement()) @id
+  palletId      Int      @unique
+  name          String
+  description   String?
+  data          String
+  createdAt     DateTime @default(now())
+}
+
+// アカウントの権限(Roles)情報
 enum Role {
   USER
   ADMIN

@@ -10,6 +10,7 @@ DotArt の API です。
 FW
 
 - Nest.js
+  構成は [こちら](docs\Composition_of_NestJs.md) のドキュメントを参考にしてください。
 - prisma
 - fastify
 - swagger
@@ -58,6 +59,7 @@ $ yarn prebuild
 ```
 
 prisma studio
+
 ```bash
 $ yarn prisma studio
 ```
@@ -102,3 +104,5 @@ $ nest g resource
 [open api のドキュメント生成](https://docs.nestjs.com/openapi/introduction)
 
 [prisma の定義ファイルの書き方](https://www.prisma.io/docs/guides/upgrade-guides/upgrade-from-prisma-1/schema-incompatibilities-postgres#createdat-isnt-represented-in-database)
+
+[NestJS 公式ドキュメント日訳](https://zenn.dev/kisihara_c/books/nest-officialdoc-jp/viewer/introduction)
