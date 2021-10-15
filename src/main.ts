@@ -12,6 +12,15 @@ async function bootstrap() {
       AppModule,
       new FastifyAdapter(),
     );
+
+  // Corsの有効化
+  app.enableCors({
+    origin: '*',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  });
+
+  // swagger定義
   const config = new DocumentBuilder()
     .setTitle('DotArt API')
     .setDescription('DotArtのバックエンドAPI')
@@ -20,6 +29,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
   await app.listen(5000);
   console.log('listen to http://localhost:5000');
 }
