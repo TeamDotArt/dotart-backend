@@ -1,11 +1,16 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Prisma, Token, User } from '@prisma/client';
 import jwt_decode from 'jwt-decode';
 
 // import { CreateAuthDto } from './dto/create-auth.dto';
 // import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsersService } from 'src/users/users.service';
+import { TokenService } from 'src/token/token.service';
 import { compare, getHash } from '../common/helpers/cipherHelper';
 import { PrismaService } from 'src/common/prisma.service';
 import { DecodedDto } from 'src/users/dto/decoded.dto';
@@ -16,6 +21,7 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 
 // password情報を省いたUser情報
 type PasswordOmitUser = Omit<User, 'password'>;
+type TokenOmitUser = Omit<Token, 'id'>;
 
 interface JWTPayload {
   id: User['id'];
@@ -29,37 +35,15 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
+    private tokenService: TokenService,
     private prisma: PrismaService,
   ) {}
 
-  // create(createAuthDto: CreateAuthDto) {
-  //   return 'This action adds a new auth';
-  // }
-
-  // findAll() {
-  //   return `This action returns all auth`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} auth`;
-  // }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // }
-
   // ユーザーを認証する
-  async validateUser(
-    userId: User['userId'],
-    password: User['password'],
-  ): Promise<PasswordOmitUser | null> {
-    const user: User = await this.usersService.findByUserId(userId); // DBからUserを取得
+  async validateUser(data: User): Promise<PasswordOmitUser | null> {
+    const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
 
-    if (user && compare(password, user.password)) {
+    if (user && compare(data.password, user.password)) {
       const { password, ...result } = user;
 
       return result;
@@ -69,8 +53,13 @@ export class AuthService {
   }
 
   // jwt tokenを返す
-  async login(user: PasswordOmitUser) {
-    // TODO: メアド認証を実装する
+  async login(data: User) {
+    const user = await this.validateUser(data);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // const validatedUser = this.validateUser(user);
 
     // ログイン情報をactiveにする
     await this.prisma.user.update({
@@ -88,19 +77,41 @@ export class AuthService {
       role: user.role,
     };
 
+    const accessToken = this.jwtService.sign(payload);
+
+    await this.prisma.token.upsert({
+      where: { userId: user.userId },
+      update: {
+        token: accessToken,
+      },
+      create: {
+        userId: user.userId,
+        token: accessToken,
+      },
+    });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
     };
   }
 
   async logout(req) {
     const decoded: DecodedDto = jwt_decode(req.header('Authorization'));
+    const user: User = await this.usersService.findOne(decoded.sub);
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
       where: { id: decoded.sub },
       data: {
         active: false,
+      },
+    });
+
+    // トークンを無効化する
+    await this.prisma.token.update({
+      where: { userId: user.userId },
+      data: {
+        token: '',
       },
     });
     return { message: 'ログアウトしました。' };

@@ -8,12 +8,12 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/common/prisma.service';
+import { TokenService } from 'src/token/token.service';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-
     // JWTを使うための設定をしている
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => {
@@ -34,6 +34,7 @@ import { PrismaService } from 'src/common/prisma.service';
   // controllers: [AuthController],
   providers: [
     AuthService,
+    TokenService,
     UsersService,
     PrismaService,
     LocalStrategy,
