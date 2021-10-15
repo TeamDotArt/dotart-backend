@@ -15,7 +15,7 @@ export class PrismaService
   }
 
   async clearDatabase() {
-    const tableNames = ['User', 'UserPallet'];
+    const tableNames = ['User', 'UserPallet', 'Token', 'Canvases'];
     try {
       for (const tableName of tableNames) {
         await this.$queryRaw`DELETE FROM "${tableName}";`;
