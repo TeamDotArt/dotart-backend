@@ -1,7 +1,10 @@
+import { Role } from '@prisma/client';
+
 export class DecodedDto {
+  id: number;
   userId: string;
-  sub: number;
-  role: number;
+  name: string;
+  role: Role;
   iat: number;
   exp: number;
 }

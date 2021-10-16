@@ -1,39 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsString, IsNumber, MinLength, IsNotEmpty } from 'class-validator';
+import { Constants } from 'src/common/constants';
 
-export class LogInUserDto {
-  @Exclude()
-  id: number;
-  @Exclude()
+export class LogInUserRequest {
+  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_USER_ID,
+  })
+  @IsString()
   userId: string;
 
-  @ApiProperty({ description: 'email' })
+  @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({ description: 'password' })
-  @IsNotEmpty()
+  @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
   @IsString()
   password: string;
+}
 
-  @IsOptional()
+export class LogInUserResponse {
+  @ApiProperty({ description: Constants.VERIFY_STATUS })
+  @IsNumber()
+  status: number;
+
+  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
   @IsString()
-  name: string;
+  message: string;
 
-  @IsOptional()
-  role: number;
-
-  @Exclude()
-  emailVerified: boolean;
-  @Exclude()
-  hashActivation: string;
-  @Exclude()
-  active: boolean;
-  @Exclude()
-  createdAt: string;
-  @Exclude()
-  confirmedAt: string;
+  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @IsString()
+  accessToken: string;
 }
