@@ -1,16 +1,16 @@
 
 ### 共通変数
-@host = http://localhost:5000
+@host = http://localhost:5000/api/v1
 @id = dotart
 @password = dotart
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6IueuoeeQhuiAhSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjM0Mjk5Mzg2LCJleHAiOjE2MzQzMDA1ODZ9.GyLeSQAj-hmCGP9VB42p1dD6nKyGNYrtU6XlIOp4VKE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQzOTY5NTAsImV4cCI6MTYzNDM5ODE1MH0.hKvHvcsOCqqdGqQSROIFN3NdAWO55aHdv4q5yo-1yaQ
 
-@emailToken = 27878679
+@emailToken = 87213817
 
 ### レスポンステスト
 
-GET {{host}}/ HTTP/1.1
+GET {{host}} HTTP/1.1
 
 ### Emali認証
 
@@ -47,6 +47,7 @@ Content-Type: application/json
 
 POST {{host}}/logout HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {}
 
