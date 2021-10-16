@@ -6,7 +6,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Token } from '@prisma/client';
 import jwt_decode from 'jwt-decode';
-import { FastifyRequest } from 'fastify';
 // サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
@@ -17,9 +16,9 @@ import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
 import { sendEmailToken } from 'src/common/sendgrid.service';
 // Dto系
 import { DecodedDto } from 'src/users/dto/decoded.dto';
-import { VerifyEmailDto } from './dto/verify-email.dto';
+import { VerifyEmailResponse } from './dto/verify-email.dto';
 import { PayloadDto } from './dto/payload.dto';
-import { LogOutUserResponse } from './dto/logout-user.dto';
+import { LogOutUserRequest, LogOutUserResponse } from './dto/logout-user.dto';
 import { ConfirmedUserDto } from './dto/confirmed-user.dto';
 import { LogInUserRequest, LogInUserResponse } from './dto/login-user.dto';
 // Entity
@@ -27,7 +26,6 @@ import { User } from 'src/users/entities/user.entity';
 
 // password情報を省いたUser情報
 type PasswordOmitUser = Omit<User, 'password'>;
-type TokenOmitUser = Omit<Token, 'id'>;
 
 @Injectable()
 export class AuthService {
@@ -96,7 +94,7 @@ export class AuthService {
     };
   }
 
-  async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
+  async logout(req: LogOutUserRequest): Promise<LogOutUserResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     console.log(decoded);
     const user: User = await this.usersService.findOne(decoded.id);
@@ -116,7 +114,7 @@ export class AuthService {
     return { status: 201, message: 'ログアウトしました。' };
   }
 
-  async signup(user: User): Promise<VerifyEmailDto> {
+  async signup(user: User): Promise<VerifyEmailResponse> {
     // userIdを元にユーザが存在するかチェック
     let userFound = await this.prisma.user.findUnique({
       where: { userId: user.userId },
@@ -153,7 +151,11 @@ export class AuthService {
 
     // emailチェックのためメール送信する
     sendEmailToken(createdUser.email, createdUser.hashActivation);
-    return { status: 201, message: 'メールアドレスを認証してください。' };
+    return {
+      status: 201,
+      message: 'メールアドレスを認証してください。',
+      userId: user.userId,
+    };
   }
 
   // メール認証
