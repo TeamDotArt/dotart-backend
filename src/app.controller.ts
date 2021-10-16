@@ -2,16 +2,25 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Post,
   Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+// サービス
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
+// DTO
+import { ConfirmedUserDto } from './auth/dto/confirmed-user.dto';
+import { LogInUserRequest, LogInUserResponse } from './auth/dto/login-user.dto';
+import { LogOutUserResponse } from './auth/dto/logout-user.dto';
+import { VerifyEmailDto } from './auth/dto/verify-email.dto';
+// ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 type PasswordOmitUser = Omit<User, 'password'>;
@@ -26,26 +35,30 @@ export class AppController {
   ) {}
 
   @Post('login')
-  async login(@Body() req: User) {
-    console.log(req.userId);
-    // JwtToken を返す
+  @ApiResponse({ status: HttpStatus.OK, type: LogInUserResponse })
+  async login(@Body() req: LogInUserRequest): Promise<LogInUserResponse> {
     return this.authService.login(req);
   }
 
   // TODO: RefreshTokenの実装を行いトークンの無効化も行う
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(@Req() req) {
+  @ApiResponse({ status: HttpStatus.OK, type: LogOutUserResponse })
+  logout(@Req() req: FastifyRequest): Promise<LogOutUserResponse> {
     return this.authService.logout(req);
   }
 
   @Post('signup')
-  createUser(@Body() body: User) {
+  @ApiResponse({ status: HttpStatus.OK, type: VerifyEmailDto })
+  createUser(@Body() body: User): Promise<VerifyEmailDto> {
     return this.authService.signup(body);
   }
 
   @Post(':emailToken/confirm')
-  confirmEmail(@Param('emailToken') emailToken: string) {
+  @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserDto })
+  confirmEmail(
+    @Param('emailToken') emailToken: string,
+  ): Promise<ConfirmedUserDto> {
     return this.authService.confirm(emailToken);
   }
 

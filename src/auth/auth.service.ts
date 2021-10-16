@@ -4,31 +4,30 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, Token, User } from '@prisma/client';
+import { Token } from '@prisma/client';
 import jwt_decode from 'jwt-decode';
-
-// import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
+import { FastifyRequest } from 'fastify';
+// サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
-import { compare, getHash } from '../common/helpers/cipherHelper';
 import { PrismaService } from 'src/common/prisma.service';
-import { DecodedDto } from 'src/users/dto/decoded.dto';
+// ヘルパー
+import { compare, getHash } from '../common/helpers/cipherHelper';
 import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
 import { sendEmailToken } from 'src/common/sendgrid.service';
+// Dto系
+import { DecodedDto } from 'src/users/dto/decoded.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
-// import { plainToClass } from 'class-transformer';
+import { PayloadDto } from './dto/payload.dto';
+import { LogOutUserResponse } from './dto/logout-user.dto';
+import { ConfirmedUserDto } from './dto/confirmed-user.dto';
+import { LogInUserRequest, LogInUserResponse } from './dto/login-user.dto';
+// Entity
+import { User } from 'src/users/entities/user.entity';
 
 // password情報を省いたUser情報
 type PasswordOmitUser = Omit<User, 'password'>;
 type TokenOmitUser = Omit<Token, 'id'>;
-
-interface JWTPayload {
-  id: User['id'];
-  userId: User['userId'];
-  name: User['name'];
-  role: User['role'];
-}
 
 @Injectable()
 export class AuthService {
@@ -40,7 +39,7 @@ export class AuthService {
   ) {}
 
   // ユーザーを認証する
-  async validateUser(data: User): Promise<PasswordOmitUser | null> {
+  async validateUser(data: LogInUserRequest): Promise<PasswordOmitUser | null> {
     const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
 
     if (user && compare(data.password, user.password)) {
@@ -53,10 +52,10 @@ export class AuthService {
   }
 
   // jwt tokenを返す
-  async login(data: User) {
+  async login(data: LogInUserRequest): Promise<LogInUserResponse> {
     const user = await this.validateUser(data);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('ユーザが存在しません。');
     }
 
     // const validatedUser = this.validateUser(user);
@@ -70,7 +69,7 @@ export class AuthService {
     });
 
     // payload情報
-    const payload: JWTPayload = {
+    const payload: PayloadDto = {
       id: user.id,
       userId: user.userId,
       name: user.name,
@@ -91,30 +90,30 @@ export class AuthService {
     });
 
     return {
-      access_token: accessToken,
+      status: 201,
+      message: 'ログインしました。\nメール認証を行ってください。',
+      accessToken: accessToken,
     };
   }
 
-  async logout(req) {
-    const decoded: DecodedDto = jwt_decode(req.header('Authorization'));
-    const user: User = await this.usersService.findOne(decoded.sub);
+  async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    console.log(decoded);
+    const user: User = await this.usersService.findOne(decoded.id);
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
-      where: { id: decoded.sub },
+      where: { id: decoded.id },
       data: {
         active: false,
       },
     });
 
-    // トークンを無効化する
-    await this.prisma.token.update({
+    await this.prisma.token.delete({
       where: { userId: user.userId },
-      data: {
-        token: '',
-      },
     });
-    return { message: 'ログアウトしました。' };
+
+    return { status: 201, message: 'ログアウトしました。' };
   }
 
   async signup(user: User): Promise<VerifyEmailDto> {
@@ -158,7 +157,7 @@ export class AuthService {
   }
 
   // メール認証
-  async confirm(emailToken: string): Promise<User> {
+  async confirm(emailToken: string): Promise<ConfirmedUserDto> {
     // 認証用トークンの検索
     const user = await this.prisma.user.findFirst({
       where: {

@@ -8,14 +8,7 @@ import {
   // UnauthorizedException,
 } from '@nestjs/common';
 // import { plainToClass } from 'class-transformer';
-import { User } from '@prisma/client';
-
-interface JWTPayload {
-  id: User['id'];
-  userId: User['userId'];
-  name: User['name'];
-  role: User['role'];
-}
+import { PayloadDto } from '../dto/payload.dto';
 
 /**
  * @description JWTの認証処理を行うクラス
@@ -38,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // ここでPayloadを使ったバリデーション処理を実行できる
   // Payloadは、AuthService.login()で定義した値
-  async validate(payload: JWTPayload): Promise<JWTPayload> {
+  async validate(payload: PayloadDto): Promise<PayloadDto> {
     const payloadObj = {
       id: payload.id,
       userId: payload.userId,
