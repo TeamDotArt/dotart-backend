@@ -21,7 +21,8 @@ async function bootstrap() {
   // Corsの有効化
   app.enableCors({
     origin: '*',
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+    allowedHeaders:
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   });
 
@@ -29,7 +30,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('DotArt API')
     .setDescription('DotArtのバックエンドAPI')
-    .setVersion('0.0.3')
+    .setVersion('0.0.5')
     .setLicense(
       'Apache-2.0 License',
       'https://github.com/TeamDotArt/dotart-backend/blob/develop/LICENSE',
