@@ -91,7 +91,10 @@ $ nest g resource
 ## API Document
 
 実行中に以下へアクセスすることで OpenAPI でドキュメントを確認できます。
-[http://localhost:5000/api](http://localhost:5000/api)
+[http://localhost:5000/docs](http://localhost:5000/api)
+
+エンドポイントは以下になります。
+[http://localhost:5000/api/v1](http://localhost:5000/api/v1)
 
 ## 参考
 
