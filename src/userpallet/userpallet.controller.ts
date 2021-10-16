@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { UserpalletService } from './userpallet.service';
 import { CreateUserpalletDto } from './dto/create-userpallet.dto';
 import { UpdateUserpalletDto } from './dto/update-userpallet.dto';
 import { UserPallet, Prisma } from '@prisma/client';
 
+// TODO: ApiResponseを記載する
+@ApiTags('userpallet')
 @Controller('userpallet')
 export class UserpalletController {
   constructor(private readonly userpalletService: UserpalletService) {}

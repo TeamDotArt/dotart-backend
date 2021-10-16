@@ -8,17 +8,22 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { BasicPalletService } from './basic-pallet.service';
 
 // Prismaの型定義でよさそう
 // import { CreateBasicPalletDto } from './dto/create-basic-pallet.dto';
 // import { UpdateBasicPalletDto } from './dto/update-basic-pallet.dto';
 
+// TODO: ApiResponseを記載する
+@ApiTags('basic-pallet')
 @Controller('basic-pallet')
 export class BasicPalletController {
   constructor(private readonly basicPalletService: BasicPalletService) {}
 
   @Post()
+  // @ApiResponse({ status: 200, type: dto })
   create(@Body() data: Prisma.BasicPalletCreateInput): Promise<BasicPallet> {
     return this.basicPalletService.create(data);
   }

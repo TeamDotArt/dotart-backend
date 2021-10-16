@@ -9,7 +9,10 @@ import {
 } from '@nestjs/common';
 import { CanvasesService } from './canvases.service';
 import { Canvases, Prisma } from '@prisma/client';
+import { ApiTags } from '@nestjs/swagger';
 
+// TODO: ApiResponseを記載する
+@ApiTags('canvases')
 @Controller('canvases')
 export class CanvasesController {
   constructor(private readonly CanvasesService: CanvasesService) {}

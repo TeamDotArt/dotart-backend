@@ -8,6 +8,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
@@ -15,6 +16,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
+// TODO: ApiResponseを記載する
+@ApiTags('/')
 @Controller()
 export class AppController {
   constructor(
