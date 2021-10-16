@@ -1,0 +1,61 @@
+
+### 共通変数
+@host = http://localhost:5000
+@id = dotart
+@password = dotart
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6IueuoeeQhuiAhSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjM0Mjk5Mzg2LCJleHAiOjE2MzQzMDA1ODZ9.GyLeSQAj-hmCGP9VB42p1dD6nKyGNYrtU6XlIOp4VKE
+
+@emailToken = 27878679
+
+### レスポンステスト
+
+GET {{host}}/ HTTP/1.1
+
+### Emali認証
+
+POST {{host}}/{{emailToken}}/confirm HTTP/1.1
+Content-Type: application/json
+
+{}
+
+### アカウント登録
+
+POST {{host}}/signup HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId": "{{id}}",
+    "name": "admin",
+    "email": "info@dot.art",
+    "password": "{{password}}"
+}
+
+### ログイン
+
+POST {{host}}/login HTTP/1.1
+Content-Type: application/json
+# userId: {{id}}
+# password: {{password}}
+
+{
+    "userId": "{{id}}",
+    "password": "{{password}}"
+}
+
+### ログアウト
+
+POST {{host}}/logout HTTP/1.1
+Content-Type: application/json
+
+{}
+
+### 認証付きページのテスト
+
+GET {{host}}/profile HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "userId": "{{id}}"
+}

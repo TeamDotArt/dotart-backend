@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, BasicPallet } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../common/prisma.service';
 
 // Prismaの型定義でよさそう
 // import { CreateBasicPalletDto } from './dto/create-basic-pallet.dto';

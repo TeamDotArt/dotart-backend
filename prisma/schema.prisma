@@ -10,17 +10,38 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// ユーザ情報
 model User {
+  // アカウント情報
   id            Int     @default(autoincrement()) @id
   userId        String  @unique
   email         String  @unique
-  password      String
   name          String?
+  password      String
+  // 認証系
+  emailVerified  Boolean    @default(false) @map(name: "email_verified")
+  hashActivation String
+  active         Boolean    @default(true)
+  confirmedAt    DateTime?  @map(name: "confirmed_at")
+  // ユーザ情報
   userPallet    UserPallet[]
+  // 付加情報
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  // 権限
+  role          Role     @default(USER)
+  refreshToken   Token?
 }
 
+model Token {
+  id           Int    @default(autoincrement()) @id
+  user         User   @relation(fields: [userId], references: [userId])
+  userId       String
+  token        String
+  refreshToken String?
+}
+
+// ユーザパレット情報
 model UserPallet {
   id            Int      @default(autoincrement()) @id
   palletId      Int      @unique
@@ -32,16 +53,8 @@ model UserPallet {
   updatedAt     DateTime @updatedAt
 }
 
-model BasicPallet {
-  id            Int      @default(autoincrement()) @id
-  palletId      Int      @unique
-  name          String
-  description   String?
-  data          String
-  createdAt     DateTime @default(now())
-}
-
-model Canvases{
+// キャンバス情報
+model Canvases {
   id            Int      @default(autoincrement()) @id
   canvasId      Int      @unique
   userId        Int
@@ -51,4 +64,20 @@ model Canvases{
   indexData     String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// 前もって用意するベーシックなパレット情報
+model BasicPallet {
+  id            Int      @default(autoincrement()) @id
+  palletId      Int      @unique
+  name          String
+  description   String?
+  data          String
+  createdAt     DateTime @default(now())
+}
+
+// アカウントの権限(Roles)情報
+enum Role {
+  USER
+  ADMIN
 }
