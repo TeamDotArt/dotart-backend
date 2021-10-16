@@ -7,9 +7,12 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserPallet, Prisma } from '@prisma/client';
 import { UserpalletService } from './user-pallet.service';
 
+// TODO: ApiResponseを記載する
+@ApiTags('user-pallet')
 @Controller('user-pallet')
 export class UserPalletController {
   constructor(private readonly userPalletService: UserpalletService) {}
