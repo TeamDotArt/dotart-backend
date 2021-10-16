@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserpalletService } from './userpallet.service';
+import { UserpalletService } from './user-pallet.service';
 
-describe('UserpalletService', () => {
+describe('UserPalletService', () => {
   let service: UserpalletService;
 
   beforeEach(async () => {
