@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role, Token, UserPallet } from '@prisma/client';
+import { Token, UserPallet, User as PrismaUser } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import {
   IsNumber,
@@ -16,34 +16,34 @@ import { Constants } from 'src/common/constants';
 export class User {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   @Exclude()
-  id: number;
+  id: PrismaUser['id'];
 
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsString()
   @IsNotEmpty()
   @Exclude()
-  userId: string;
+  userId: PrismaUser['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL })
   @IsEmail()
-  email: string;
+  email: PrismaUser['email'];
 
   @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
   @IsNotEmpty()
   @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
   @IsString()
-  password: string;
+  password: PrismaUser['password'];
 
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsOptional()
   @IsString()
-  name: string;
+  name: PrismaUser['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_ROLE })
   @IsOptional()
-  role: Role;
+  role: PrismaUser['role'];
 
   // 子要素系
 
@@ -60,32 +60,32 @@ export class User {
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsBoolean()
   @Exclude()
-  emailVerified: boolean;
+  emailVerified: PrismaUser['emailVerified'];
 
   @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
   @IsString()
   @Exclude()
-  hashActivation: string;
+  hashActivation: PrismaUser['hashActivation'];
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()
-  active: boolean;
+  active: PrismaUser['active'];
 
   // 時間系
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
   @Exclude()
-  createdAt: Date;
+  createdAt: PrismaUser['createdAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_UPDATED_AT })
   @IsDate()
   @Exclude()
-  updatedAt: Date;
+  updatedAt: PrismaUser['updatedAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_CONFIRMED_AT })
   @IsDate()
   @Exclude()
-  confirmedAt: Date;
+  confirmedAt: PrismaUser['confirmedAt'];
 }
