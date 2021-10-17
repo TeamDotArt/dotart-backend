@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 import { Constants } from 'src/common/constants';
+import { User } from 'src/users/entities/user.entity';
 
 export class VerifyEmailResponse {
   @ApiProperty({ description: Constants.VERIFY_STATUS })
@@ -13,5 +14,5 @@ export class VerifyEmailResponse {
 
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsString()
-  userId: string;
+  userId: User['userId'];
 }
