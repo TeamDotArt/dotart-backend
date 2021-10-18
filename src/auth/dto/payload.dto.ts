@@ -1,21 +1,21 @@
-import { Role } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
 import { Constants } from 'src/common/constants';
+import { User } from 'src/users/entities/user.entity';
 
 export class PayloadDto {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()
-  id: number;
+  id: User['id'];
 
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsString()
-  userId: string;
+  userId: User['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
-  name: string;
+  name: User['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_ROLE })
-  role: Role;
+  role: User['role'];
 }

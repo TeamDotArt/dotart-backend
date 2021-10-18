@@ -7,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Constants } from 'src/common/constants';
+import { User } from 'src/users/entities/user.entity';
 
 export class CreateUserResponse {
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
@@ -14,20 +15,20 @@ export class CreateUserResponse {
   @IsNotEmpty({
     message: Constants.IS_NOT_EMPTY_USER_ID,
   })
-  userId: string;
+  userId: User['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL })
   @IsNotEmpty({
     message: Constants.IS_NOT_EMPTY_EMAIL,
   })
   @IsEmail()
-  email: string;
+  email: User['email'];
 
   @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
   @IsNotEmpty()
   @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
   @IsString()
-  password: string;
+  password: User['password'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsString()

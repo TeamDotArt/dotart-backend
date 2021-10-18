@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   HttpStatus,
+  NotFoundException,
+  NotAcceptableException,
   Param,
   Post,
   Req,
@@ -16,7 +18,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-// import { User } from '@prisma/client';
 // サービス
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
@@ -26,11 +27,11 @@ import {
   LogInUserRequest,
   LogInUserResponse,
   ValidateUserResponse,
-} from './auth/dto/login-user.dto';
+} from './auth/dto/login-auth.dto';
 import {
   LogOutUserRequest,
   LogOutUserResponse,
-} from './auth/dto/logout-user.dto';
+} from './auth/dto/logout-auth.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -45,41 +46,65 @@ export class AppController {
     private readonly authService: AuthService,
   ) {}
 
+  /**
+   * @description ログインAPI
+   */
   @Post('login')
   // Swagger定義
   @ApiOperation({ summary: 'ログインを行う' })
   @ApiResponse({ status: HttpStatus.OK, type: LogInUserResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   @ApiBody({ type: LogInUserRequest, description: 'ログイン情報' })
   // フックメソッド
   async login(@Body() req: LogInUserRequest): Promise<LogInUserResponse> {
     return this.authService.login(req);
   }
 
+  /**
+   * @description ログアウトAPI
+   */
   // TODO: RefreshTokenの実装を行いトークンの無効化も行う
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   // Swagger定義
   @ApiOperation({ summary: 'ログアウトを行う' })
   @ApiResponse({ status: HttpStatus.OK, type: LogOutUserResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   // フックメソッド
   logout(@Req() req: LogOutUserRequest): Promise<LogOutUserResponse> {
     return this.authService.logout(req);
   }
 
+  /**
+   * @description サインインAPI
+   */
   @Post('signup')
   // Swagger定義
   @ApiOperation({ summary: '新規アカウント作成を行う' })
   @ApiResponse({ status: HttpStatus.OK, type: VerifyEmailResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
   @ApiBody({ type: User, description: 'ユーザ情報' })
   // フックメソッド
   createUser(@Body() body: User): Promise<VerifyEmailResponse> {
     return this.authService.signup(body);
   }
 
+  /**
+   * @description メール認証API
+   */
   @Post(':emailToken/confirm')
   // Swagger定義
   @ApiOperation({ summary: 'メール認証を行う' })
   @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
   @ApiParam({
     name: 'emailToken',
     description: 'emailToken情報',
