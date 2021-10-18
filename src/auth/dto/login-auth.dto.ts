@@ -1,4 +1,3 @@
-import { Role, User } from '.prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 import {
@@ -47,45 +46,45 @@ export class LogInUserResponse {
 export class ValidateUserResponse implements PasswordOmitUser {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()
-  id: number;
+  id: User['id'];
 
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsNotEmpty()
   @IsString()
-  userId: string;
+  userId: User['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL })
   @IsEmail()
-  email: string;
+  email: User['email'];
 
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
-  name: string;
+  name: User['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_ROLE })
-  role: Role;
+  role: User['role'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsBoolean()
-  emailVerified: boolean;
+  emailVerified: User['emailVerified'];
 
   @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
   @IsString()
-  hashActivation: string;
+  hashActivation: User['hashActivation'];
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
-  active: boolean;
+  active: User['active'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
-  createdAt: Date;
+  createdAt: User['createdAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_UPDATED_AT })
   @IsDate()
-  updatedAt: Date;
+  updatedAt: User['updatedAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_CONFIRMED_AT })
   @IsDate()
-  confirmedAt: Date;
+  confirmedAt: User['confirmedAt'];
 }
