@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Token } from '@prisma/client';
 import jwt_decode from 'jwt-decode';
 // サービス
 import { UsersService } from 'src/users/users.service';
@@ -19,13 +18,14 @@ import { DecodedDto } from 'src/users/dto/decoded.dto';
 import { VerifyEmailResponse } from './dto/verify-email.dto';
 import { PayloadDto } from './dto/payload.dto';
 import { LogOutUserRequest, LogOutUserResponse } from './dto/logout-user.dto';
-import { ConfirmedUserDto } from './dto/confirmed-user.dto';
-import { LogInUserRequest, LogInUserResponse } from './dto/login-user.dto';
+import { ConfirmedUserResponse } from './dto/confirmed-user.dto';
+import {
+  LogInUserRequest,
+  LogInUserResponse,
+  ValidateUserResponse,
+} from './dto/login-user.dto';
 // Entity
 import { User } from 'src/users/entities/user.entity';
-
-// password情報を省いたUser情報
-type PasswordOmitUser = Omit<User, 'password'>;
 
 @Injectable()
 export class AuthService {
@@ -37,7 +37,9 @@ export class AuthService {
   ) {}
 
   // ユーザーを認証する
-  async validateUser(data: LogInUserRequest): Promise<PasswordOmitUser | null> {
+  async validateUser(
+    data: LogInUserRequest,
+  ): Promise<ValidateUserResponse | null> {
     const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
 
     if (user && compare(data.password, user.password)) {
@@ -159,7 +161,7 @@ export class AuthService {
   }
 
   // メール認証
-  async confirm(emailToken: string): Promise<ConfirmedUserDto> {
+  async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
     // 認証用トークンの検索
     const user = await this.prisma.user.findFirst({
       where: {

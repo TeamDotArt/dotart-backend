@@ -21,8 +21,12 @@ import {
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 // DTO
-import { ConfirmedUserDto } from './auth/dto/confirmed-user.dto';
-import { LogInUserRequest, LogInUserResponse } from './auth/dto/login-user.dto';
+import { ConfirmedUserResponse } from './auth/dto/confirmed-user.dto';
+import {
+  LogInUserRequest,
+  LogInUserResponse,
+  ValidateUserResponse,
+} from './auth/dto/login-user.dto';
 import {
   LogOutUserRequest,
   LogOutUserResponse,
@@ -31,8 +35,6 @@ import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { User } from './users/entities/user.entity';
-
-type PasswordOmitUser = Omit<User, 'password'>;
 
 // TODO: ApiResponseを記載する
 @ApiTags('/')
@@ -77,7 +79,7 @@ export class AppController {
   @Post(':emailToken/confirm')
   // Swagger定義
   @ApiOperation({ summary: 'メール認証を行う' })
-  @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserDto })
+  @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserResponse })
   @ApiParam({
     name: 'emailToken',
     description: 'emailToken情報',
@@ -86,7 +88,7 @@ export class AppController {
   // フックメソッド
   confirmEmail(
     @Param('emailToken') emailToken: string,
-  ): Promise<ConfirmedUserDto> {
+  ): Promise<ConfirmedUserResponse> {
     return this.authService.confirm(emailToken);
   }
 
@@ -97,9 +99,10 @@ export class AppController {
   @Get('profile')
   // Swagger定義
   @ApiOperation({ summary: 'ログインのガードが働いているかテスト' })
+  @ApiResponse({ status: HttpStatus.OK, type: ValidateUserResponse })
   // フックメソッド
-  getProfile(@Request() req: { user: PasswordOmitUser }) {
-    const user = req.user;
+  getProfile(@Request() req: ValidateUserResponse) {
+    const user = req;
 
     // 認証に成功したユーザーの情報を返す
     return user;
