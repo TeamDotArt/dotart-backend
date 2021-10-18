@@ -30,15 +30,16 @@ model User {
   updatedAt     DateTime @updatedAt
   // 権限
   role          Role     @default(USER)
-  refreshToken   Token?
+  token         Token?
 }
 
+// トークン情報
 model Token {
   id           Int    @default(autoincrement()) @id
-  user         User   @relation(fields: [userId], references: [userId])
   userId       String
   token        String
   refreshToken String?
+  user         User   @relation(fields: [userId], references: [userId])
 }
 
 // ユーザパレット情報

@@ -53,7 +53,7 @@ export class User {
 
   @IsOptional()
   @ApiProperty({ description: Constants.PROPERTY_TOKEN })
-  refreshToken?: Token;
+  token?: Token;
 
   // 認証系
 
