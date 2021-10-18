@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { Constants } from 'src/common/constants';
 
-export class ConfirmedUserDto {
+export class ConfirmedUserResponse {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()
   id: number;
