@@ -28,4 +28,8 @@ export class Constants {
   // 認証系
   public static readonly VERIFY_STATUS = 'ステータスコード';
   public static readonly VERIFY_MESSAGE = 'ステータスメッセージ';
+
+  //UserPallet DTO
+  public static readonly PROPERTY_PALLET_NAME = 'パレット名';
+  public static readonly PROPERTY_PALLET_DATA = 'パレットデータ';
 }
