@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserPalletDto } from './create-user-pallet.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-export class UpdateUserPalletDto extends PartialType(CreateUserPalletDto) {}
+export class UpdateUserPalletDto {
+  @ApiProperty({ description: 'name' })
+  @IsString()
+  name: string;
+
+  @ApiProperty({ description: 'data' })
+  @IsString()
+  data: string;
+}
