@@ -8,8 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserPallet, Prisma } from '@prisma/client';
+import { UserPallet } from '@prisma/client';
 import { UserpalletService } from './user-pallet.service';
+import { CreateUserPalletDto } from './dto/create-user-pallet.dto';
+import { UpdateUserPalletDto } from './dto/update-user-pallet.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -18,8 +20,8 @@ export class UserPalletController {
   constructor(private readonly userPalletService: UserpalletService) {}
 
   @Post()
-  create(@Body() data: Prisma.UserPalletCreateInput): Promise<UserPallet> {
-    return this.userPalletService.create(data);
+  create(@Body() createUserPalletDto: CreateUserPalletDto) {
+    return;
   }
 
   @Get()
@@ -33,8 +35,11 @@ export class UserPalletController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.UserPalletUpdateInput) {
-    return this.userPalletService.update(+id, data);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserPalletDto: UpdateUserPalletDto,
+  ) {
+    return;
   }
 
   @Delete(':id')
