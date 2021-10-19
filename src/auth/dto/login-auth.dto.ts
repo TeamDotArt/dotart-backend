@@ -15,7 +15,7 @@ import { User } from 'src/users/entities/user.entity';
 type PasswordOmitUser = Omit<User, 'password'>;
 
 export class LogInUserRequest {
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsNotEmpty({
     message: Constants.IS_NOT_EMPTY_USER_ID,
   })
@@ -38,7 +38,7 @@ export class LogInUserResponse {
   @IsString()
   message: string;
 
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @ApiProperty({ description: Constants.PROPERTY_TOKEN })
   @IsString()
   accessToken: string;
 }
