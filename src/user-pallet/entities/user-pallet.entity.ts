@@ -31,12 +31,10 @@ export class UserPallet {
 
   @ApiProperty({ description: Constants.PROPERTY_PALLET_NAME })
   @IsString()
-  @IsOptional()
   name: PrismaUserPallet['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_PALLET_DATA })
   @IsString()
-  @IsOptional()
   data: PrismaUserPallet['data'];
 
   //子要素系
