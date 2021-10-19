@@ -124,11 +124,8 @@ export class AppController {
   @ApiOperation({ summary: 'ログインのガードが働いているかテスト' })
   @ApiResponse({ status: HttpStatus.OK, type: ValidateUserResponse })
   // フックメソッド
-  getProfile(@Request() req: ValidateUserResponse) {
-    const user = req;
-
-    // 認証に成功したユーザーの情報を返す
-    return user;
+  getProfile(@Request() req: FastifyRequest) {
+    return this.authService.me(req);
   }
 
   @Get()

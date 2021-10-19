@@ -4,9 +4,9 @@
 @id = dotart
 @password = dotart
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ2MTE5MDksImV4cCI6MTYzNDYxMzEwOX0.qSFmw73cMTcT5Yypv0v_DfWdtAnDhzHntiAVyzaYmJs
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ2NjU1MjMsImV4cCI6MTYzNDY2NjcyM30.L9vw2exaaPm7cb6s5bx04j7SZ_Q-lqH_0GlRXouegqo
 
-@emailToken = 18342900
+@emailToken = 86284078
 
 ### レスポンステスト
 
@@ -57,9 +57,7 @@ GET {{host}}/profile HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{
-    "userId": "{{id}}"
-}
+{}
 
 ### all user fetch
 

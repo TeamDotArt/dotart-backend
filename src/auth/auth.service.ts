@@ -192,4 +192,28 @@ export class AuthService {
     // return plainToClass(ConfirmedUserDto, confirmedUser);
     return confirmedUser;
   }
+
+  async me(req: FastifyRequest) {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    const userData = {
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      emailVerified: user.emailVerified
+        ? 'メールアドレス確認済みです'
+        : '未認証',
+      createdAt: user.createdAt,
+    };
+
+    return {
+      status: 201,
+      userData,
+    };
+  }
 }
