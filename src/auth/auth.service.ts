@@ -4,31 +4,28 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, Token, User } from '@prisma/client';
 import jwt_decode from 'jwt-decode';
-
-// import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
+// サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
-import { compare, getHash } from '../common/helpers/cipherHelper';
 import { PrismaService } from 'src/common/prisma.service';
-import { DecodedDto } from 'src/users/dto/decoded.dto';
+// ヘルパー
+import { compare, getHash } from '../common/helpers/cipherHelper';
 import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
 import { sendEmailToken } from 'src/common/sendgrid.service';
-import { VerifyEmailDto } from './dto/verify-email.dto';
-// import { plainToClass } from 'class-transformer';
-
-// password情報を省いたUser情報
-type PasswordOmitUser = Omit<User, 'password'>;
-type TokenOmitUser = Omit<Token, 'id'>;
-
-interface JWTPayload {
-  id: User['id'];
-  userId: User['userId'];
-  name: User['name'];
-  role: User['role'];
-}
+// Dto系
+import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { VerifyEmailResponse } from './dto/verify-email.dto';
+import { PayloadDto } from './dto/payload.dto';
+import { LogOutUserRequest, LogOutUserResponse } from './dto/logout-auth.dto';
+import { ConfirmedUserResponse } from './dto/confirmed-user.dto';
+import {
+  LogInUserRequest,
+  LogInUserResponse,
+  ValidateUserResponse,
+} from './dto/login-auth.dto';
+// Entity
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +37,12 @@ export class AuthService {
   ) {}
 
   // ユーザーを認証する
-  async validateUser(data: User): Promise<PasswordOmitUser | null> {
+  async validateUser(
+    data: LogInUserRequest,
+  ): Promise<ValidateUserResponse | null> {
+    if (!data.userId || !data.password) {
+      throw new NotFoundException('userIdまたはパスワードが存在しません。');
+    }
     const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
 
     if (user && compare(data.password, user.password)) {
@@ -53,13 +55,8 @@ export class AuthService {
   }
 
   // jwt tokenを返す
-  async login(data: User) {
+  async login(data: LogInUserRequest): Promise<LogInUserResponse> {
     const user = await this.validateUser(data);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // const validatedUser = this.validateUser(user);
 
     // ログイン情報をactiveにする
     await this.prisma.user.update({
@@ -70,7 +67,7 @@ export class AuthService {
     });
 
     // payload情報
-    const payload: JWTPayload = {
+    const payload: PayloadDto = {
       id: user.id,
       userId: user.userId,
       name: user.name,
@@ -91,47 +88,47 @@ export class AuthService {
     });
 
     return {
-      access_token: accessToken,
+      status: 201,
+      message: 'ログインしました。\nメール認証を行ってください。',
+      accessToken: accessToken,
     };
   }
 
-  async logout(req) {
-    const decoded: DecodedDto = jwt_decode(req.header('Authorization'));
-    const user: User = await this.usersService.findOne(decoded.sub);
+  async logout(req: LogOutUserRequest): Promise<LogOutUserResponse> {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
-      where: { id: decoded.sub },
+      where: { id: decoded.id },
       data: {
         active: false,
       },
     });
 
-    // トークンを無効化する
-    await this.prisma.token.update({
+    await this.prisma.token.delete({
       where: { userId: user.userId },
-      data: {
-        token: '',
-      },
     });
-    return { message: 'ログアウトしました。' };
+
+    return { status: 201, message: 'ログアウトしました。' };
   }
 
-  async signup(user: User): Promise<VerifyEmailDto> {
+  async signup(user: User): Promise<VerifyEmailResponse> {
+    // userIdが存在するかチェック
+    if (!user.userId) {
+      throw new NotFoundException('userIdが存在しません。');
+    }
     // userIdを元にユーザが存在するかチェック
-    let userFound = await this.prisma.user.findUnique({
+    const userFound = await this.prisma.user.findUnique({
       where: { userId: user.userId },
     });
 
     if (userFound) {
-      throw new NotAcceptableException('ユーザが登録されていません。');
-    }
-
-    userFound = await this.prisma.user.findUnique({
-      where: { email: user.email },
-    });
-    if (userFound) {
-      throw new NotAcceptableException('User is already registered');
+      throw new NotAcceptableException('ユーザが登録されています。');
     }
 
     // emailチェックを行うためのEmainToken作成
@@ -154,17 +151,29 @@ export class AuthService {
 
     // emailチェックのためメール送信する
     sendEmailToken(createdUser.email, createdUser.hashActivation);
-    return { status: 201, message: 'メールアドレスを認証してください。' };
+    return {
+      status: 201,
+      message: 'メールアドレスを認証してください。',
+      userId: user.userId,
+    };
   }
 
   // メール認証
-  async confirm(emailToken: string): Promise<User> {
+  async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
+    // emailTokenが存在しない
+    if (!emailToken) {
+      throw new NotFoundException('emailTokenが存在しません。');
+    }
     // 認証用トークンの検索
     const user = await this.prisma.user.findFirst({
       where: {
         hashActivation: emailToken,
       },
     });
+
+    if (user.emailVerified) {
+      throw new NotAcceptableException('メール認証が完了しています');
+    }
 
     // 認証されたので認証日時を保管
     const confirmedUser = await this.prisma.user.update({

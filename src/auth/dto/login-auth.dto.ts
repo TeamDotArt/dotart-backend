@@ -1,18 +1,49 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
+
 import {
-  IsEmail,
-  IsNotEmpty,
   IsString,
-  IsDate,
   IsNumber,
-  IsBoolean,
   MinLength,
+  IsNotEmpty,
+  IsEmail,
+  IsBoolean,
+  IsDate,
 } from 'class-validator';
 import { Constants } from 'src/common/constants';
 import { User } from 'src/users/entities/user.entity';
 
-export class ConfirmedUserResponse {
+type PasswordOmitUser = Omit<User, 'password'>;
+
+export class LogInUserRequest {
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_USER_ID,
+  })
+  @IsString()
+  userId: User['userId'];
+
+  @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
+  @IsNotEmpty()
+  @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
+  @IsString()
+  password: User['password'];
+}
+
+export class LogInUserResponse {
+  @ApiProperty({ description: Constants.VERIFY_STATUS })
+  @IsNumber()
+  status: number;
+
+  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @IsString()
+  message: string;
+
+  @ApiProperty({ description: Constants.PROPERTY_TOKEN })
+  @IsString()
+  accessToken: string;
+}
+
+export class ValidateUserResponse implements PasswordOmitUser {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()
   id: User['id'];
@@ -33,40 +64,27 @@ export class ConfirmedUserResponse {
   @ApiProperty({ description: Constants.PROPERTY_ROLE })
   role: User['role'];
 
-  @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
-  @IsNotEmpty()
-  @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
-  @IsString()
-  @Exclude()
-  password: User['password'];
-
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsBoolean()
-  @Exclude()
   emailVerified: User['emailVerified'];
 
   @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
   @IsString()
-  @Exclude()
   hashActivation: User['hashActivation'];
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
-  @Exclude()
   active: User['active'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
-  @Exclude()
   createdAt: User['createdAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_UPDATED_AT })
   @IsDate()
-  @Exclude()
   updatedAt: User['updatedAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_CONFIRMED_AT })
   @IsDate()
-  @Exclude()
   confirmedAt: User['confirmedAt'];
 }
