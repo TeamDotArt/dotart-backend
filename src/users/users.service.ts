@@ -11,10 +11,7 @@ import { FindAllUserResponse } from './dto/findAll-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private prisma: PrismaService,
-    private usersService: UsersService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<FindAllUserResponse[]> {
     return this.prisma.user.findMany();
@@ -59,7 +56,9 @@ export class UsersService {
     data: Prisma.UserUpdateInput,
   ): Promise<User> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user: User = await this.prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -73,7 +72,9 @@ export class UsersService {
 
   async removeAccountData(req: FastifyRequest): Promise<User> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user: User = await this.prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
