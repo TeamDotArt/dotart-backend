@@ -1,18 +1,23 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Prisma, User } from '@prisma/client';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
+// Service
 import { UsersService } from './users.service';
-
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
+// Guards
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+// entity
+import { User } from './entities/user.entity';
+// Dto
+import { FindAllUserResponse } from './dto/findAll-user.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('users')
@@ -20,28 +25,42 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  async create(@Body() data: Prisma.UserCreateInput): Promise<User> {
-    return this.usersService.create(data);
-  }
-
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard)
   @Get()
-  async findAll() {
+  // Swagger定義
+  @ApiOperation({ summary: '全ユーザ検索(ロールがADMINのユーザのみ)' })
+  // フックメソッド
+  async findAll(): Promise<FindAllUserResponse[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  // Swagger定義
+  @ApiOperation({ summary: 'IDから単一ユーザ検索' })
+  // フックメソッド
+  findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.UserUpdateInput) {
+  // Swagger定義
+  @ApiOperation({ summary: 'IDからユーザデータ更新' })
+  // フックメソッド
+  update(
+    @Param('id') id: string,
+    @Body() data: Prisma.UserUpdateInput,
+  ): Promise<User> {
     return this.usersService.update(+id, data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  // Swagger定義
+  @ApiOperation({ summary: 'IDからユーザデータ削除' })
+  // フックメソッド
+  remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(+id);
   }
 }
