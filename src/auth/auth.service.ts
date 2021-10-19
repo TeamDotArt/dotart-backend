@@ -40,6 +40,9 @@ export class AuthService {
   async validateUser(
     data: LogInUserRequest,
   ): Promise<ValidateUserResponse | null> {
+    if (!data.userId || !data.password) {
+      throw new NotFoundException('userIdまたはパスワードが存在しません。');
+    }
     const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
 
     if (user && compare(data.password, user.password)) {
@@ -54,11 +57,6 @@ export class AuthService {
   // jwt tokenを返す
   async login(data: LogInUserRequest): Promise<LogInUserResponse> {
     const user = await this.validateUser(data);
-    if (!user) {
-      throw new NotFoundException('ユーザが存在しません。');
-    }
-
-    // const validatedUser = this.validateUser(user);
 
     // ログイン情報をactiveにする
     await this.prisma.user.update({
