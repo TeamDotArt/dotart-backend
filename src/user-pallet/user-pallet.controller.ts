@@ -8,6 +8,7 @@ import {
   Req,
   Patch,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserPallet } from '@prisma/client';
@@ -73,10 +74,11 @@ export class UserPalletController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete(':id')
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット削除' })
   // フックメソッド
-  async removeAccountData(@Req() req: FastifyRequest): Promise<UserPallet> {
+  async removeUserPalletData(@Req() req: FastifyRequest): Promise<UserPallet> {
     return this.userPalletService.removeUserPalletData(req);
   }
 }
