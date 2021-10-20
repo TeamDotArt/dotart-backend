@@ -10,7 +10,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserPallet } from '@prisma/client';
 import { UserpalletService } from './user-pallet.service';
-import { CreateUserPalletDto } from './dto/create-user-pallet.dto';
+import { CreateUserPalletRequest } from './dto/create-user-pallet.dto';
 import { UpdateUserPalletDto } from './dto/update-user-pallet.dto';
 
 // TODO: ApiResponseを記載する
@@ -23,7 +23,7 @@ export class UserPalletController {
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット生成' })
   // フックメソッド
-  create(@Body() createUserPalletDto: CreateUserPalletDto) {
+  create(@Body() createUserPalletRequest: CreateUserPalletRequest) {
     return;
   }
 
