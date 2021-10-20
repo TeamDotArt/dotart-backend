@@ -9,19 +9,24 @@ import {
   HttpStatus,
   Req,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
 // Service
 import { UsersService } from './users.service';
 // Guards
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
-// entity
-import { User } from './entities/user.entity';
 // Dto
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { FindUserResponse } from './dto/find-user.dto';
+import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
+import { RemoveUserResponse } from './dto/remove-user.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('users')
@@ -60,11 +65,13 @@ export class UsersController {
   @Patch()
   // Swagger定義
   @ApiOperation({ summary: 'ユーザデータ更新' })
+  @ApiResponse({ status: HttpStatus.OK, type: UpdateUserResponse })
+  @ApiBody({ type: UpdateUserRequest, description: '更新データ' })
   // フックメソッド
   async updateProfileData(
     @Req() req: FastifyRequest,
-    @Body() data: Prisma.UserUpdateInput,
-  ): Promise<User> {
+    @Body() data: UpdateUserRequest,
+  ): Promise<UpdateUserResponse> {
     return this.usersService.updateProfileData(req, data);
   }
 
@@ -72,8 +79,11 @@ export class UsersController {
   @Delete(':id')
   // Swagger定義
   @ApiOperation({ summary: 'ユーザデータ削除' })
+  @ApiResponse({ status: HttpStatus.OK, type: RemoveUserResponse })
   // フックメソッド
-  async removeAccountData(@Req() req: FastifyRequest): Promise<User> {
+  async removeAccountData(
+    @Req() req: FastifyRequest,
+  ): Promise<RemoveUserResponse> {
     return this.usersService.removeAccountData(req);
   }
 }
