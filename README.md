@@ -66,7 +66,7 @@ $ yarn prisma studio
 
 ## マイグレーション
 
-マイグレーション
+マイグレーションは以下の通り行ってください。
 
 ```bash
 $ yarn prisma migrate dev --preview-feature
