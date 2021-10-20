@@ -24,7 +24,7 @@ export class UserPallet {
   palletId: PrismaUserPallet['palletId'];
 
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @Exclude()
   userId: PrismaUserPallet['userId'];
