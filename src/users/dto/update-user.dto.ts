@@ -1,24 +1,44 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { Constants } from 'src/common/constants';
+import { User } from '../entities/user.entity';
 
-export class UpdateUserDto {
-  @ApiProperty({ description: 'userId' })
+export class UpdateUserRequest {
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
+  @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  userId: string;
+  userId: User['userId'];
 
-  @ApiProperty({ description: 'email' })
+  @ApiProperty({ description: Constants.PROPERTY_EMAIL })
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_EMAIL,
+  })
   @IsEmail()
-  @IsOptional()
-  email: string;
+  email: User['email'];
 
-  @ApiProperty({ description: 'password' })
+  @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
+  @IsNotEmpty()
+  @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
   @IsString()
-  @IsOptional()
-  password: string;
+  password: User['password'];
 
-  @ApiProperty({ description: 'name' })
+  @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
-  @IsOptional()
-  name: string;
+  name: User['name'];
+}
+
+export class UpdateUserResponse {
+  @ApiProperty({ description: Constants.VERIFY_STATUS })
+  @IsNumber()
+  status: number;
+
+  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
+  @IsString()
+  message: string;
 }
