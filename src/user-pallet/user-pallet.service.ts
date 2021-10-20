@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserPallet, Prisma } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
+import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
+import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
+import { FastifyRequest } from 'fastify';
+import jwt_decode from 'jwt-decode';
+import { DecodedDto } from 'src/auth/dto/decoded.dto';
 
 @Injectable()
 export class UserpalletService {
@@ -10,7 +15,7 @@ export class UserpalletService {
     return this.prisma.userPallet.create({ data });
   }
 
-  async findAll(): Promise<UserPallet[]> {
+  async findAll(): Promise<FindAllUserPalletResponse[]> {
     return this.prisma.userPallet.findMany();
   }
 
@@ -20,19 +25,50 @@ export class UserpalletService {
     });
   }
 
-  async update(
-    id: number,
+  async findByUserPalletId(palletId: number): Promise<FindUserPalletResponse> {
+    if (!palletId) {
+      throw new NotFoundException('palletIdが存在しません。');
+    }
+    const pallet = await this.prisma.userPallet.findUnique({
+      where: { palletId: palletId },
+    });
+    const ret: FindUserPalletResponse = {
+      palletId: pallet.palletId,
+      name: pallet.name,
+      data: pallet.data,
+      createdAt: pallet.createdAt,
+    };
+
+    return ret;
+  }
+
+  async updateUserPalletData(
+    req: FastifyRequest,
     data: Prisma.UserPalletUpdateInput,
   ): Promise<UserPallet> {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
+      where: { id: decoded.id },
+    });
+    if (!userpallet) {
+      throw new NotFoundException('ユーザパレットが存在しません。');
+    }
     return this.prisma.userPallet.update({
-      where: { id: id },
+      where: { id: userpallet.id },
       data,
     });
   }
 
-  async remove(id: number): Promise<UserPallet> {
+  async removeUserPalletData(req: FastifyRequest): Promise<UserPallet> {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
+      where: { id: decoded.id },
+    });
+    if (!userpallet) {
+      throw new NotFoundException('ユーザパレットが存在しません。');
+    }
     return this.prisma.userPallet.delete({
-      where: { id: id },
+      where: { id: userpallet.id },
     });
   }
 }
