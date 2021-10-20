@@ -1,19 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
-import { Exclude } from 'class-transformer';
-export class CreateUserPalletDto {
-  @ApiProperty({ description: 'userId' })
-  @IsString()
-  userId: string;
+import { IsNotEmpty, IsString } from 'class-validator';
+import { Constants } from 'src/common/constants';
+import { UserPallet } from '.prisma/client';
 
-  @ApiProperty({ description: 'name' })
+export class CreateUserPalletRequest {
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsString()
-  name: string;
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_USER_ID,
+  })
+  userId: UserPallet['userId'];
 
-  @ApiProperty({ description: 'data' })
+  @ApiProperty({ description: Constants.PROPERTY_PALLET_NAME })
   @IsString()
-  data: string;
+  name: UserPallet['name'];
 
-  @Exclude()
-  createdAt: string;
+  @ApiProperty({ description: Constants.PROPERTY_PALLET_DATA })
+  @IsString()
+  data: UserPallet['data'];
 }
