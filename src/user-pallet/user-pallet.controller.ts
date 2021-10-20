@@ -11,7 +11,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserPallet } from '@prisma/client';
 import { UserpalletService } from './user-pallet.service';
 import { CreateUserPalletRequest } from './dto/create-user-pallet.dto';
-import { UpdateUserPalletDto } from './dto/update-user-pallet.dto';
+import { UpdateUserPalletRequest } from './dto/update-user-pallet.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -49,7 +49,7 @@ export class UserPalletController {
   // フックメソッド
   update(
     @Param('id') id: string,
-    @Body() updateUserPalletDto: UpdateUserPalletDto,
+    @Body() updateUserPalletRequest: UpdateUserPalletRequest,
   ) {
     return;
   }
