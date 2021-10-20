@@ -1,17 +1,24 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
+  HttpStatus,
   Param,
-  Delete,
+  Post,
+  Req,
+  Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserPallet } from '@prisma/client';
 import { UserpalletService } from './user-pallet.service';
 import { CreateUserPalletRequest } from './dto/create-user-pallet.dto';
 import { UpdateUserPalletRequest } from './dto/update-user-pallet.dto';
+import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
+import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
+import { FastifyRequest } from 'fastify';
+import { Prisma } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -27,38 +34,49 @@ export class UserPalletController {
     return;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   // Swagger定義
   @ApiOperation({ summary: '全ユーザパレット検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindAllUserPalletResponse })
   // フックメソッド
-  findAll(): Promise<UserPallet[]> {
+  async findAll(): Promise<FindAllUserPalletResponse[]> {
     return this.userPalletService.findAll();
   }
 
-  @Get(':id')
+  @Get(':palletId')
   // Swagger定義
-  @ApiOperation({ summary: 'IDから単一ユーザパレット検索' })
+  @ApiOperation({ summary: 'palletIdから単一ユーザパレット検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindUserPalletResponse })
+  @ApiParam({
+    name: 'palletId',
+    description: 'ユーザパレットのId',
+    type: String,
+  })
   // フックメソッド
-  findOne(@Param('id') id: string): Promise<UserPallet> {
-    return this.userPalletService.findOne(+id);
+  async findByUserPalletId(
+    @Param('palletId') palletId: number,
+  ): Promise<FindUserPalletResponse> {
+    return this.userPalletService.findByUserPalletId(palletId);
   }
 
-  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @Patch()
   // Swagger定義
-  @ApiOperation({ summary: 'IDからユーザパレット更新' })
+  @ApiOperation({ summary: 'ユーザパレット更新' })
   // フックメソッド
-  update(
-    @Param('id') id: string,
-    @Body() updateUserPalletRequest: UpdateUserPalletRequest,
-  ) {
-    return;
+  async updateProfileData(
+    @Req() req: FastifyRequest,
+    @Body() data: Prisma.UserPalletUpdateInput,
+  ): Promise<UpdateUserPalletRequest> {
+    return this.userPalletService.updateUserPalletData(req, data);
   }
 
-  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   // Swagger定義
-  @ApiOperation({ summary: 'IDからユーザパレット削除' })
+  @ApiOperation({ summary: 'ユーザパレット削除' })
   // フックメソッド
-  remove(@Param('id') id: string): Promise<UserPallet> {
-    return this.userPalletService.remove(+id);
+  async removeAccountData(@Req() req: FastifyRequest): Promise<UserPallet> {
+    return this.userPalletService.removeUserPalletData(req);
   }
 }
