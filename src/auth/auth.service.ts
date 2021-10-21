@@ -33,6 +33,11 @@ import {
 } from './dto/login-auth.dto';
 // Entity
 import { User } from 'src/users/entities/user.entity';
+import {
+  PasswordResetReqResponse,
+  PasswordResetRequest,
+  PasswordResetResponse,
+} from './dto/passwordReset-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -199,7 +204,9 @@ export class AuthService {
     return confirmedUser;
   }
 
-  async passwordResetReq(req: FastifyRequest) {
+  async passwordResetReq(
+    req: FastifyRequest,
+  ): Promise<PasswordResetReqResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
 
@@ -221,7 +228,10 @@ export class AuthService {
     };
   }
 
-  async passwordReset(token: string, data: User) {
+  async passwordReset(
+    token: string,
+    data: PasswordResetRequest,
+  ): Promise<PasswordResetResponse> {
     if (!token) {
       throw new NotFoundException('passwordResetTokenが存在しません。');
     }
