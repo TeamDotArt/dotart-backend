@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserPallet } from '@prisma/client';
+import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
 import { PrismaService } from '../common/prisma.service';
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
