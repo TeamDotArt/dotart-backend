@@ -30,6 +30,11 @@ import {
   ValidateUserResponse,
 } from './auth/dto/login-auth.dto';
 import { LogOutUserResponse } from './auth/dto/logout-auth.dto';
+import {
+  PasswordResetReqResponse,
+  PasswordResetRequest,
+  PasswordResetResponse,
+} from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -113,6 +118,52 @@ export class AppController {
     @Param('emailToken') emailToken: string,
   ): Promise<ConfirmedUserResponse> {
     return this.authService.confirm(emailToken);
+  }
+
+  /**
+   * @description パスワードリセットリクエスト認証API
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('passwordResetReq')
+  // Swagger定義
+  @ApiOperation({ summary: 'パスワードリセットのリクエストを行う' })
+  @ApiResponse({ status: HttpStatus.OK, type: PasswordResetReqResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
+  // フックメソッド
+  passwordResetReq(
+    @Request() req: FastifyRequest,
+  ): Promise<PasswordResetReqResponse> {
+    return this.authService.passwordResetReq(req);
+  }
+
+  /**
+   * @description パスワードリセット認証API
+   */
+  @Post(':passwordToken/passwordReset')
+  // Swagger定義
+  @ApiOperation({ summary: 'パスワードリセットを行う' })
+  @ApiResponse({ status: HttpStatus.OK, type: PasswordResetResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
+  @ApiParam({
+    name: 'passwordToken',
+    description: 'passwordToken情報',
+    type: String,
+  })
+  @ApiBody({ type: PasswordResetRequest, description: 'パスワード' })
+  // フックメソッド
+  passwordReset(
+    @Param('passwordToken') passwordToken: string,
+    @Body() data: PasswordResetRequest,
+  ): Promise<PasswordResetResponse> {
+    return this.authService.passwordReset(passwordToken, data);
   }
 
   /**

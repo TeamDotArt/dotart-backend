@@ -35,10 +35,11 @@ model User {
 
 // トークン情報
 model Token {
-  id           Int    @default(autoincrement()) @id
-  userId       String
-  token        String
-  refreshToken String?
+  id            Int    @default(autoincrement()) @id
+  userId        String
+  token         String
+  refreshToken  String?
+  passwordToken String?
   user         User   @relation(fields: [userId], references: [userId])
 }
 

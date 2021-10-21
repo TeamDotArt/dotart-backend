@@ -21,3 +21,24 @@ export const sendEmailToken = (email: string, emailToken: string) => {
   console.log('メール送信');
   console.log(msg);
 };
+
+export const sendPasswordResetEmailToken = (
+  email: string,
+  passwordToken: string,
+) => {
+  const msg = {
+    to: email,
+    from: 'dotart@gmail.com',
+    subject: 'パスワードリセットメールです。',
+    html: `
+    DotArtのパスワードリセットメールです。
+    以下のアクティベーションリンクにアクセスしパスワードの再登録をおこなってください！
+    http://localhost:5000/${passwordToken}/passwordReset
+    `,
+  };
+
+  // TODO: メアド認証を実装する
+  // sendgrid.send(msg);
+  console.log('メール送信');
+  console.log(msg);
+};
