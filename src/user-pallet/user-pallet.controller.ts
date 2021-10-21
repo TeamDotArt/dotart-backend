@@ -7,19 +7,28 @@ import {
   Post,
   Req,
   Patch,
-  UseGuards,
   Delete,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { UserPallet } from '@prisma/client';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { UserpalletService } from './user-pallet.service';
-import { CreateUserPalletRequest } from './dto/create-user-pallet.dto';
-import { UpdateUserPalletRequest } from './dto/update-user-pallet.dto';
+import {
+  CreateUserPalletRequest,
+  CreateUserPalletResponse,
+} from './dto/create-user-pallet.dto';
+import {
+  UpdateUserPalletRequest,
+  UpdateUserPalletResponse,
+} from './dto/update-user-pallet.dto';
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { FastifyRequest } from 'fastify';
-import { Prisma } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -30,12 +39,15 @@ export class UserPalletController {
   @Post()
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット生成' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreateUserPalletResponse })
+  @ApiBody({ type: UpdateUserPalletRequest, description: '生成データ' })
   // フックメソッド
-  create(@Body() createUserPalletRequest: CreateUserPalletRequest) {
-    return;
+  async create(
+    @Body() data: CreateUserPalletRequest,
+  ): Promise<CreateUserPalletResponse> {
+    return this.userPalletService.create(data);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   // Swagger定義
   @ApiOperation({ summary: '全ユーザパレット検索' })
@@ -61,24 +73,27 @@ export class UserPalletController {
     return this.userPalletService.findByUserPalletId(palletId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch()
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット更新' })
+  @ApiResponse({ status: HttpStatus.OK, type: UpdateUserPalletResponse })
+  @ApiBody({ type: UpdateUserPalletRequest, description: '更新データ' })
   // フックメソッド
   async updateProfileData(
     @Req() req: FastifyRequest,
-    @Body() data: Prisma.UserPalletUpdateInput,
-  ): Promise<UpdateUserPalletRequest> {
+    @Body() data: UpdateUserPalletRequest,
+  ): Promise<UpdateUserPalletResponse> {
     return this.userPalletService.updateUserPalletData(req, data);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット削除' })
+  @ApiResponse({ status: HttpStatus.OK, type: RemoveUserPalletResponse })
   // フックメソッド
-  async removeUserPalletData(@Req() req: FastifyRequest): Promise<UserPallet> {
+  async removeUserPalletData(
+    @Req() req: FastifyRequest,
+  ): Promise<RemoveUserPalletResponse> {
     return this.userPalletService.removeUserPalletData(req);
   }
 }
