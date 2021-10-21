@@ -12,8 +12,14 @@ import { TokenService } from 'src/token/token.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
-import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
-import { sendEmailToken } from 'src/common/sendgrid.service';
+import {
+  generateEmailToken,
+  generatePasswordToken,
+} from 'src/common/helpers/activationCodeHelper';
+import {
+  sendEmailToken,
+  sendPasswordResetEmailToken,
+} from 'src/common/sendgrid.service';
 // Dto系
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { VerifyEmailResponse } from './dto/verify-email.dto';
@@ -191,6 +197,69 @@ export class AuthService {
 
     // return plainToClass(ConfirmedUserDto, confirmedUser);
     return confirmedUser;
+  }
+
+  async passwordResetReq(req: FastifyRequest) {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    const passwordToken = generatePasswordToken(user.userId);
+
+    const token = await this.prisma.token.update({
+      where: { userId: user.userId },
+      data: { passwordToken: passwordToken },
+    });
+
+    sendPasswordResetEmailToken(user.email, token.passwordToken);
+    return {
+      status: 201,
+      message: 'パスワードの再設定を行ってください。',
+    };
+  }
+
+  async passwordReset(token: string, data: User) {
+    if (!token) {
+      throw new NotFoundException('passwordResetTokenが存在しません。');
+    }
+
+    const findToken = await this.prisma.token.findFirst({
+      where: {
+        passwordToken: token,
+      },
+    });
+
+    if (!findToken) {
+      throw new NotAcceptableException(
+        'リセット期限が切れています。\n お手数ですがもう一度リセットのリクエストを送信してください。',
+      );
+    }
+
+    const userId = findToken.userId;
+
+    const password = getHash(data.password);
+
+    await this.prisma.user.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        password: password,
+      },
+    });
+
+    await this.prisma.token.update({
+      where: { userId: userId },
+      data: { passwordToken: null },
+    });
+
+    return {
+      status: 201,
+      message: 'パスワードの再設定が完了しました。',
+    };
   }
 
   async me(req: FastifyRequest) {

@@ -116,6 +116,46 @@ export class AppController {
   }
 
   /**
+   * @description パスワードリセットリクエスト認証API
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('passwordReset')
+  // Swagger定義
+  @ApiOperation({ summary: 'パスワードリセットのリクエストを行う' })
+  @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
+  // フックメソッド
+  passwordResetReq(@Request() req: FastifyRequest) {
+    return this.authService.passwordResetReq(req);
+  }
+
+  /**
+   * @description パスワードリセット認証API
+   */
+  @Post(':passwordToken/passwordReset')
+  // Swagger定義
+  @ApiOperation({ summary: 'パスワードリセットを行う' })
+  @ApiResponse({ status: HttpStatus.OK, type: ConfirmedUserResponse })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
+  @ApiResponse({
+    status: HttpStatus.NOT_ACCEPTABLE,
+    type: NotAcceptableException,
+  })
+  @ApiParam({
+    name: 'passwordToken',
+    description: 'passwordToken情報',
+    type: String,
+  })
+  // フックメソッド
+  passwordReset(@Param('passwordToken') passwordToken: string, @Body() data) {
+    return this.authService.passwordReset(passwordToken, data);
+  }
+
+  /**
    * @description JWT認証を用いたサンプルAPI
    */
   @UseGuards(JwtAuthGuard)
