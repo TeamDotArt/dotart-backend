@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserPallet as PrismaUserPallet } from '@prisma/client';
+import { UserPallet as PrismaUserPallet, User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import {
   IsNumber,
@@ -41,7 +41,7 @@ export class UserPallet {
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
   @IsOptional()
-  user: PrismaUserPallet['userId'];
+  user?: User[];
 
   //時間系
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
