@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
 // サービス
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
@@ -28,10 +29,7 @@ import {
   LogInUserResponse,
   ValidateUserResponse,
 } from './auth/dto/login-auth.dto';
-import {
-  LogOutUserRequest,
-  LogOutUserResponse,
-} from './auth/dto/logout-auth.dto';
+import { LogOutUserResponse } from './auth/dto/logout-auth.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -71,7 +69,7 @@ export class AppController {
   @ApiResponse({ status: HttpStatus.OK, type: LogOutUserResponse })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   // フックメソッド
-  logout(@Req() req: LogOutUserRequest): Promise<LogOutUserResponse> {
+  logout(@Req() req: FastifyRequest): Promise<LogOutUserResponse> {
     return this.authService.logout(req);
   }
 
@@ -126,11 +124,8 @@ export class AppController {
   @ApiOperation({ summary: 'ログインのガードが働いているかテスト' })
   @ApiResponse({ status: HttpStatus.OK, type: ValidateUserResponse })
   // フックメソッド
-  getProfile(@Request() req: ValidateUserResponse) {
-    const user = req;
-
-    // 認証に成功したユーザーの情報を返す
-    return user;
+  getProfile(@Request() req: FastifyRequest) {
+    return this.authService.me(req);
   }
 
   @Get()

@@ -1,18 +1,32 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
+  UseGuards,
+  HttpStatus,
+  Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Prisma, User } from '@prisma/client';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
+// Service
 import { UsersService } from './users.service';
-
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
+// Guards
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+// Dto
+import { FindAllUserResponse } from './dto/findAll-user.dto';
+import { FindUserResponse } from './dto/find-user.dto';
+import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
+import { RemoveUserResponse } from './dto/remove-user.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('users')
@@ -20,28 +34,56 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  async create(@Body() data: Prisma.UserCreateInput): Promise<User> {
-    return this.usersService.create(data);
-  }
-
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard)
   @Get()
-  async findAll() {
+  // Swagger定義
+  @ApiOperation({ summary: '全ユーザ検索(ロールがADMINのユーザのみ)' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindAllUserResponse })
+  // フックメソッド
+  async findAll(): Promise<FindAllUserResponse[]> {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':userId')
+  // Swagger定義
+  @ApiOperation({ summary: 'userIdから単一ユーザ検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindUserResponse })
+  @ApiParam({
+    name: 'userId',
+    description: 'ユーザのId',
+    type: String,
+  })
+  // フックメソッド
+  async findByUserId(
+    @Param('userId') userId: string,
+  ): Promise<FindUserResponse> {
+    return this.usersService.findByUserId(userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.UserUpdateInput) {
-    return this.usersService.update(+id, data);
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  // Swagger定義
+  @ApiOperation({ summary: 'ユーザデータ更新' })
+  @ApiResponse({ status: HttpStatus.OK, type: UpdateUserResponse })
+  @ApiBody({ type: UpdateUserRequest, description: '更新データ' })
+  // フックメソッド
+  async updateProfileData(
+    @Req() req: FastifyRequest,
+    @Body() data: UpdateUserRequest,
+  ): Promise<UpdateUserResponse> {
+    return this.usersService.updateProfileData(req, data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  // Swagger定義
+  @ApiOperation({ summary: 'ユーザデータ削除' })
+  @ApiResponse({ status: HttpStatus.OK, type: RemoveUserResponse })
+  // フックメソッド
+  async removeAccountData(
+    @Req() req: FastifyRequest,
+  ): Promise<RemoveUserResponse> {
+    return this.usersService.removeAccountData(req);
   }
 }

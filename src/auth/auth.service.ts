@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { FastifyRequest } from 'fastify';
 import jwt_decode from 'jwt-decode';
 // サービス
 import { UsersService } from 'src/users/users.service';
@@ -17,7 +18,7 @@ import { sendEmailToken } from 'src/common/sendgrid.service';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { VerifyEmailResponse } from './dto/verify-email.dto';
 import { PayloadDto } from './dto/payload.dto';
-import { LogOutUserRequest, LogOutUserResponse } from './dto/logout-auth.dto';
+import { LogOutUserResponse } from './dto/logout-auth.dto';
 import { ConfirmedUserResponse } from './dto/confirmed-user.dto';
 import {
   LogInUserRequest,
@@ -43,7 +44,9 @@ export class AuthService {
     if (!data.userId || !data.password) {
       throw new NotFoundException('userIdまたはパスワードが存在しません。');
     }
-    const user: User = await this.usersService.findByUserId(data.userId); // DBからUserを取得
+    const user: User = await this.usersService.validateFindByUserId(
+      data.userId,
+    ); // DBからUserを取得
 
     if (user && compare(data.password, user.password)) {
       const { password, ...result } = user;
@@ -94,7 +97,7 @@ export class AuthService {
     };
   }
 
-  async logout(req: LogOutUserRequest): Promise<LogOutUserResponse> {
+  async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
 
@@ -188,5 +191,29 @@ export class AuthService {
 
     // return plainToClass(ConfirmedUserDto, confirmedUser);
     return confirmedUser;
+  }
+
+  async me(req: FastifyRequest) {
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    const userData = {
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      emailVerified: user.emailVerified
+        ? 'メールアドレス確認済みです'
+        : '未認証',
+      createdAt: user.createdAt,
+    };
+
+    return {
+      status: 201,
+      userData,
+    };
   }
 }
