@@ -46,10 +46,10 @@ model Token {
 model UserPallet {
   id            Int      @default(autoincrement()) @id
   palletId      Int      @unique
-  userId        Int
+  userId        String   
   name          String
   data          String
-  user          User?    @relation(fields: [userId], references: [id])
+  user          User?    @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
