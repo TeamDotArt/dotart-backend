@@ -1,18 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserPallet, Prisma } from '@prisma/client';
+import { UserPallet } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { FastifyRequest } from 'fastify';
 import jwt_decode from 'jwt-decode';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
+import {
+  UpdateUserPalletRequest,
+  UpdateUserPalletResponse,
+} from './dto/update-user-pallet.dto';
+import {
+  CreateUserPalletRequest,
+  CreateUserPalletResponse,
+} from './dto/create-user-pallet.dto';
 
 @Injectable()
 export class UserpalletService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.UserPalletCreateInput): Promise<UserPallet> {
-    return this.prisma.userPallet.create({ data });
+  async create(
+    data: CreateUserPalletRequest,
+  ): Promise<CreateUserPalletResponse> {
+    this.prisma.userPallet.create({ data });
+    return {
+      status: 201,
+      message: 'ユーザーパレットを生成しました。',
+    };
   }
 
   async findAll(): Promise<FindAllUserPalletResponse[]> {
@@ -44,8 +59,8 @@ export class UserpalletService {
 
   async updateUserPalletData(
     req: FastifyRequest,
-    data: Prisma.UserPalletUpdateInput,
-  ): Promise<UserPallet> {
+    data: UpdateUserPalletRequest,
+  ): Promise<UpdateUserPalletResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
       where: { id: decoded.id },
@@ -53,13 +68,19 @@ export class UserpalletService {
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
-    return this.prisma.userPallet.update({
+    this.prisma.userPallet.update({
       where: { id: userpallet.id },
       data,
     });
+    return {
+      status: 201,
+      message: '更新しました。',
+    };
   }
 
-  async removeUserPalletData(req: FastifyRequest): Promise<UserPallet> {
+  async removeUserPalletData(
+    req: FastifyRequest,
+  ): Promise<RemoveUserPalletResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
       where: { id: decoded.id },
@@ -67,8 +88,15 @@ export class UserpalletService {
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
-    return this.prisma.userPallet.delete({
+    const palletId = userpallet.palletId;
+    this.prisma.userPallet.delete({
       where: { id: userpallet.id },
     });
+
+    return {
+      status: 201,
+      message: 'ユーザーパレットを削除しました。',
+      palletId: palletId,
+    };
   }
 }
