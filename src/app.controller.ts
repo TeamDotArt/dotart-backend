@@ -124,7 +124,7 @@ export class AppController {
    * @description パスワードリセットリクエスト認証API
    */
   @UseGuards(JwtAuthGuard)
-  @Post('passwordReset')
+  @Post('passwordResetReq')
   // Swagger定義
   @ApiOperation({ summary: 'パスワードリセットのリクエストを行う' })
   @ApiResponse({ status: HttpStatus.OK, type: PasswordResetReqResponse })
