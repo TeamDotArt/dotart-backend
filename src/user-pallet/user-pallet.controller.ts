@@ -1,15 +1,34 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
+  HttpStatus,
   Param,
+  Post,
+  Req,
+  Patch,
   Delete,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { UserPallet, Prisma } from '@prisma/client';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { UserpalletService } from './user-pallet.service';
+import {
+  CreateUserPalletRequest,
+  CreateUserPalletResponse,
+} from './dto/create-user-pallet.dto';
+import {
+  UpdateUserPalletRequest,
+  UpdateUserPalletResponse,
+} from './dto/update-user-pallet.dto';
+import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
+import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
+import { FastifyRequest } from 'fastify';
+import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -18,27 +37,63 @@ export class UserPalletController {
   constructor(private readonly userPalletService: UserpalletService) {}
 
   @Post()
-  create(@Body() data: Prisma.UserPalletCreateInput): Promise<UserPallet> {
+  // Swagger定義
+  @ApiOperation({ summary: 'ユーザパレット生成' })
+  @ApiResponse({ status: HttpStatus.OK, type: CreateUserPalletResponse })
+  @ApiBody({ type: UpdateUserPalletRequest, description: '生成データ' })
+  // フックメソッド
+  async create(
+    @Body() data: CreateUserPalletRequest,
+  ): Promise<CreateUserPalletResponse> {
     return this.userPalletService.create(data);
   }
 
   @Get()
-  findAll(): Promise<UserPallet[]> {
+  // Swagger定義
+  @ApiOperation({ summary: '全ユーザパレット検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindAllUserPalletResponse })
+  // フックメソッド
+  async findAll(): Promise<FindAllUserPalletResponse[]> {
     return this.userPalletService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<UserPallet> {
-    return this.userPalletService.findOne(+id);
+  @Get(':palletId')
+  // Swagger定義
+  @ApiOperation({ summary: 'palletIdから単一ユーザパレット検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindUserPalletResponse })
+  @ApiParam({
+    name: 'palletId',
+    description: 'ユーザパレットのId',
+    type: String,
+  })
+  // フックメソッド
+  async findByUserPalletId(
+    @Param('palletId') palletId: number,
+  ): Promise<FindUserPalletResponse> {
+    return this.userPalletService.findByUserPalletId(palletId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.UserPalletUpdateInput) {
-    return this.userPalletService.update(+id, data);
+  @Patch()
+  // Swagger定義
+  @ApiOperation({ summary: 'ユーザパレット更新' })
+  @ApiResponse({ status: HttpStatus.OK, type: UpdateUserPalletResponse })
+  @ApiBody({ type: UpdateUserPalletRequest, description: '更新データ' })
+  // フックメソッド
+  async updateProfileData(
+    @Req() req: FastifyRequest,
+    @Body() data: UpdateUserPalletRequest,
+  ): Promise<UpdateUserPalletResponse> {
+    return this.userPalletService.updateUserPalletData(req, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<UserPallet> {
-    return this.userPalletService.remove(+id);
+  // Swagger定義
+  @ApiOperation({ summary: 'ユーザパレット削除' })
+  @ApiResponse({ status: HttpStatus.OK, type: RemoveUserPalletResponse })
+  // フックメソッド
+  async removeUserPalletData(
+    @Req() req: FastifyRequest,
+  ): Promise<RemoveUserPalletResponse> {
+    return this.userPalletService.removeUserPalletData(req);
   }
 }
