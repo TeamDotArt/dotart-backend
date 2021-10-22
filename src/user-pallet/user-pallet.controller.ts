@@ -42,7 +42,7 @@ export class UserPalletController {
   @ApiResponse({ status: HttpStatus.OK, type: CreateUserPalletResponse })
   @ApiBody({
     type: CreateUserPalletRequest,
-    description: 'ユーザーパレットの生成データ',
+    description: 'ユーザーパレットの詳細情報',
   })
   // フックメソッド
   async create(
