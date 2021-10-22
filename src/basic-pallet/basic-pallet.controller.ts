@@ -38,9 +38,12 @@ export class BasicPalletController {
 
   @Post()
   // Swagger定義
-  @ApiOperation({ summary: 'ユーザパレット生成' })
+  @ApiOperation({ summary: 'ベーシックパレット生成' })
   @ApiResponse({ status: HttpStatus.OK, type: CreateBasicPalletResponse })
-  @ApiBody({ type: CreateBasicPalletRequest, description: '生成データ' })
+  @ApiBody({
+    type: CreateBasicPalletRequest,
+    description: 'ベーシックパレットの詳細情報',
+  })
   // フックメソッド
   async create(
     @Body() data: CreateBasicPalletRequest,
