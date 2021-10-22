@@ -40,7 +40,10 @@ export class UserPalletController {
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット生成' })
   @ApiResponse({ status: HttpStatus.OK, type: CreateUserPalletResponse })
-  @ApiBody({ type: CreateUserPalletRequest, description: '生成データ' })
+  @ApiBody({
+    type: CreateUserPalletRequest,
+    description: 'ユーザーパレットの生成データ',
+  })
   // フックメソッド
   async create(
     @Body() data: CreateUserPalletRequest,
