@@ -11,7 +11,7 @@ export class BasicPallet {
   id: PrismaBasicPallet['id'];
 
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @Exclude()
   palletId: PrismaBasicPallet['palletId'];

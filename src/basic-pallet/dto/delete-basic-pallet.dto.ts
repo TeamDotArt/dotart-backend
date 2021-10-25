@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsNotEmpty, IsDate } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 import { Constants } from 'src/common/constants';
 import { BasicPallet } from 'src/basic-pallet/entities/basic-pallet.entity';
 
@@ -13,7 +13,7 @@ export class RemoveBasicPalletResponse {
   message: string;
 
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   palletId: BasicPallet['palletId'];
 }

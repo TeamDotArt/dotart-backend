@@ -4,10 +4,6 @@ import { Constants } from 'src/common/constants';
 import { BasicPallet } from '../entities/basic-pallet.entity';
 
 export class UpdateBasicPalletRequest {
-  @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
-  @IsNumber()
-  palletId: BasicPallet['palletId'];
-
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_NAME })
   @IsString()
   name: BasicPallet['name'];

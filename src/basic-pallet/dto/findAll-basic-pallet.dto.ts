@@ -10,7 +10,7 @@ export class FindAllBasicPalletResponse {
   id: BasicPallet['id'];
 
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   palletId: BasicPallet['palletId'];
 

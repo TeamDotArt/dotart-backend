@@ -5,7 +5,7 @@ import { BasicPallet } from 'src/basic-pallet/entities/basic-pallet.entity';
 
 export class FindBasicPalletResponse {
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   palletId: BasicPallet['palletId'];
 
