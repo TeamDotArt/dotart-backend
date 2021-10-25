@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BasicPallet } from 'src/basic-pallet/entities/basic-pallet.entity';
+// Service
 import { PrismaService } from '../common/prisma.service';
+// Dto
 import {
   CreateBasicPalletRequest,
   CreateBasicPalletResponse,

@@ -9,7 +9,6 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { BasicPalletService } from './basic-pallet.service';
 import {
   ApiOperation,
   ApiTags,
@@ -17,6 +16,12 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+// Service
+import { BasicPalletService } from './basic-pallet.service';
+// Guards
+import { RoleGuard } from 'src/auth/guards/role.guard';
+// Dto
+import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import {
   CreateBasicPalletRequest,
   CreateBasicPalletResponse,
@@ -27,8 +32,6 @@ import {
   UpdateBasicPalletRequest,
   UpdateBasicPalletResponse,
 } from './dto/update-basic-pallet.dto';
-import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
-import { RoleGuard } from 'src/auth/guards/role.guard';
 
 // TODO: ApiResponseを記載する
 @ApiTags('basic-pallet')
