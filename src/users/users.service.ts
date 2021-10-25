@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
 import jwt_decode from 'jwt-decode';
 // Service
@@ -11,6 +10,7 @@ import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { getHash } from 'src/common/helpers/cipherHelper';
 import { RemoveUserResponse } from './dto/remove-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
