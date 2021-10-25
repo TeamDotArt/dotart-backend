@@ -32,4 +32,12 @@ export class Constants {
   // UserPallet DTO
   public static readonly PROPERTY_PALLET_NAME = 'パレット名';
   public static readonly PROPERTY_PALLET_DATA = 'パレットデータ';
+
+  // BasicPallet DTO
+  public static readonly PROPERTY_BASIC_PALLET_ID = 'ベーシックパレットID';
+  public static readonly PROPERTY_BASIC_PALLET_NAME = 'ベーシックパレット名';
+  public static readonly PROPERTY_BASIC_PALLET_DESCRIPTION =
+    'ベーシックパレットの説明';
+  public static readonly PROPERTY_BASIC_PALLET_DATA =
+    'ベーシックパレットデータ';
 }
