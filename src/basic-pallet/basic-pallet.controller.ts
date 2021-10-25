@@ -5,9 +5,9 @@ import {
   HttpStatus,
   Param,
   Post,
-  Req,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { BasicPalletService } from './basic-pallet.service';
 import {
@@ -27,8 +27,8 @@ import {
   UpdateBasicPalletRequest,
   UpdateBasicPalletResponse,
 } from './dto/update-basic-pallet.dto';
-import { FastifyRequest } from 'fastify';
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
+import { RoleGuard } from 'src/auth/guards/role.guard';
 
 // TODO: ApiResponseを記載する
 @ApiTags('basic-pallet')
@@ -36,9 +36,12 @@ import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 export class BasicPalletController {
   constructor(private readonly basicPalletService: BasicPalletService) {}
 
+  @UseGuards(RoleGuard)
   @Post()
   // Swagger定義
-  @ApiOperation({ summary: 'ベーシックパレット生成' })
+  @ApiOperation({
+    summary: 'ベーシックパレット生成（ロールがADMINのユーザーのみ）',
+  })
   @ApiResponse({ status: HttpStatus.OK, type: CreateBasicPalletResponse })
   @ApiBody({
     type: CreateBasicPalletRequest,
@@ -60,43 +63,75 @@ export class BasicPalletController {
     return this.basicPalletService.findAll();
   }
 
-  @Get(':palletId')
+  @Get('findPalletId/:palletId')
   // Swagger定義
   @ApiOperation({ summary: 'palletIdから単一ベーシックパレット検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindBasicPalletResponse })
   @ApiParam({
     name: 'palletId',
-    description: 'ベーシックパレットのId',
+    description: 'ベーシックパレットのpalletId',
     type: String,
   })
   // フックメソッド
   async findByBasicPalletId(
-    @Param('palletId') palletId: number,
+    @Param('palletId') palletId: string,
   ): Promise<FindBasicPalletResponse> {
     return this.basicPalletService.findByBasicPalletId(palletId);
   }
 
-  @Patch()
+  @Get('findName/:name')
   // Swagger定義
-  @ApiOperation({ summary: 'ベーシックパレット更新' })
+  @ApiOperation({ summary: 'パレット名から単一ベーシックパレット検索' })
+  @ApiResponse({ status: HttpStatus.OK, type: FindBasicPalletResponse })
+  @ApiParam({
+    name: 'name',
+    description: 'ベーシックパレットの名前',
+    type: String,
+  })
+  // フックメソッド
+  async findByName(
+    @Param('name') name: string,
+  ): Promise<FindBasicPalletResponse> {
+    return this.basicPalletService.findByName(name);
+  }
+
+  @UseGuards(RoleGuard)
+  @Patch(':palletId')
+  // Swagger定義
+  @ApiOperation({
+    summary: 'ベーシックパレット更新（ロールがADMINのユーザーのみ）',
+  })
   @ApiResponse({ status: HttpStatus.OK, type: UpdateBasicPalletResponse })
+  @ApiParam({
+    name: 'palletId',
+    description: 'ベーシックパレットのpallteId',
+    type: String,
+  })
   @ApiBody({ type: UpdateBasicPalletRequest, description: '更新データ' })
   // フックメソッド
   async updateProfileData(
-    @Req() req: FastifyRequest,
+    @Param('palletId') palletId: string,
     @Body() data: UpdateBasicPalletRequest,
   ): Promise<UpdateBasicPalletResponse> {
-    return this.basicPalletService.updateBasicPalletData(req, data);
+    return this.basicPalletService.updateBasicPalletData(palletId, data);
   }
 
-  @Delete(':id')
+  @UseGuards(RoleGuard)
+  @Delete(':palletId')
   // Swagger定義
-  @ApiOperation({ summary: 'ベーシックパレット削除' })
+  @ApiOperation({
+    summary: 'ベーシックパレット削除（ロールがADMINのユーザーのみ）',
+  })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveBasicPalletResponse })
+  @ApiParam({
+    name: 'palletId',
+    description: 'ベーシックパレットのpalletId',
+    type: String,
+  })
   // フックメソッド
   async removeBasicPalletData(
-    @Req() req: FastifyRequest,
+    @Param('palletId') palletId: string,
   ): Promise<RemoveBasicPalletResponse> {
-    return this.basicPalletService.removeBasicPalletData(req);
+    return this.basicPalletService.removeBasicPalletData(palletId);
   }
 }
