@@ -71,8 +71,8 @@ model Canvases {
 // 前もって用意するベーシックなパレット情報
 model BasicPallet {
   id            Int      @default(autoincrement()) @id
-  palletId      Int      @unique
-  name          String
+  palletId      String   @unique
+  name          String   @unique
   description   String?
   data          String
   createdAt     DateTime @default(now())
