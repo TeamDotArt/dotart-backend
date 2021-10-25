@@ -27,6 +27,7 @@ export class BasicPalletService {
     const ret: CreateBasicPalletResponse = {
       status: 201,
       message: 'ベーシックパレットを生成しました。',
+      palletId: data.palletId,
     };
 
     return ret;

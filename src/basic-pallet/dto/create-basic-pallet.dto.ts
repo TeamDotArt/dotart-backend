@@ -29,4 +29,8 @@ export class CreateBasicPalletResponse {
   @ApiProperty({ description: Constants.VERIFY_MESSAGE })
   @IsString()
   message: string;
+
+  @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
+  @IsString()
+  palletId: BasicPallet['palletId'];
 }
