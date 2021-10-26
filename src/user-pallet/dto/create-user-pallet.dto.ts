@@ -32,4 +32,8 @@ export class CreateUserPalletResponse {
   @ApiProperty({ description: Constants.VERIFY_MESSAGE })
   @IsString()
   message: string;
+
+  @ApiProperty({ description: Constants.PROPERTY_USER_PALLET })
+  @IsString()
+  palletId: UserPallet['palletId'];
 }
