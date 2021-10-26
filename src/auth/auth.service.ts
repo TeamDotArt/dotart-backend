@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
 // サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
@@ -39,6 +38,7 @@ import {
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
 import { CreateUserRequest } from './dto/create-user.dto';
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 
 @Injectable()
 export class AuthService {
@@ -110,7 +110,7 @@ export class AuthService {
   }
 
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
 
     if (!user) {
@@ -207,7 +207,7 @@ export class AuthService {
   async passwordResetReq(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
 
     if (!user) {
@@ -273,7 +273,7 @@ export class AuthService {
   }
 
   async me(req: FastifyRequest) {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
 
     if (!user) {

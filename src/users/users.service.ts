@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
+
 // Service
 import { PrismaService } from 'src/common/prisma.service';
+// Entity
+import { User } from './entities/user.entity';
+// Helper
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { getHash } from 'src/common/helpers/cipherHelper';
 // Dto
 import { FindUserResponse } from './dto/find-user.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
-import { getHash } from 'src/common/helpers/cipherHelper';
 import { RemoveUserResponse } from './dto/remove-user.dto';
-import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -58,7 +61,7 @@ export class UsersService {
     req: FastifyRequest,
     data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.prisma.user.findUnique({
       where: { id: decoded.id },
     });
@@ -101,7 +104,7 @@ export class UsersService {
   }
 
   async removeAccountData(req: FastifyRequest): Promise<RemoveUserResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.prisma.user.findUnique({
       where: { id: decoded.id },
     });

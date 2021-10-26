@@ -4,7 +4,6 @@ import { PrismaService } from '../common/prisma.service';
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 import {
@@ -15,6 +14,7 @@ import {
   CreateUserPalletRequest,
   CreateUserPalletResponse,
 } from './dto/create-user-pallet.dto';
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 
 @Injectable()
 export class UserpalletService {
@@ -61,7 +61,7 @@ export class UserpalletService {
     req: FastifyRequest,
     data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
       where: { id: decoded.id },
     });
@@ -81,7 +81,7 @@ export class UserpalletService {
   async removeUserPalletData(
     req: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
       where: { id: decoded.id },
     });
