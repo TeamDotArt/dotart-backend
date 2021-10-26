@@ -22,6 +22,8 @@ import { FastifyRequest } from 'fastify';
 // サービス
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
+// ガード
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 // DTO
 import { ConfirmedUserResponse } from './auth/dto/confirmed-user.dto';
 import { CreateUserRequest } from './auth/dto/create-user.dto';
@@ -33,13 +35,12 @@ import {
 } from './auth/dto/login-auth.dto';
 import { LogOutUserResponse } from './auth/dto/logout-auth.dto';
 import {
+  PasswordResetParam,
   PasswordResetReqResponse,
   PasswordResetRequest,
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
-// ガード
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @ApiTags('/')
 @Controller()
@@ -156,15 +157,15 @@ export class AppController {
   @ApiParam({
     name: 'passwordToken',
     description: 'passwordToken情報',
-    type: String,
+    type: PasswordResetParam,
   })
   @ApiBody({ type: PasswordResetRequest, description: 'パスワード' })
   // フックメソッド
   passwordReset(
-    @Param('passwordToken') passwordToken: string,
+    @Param() passwordToken: PasswordResetParam,
     @Body() data: PasswordResetRequest,
   ): Promise<PasswordResetResponse> {
-    return this.authService.passwordReset(passwordToken, data);
+    return this.authService.passwordReset(passwordToken.passwordToken, data);
   }
 
   /**
