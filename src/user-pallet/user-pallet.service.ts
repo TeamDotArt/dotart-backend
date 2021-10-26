@@ -59,13 +59,6 @@ export class UserpalletService {
   async findAll(): Promise<FindAllUserPalletResponse[]> {
     return this.prisma.userPallet.findMany();
   }
-  /*
-  async findOne(id: number) {
-    return this.prisma.userPallet.findUnique({
-      where: { id: id },
-    });
-  }
-*/
 
   async findByUserPalletId(palletId: string): Promise<FindUserPalletResponse> {
     if (!palletId) {
