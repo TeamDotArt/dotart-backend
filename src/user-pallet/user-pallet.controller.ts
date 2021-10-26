@@ -19,7 +19,7 @@ import {
 // Service
 import { UserpalletService } from './user-pallet.service';
 // Guards
-import { RoleGuard } from 'src/auth/guards/role.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 // Dto
 import {
   CreateUserPalletRequest,
@@ -32,6 +32,7 @@ import {
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
+import jwtDecode from 'jwt-decode';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -39,7 +40,7 @@ import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 export class UserPalletController {
   constructor(private readonly userPalletService: UserpalletService) {}
 
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット生成' })
@@ -96,7 +97,7 @@ export class UserPalletController {
     return this.userPalletService.findByUserPallletName(name);
   }
 
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':palletId')
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット更新' })
@@ -115,7 +116,7 @@ export class UserPalletController {
     return this.userPalletService.updateUserPalletData(palletId, data);
   }
 
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':palletId')
   // Swagger定義
   @ApiOperation({ summary: 'ユーザパレット削除' })
