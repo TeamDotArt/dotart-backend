@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
+import { FastifyRequest } from 'fastify';
+import jwt_decode from 'jwt-decode';
 // Service
 import { PrismaService } from '../common/prisma.service';
+import { UsersService } from 'src/users/users.service';
+// entity
+import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
+import { User } from 'src/users/entities/user.entity';
 // Dto
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
@@ -14,19 +19,39 @@ import {
   CreateUserPalletRequest,
   CreateUserPalletResponse,
 } from './dto/create-user-pallet.dto';
+import { DecodedDto } from 'src/auth/dto/decoded.dto';
 
 @Injectable()
 export class UserpalletService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private usersService: UsersService,
+  ) {}
 
   async create(
+    req: FastifyRequest,
     data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    await this.prisma.userPallet.create({ data });
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+    await this.prisma.userPallet.create({
+      data: {
+        palletId: data.palletId,
+        userId: data.userId,
+        name: data.name,
+        data: data.data,
+      },
+    });
+    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
+      where: { userId: user.userId },
+    });
     const ret: CreateUserPalletResponse = {
       status: 201,
       message: 'ユーザーパレットを生成しました。',
-      palletId: data.palletId,
+      palletId: userpallet.palletId,
     };
     return ret;
   }
@@ -75,43 +100,56 @@ export class UserpalletService {
   }
 
   async updateUserPalletData(
-    palletId: string,
+    req: FastifyRequest,
     data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
-      where: { palletId: palletId },
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
+      where: { userId: user.userId },
     });
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
     await this.prisma.userPallet.update({
-      where: { palletId: palletId },
-      data,
+      where: { palletId: userpallet.palletId },
+      data: {
+        name: data.name,
+        data: data.data,
+      },
     });
     const ret: UpdateUserPalletResponse = {
       status: 201,
       message: '更新しました。',
-      palletId: data.palletId,
+      palletId: userpallet.palletId,
     };
     return ret;
   }
 
   async removeUserPalletData(
-    palletId: string,
+    req: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    const userpallet: UserPallet = await this.prisma.userPallet.findUnique({
-      where: { palletId: palletId },
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const user: User = await this.usersService.findOne(decoded.id);
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
+      where: { userId: user.userId },
     });
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
     await this.prisma.userPallet.delete({
-      where: { palletId: palletId },
+      where: { palletId: userpallet.palletId },
     });
     const ret: RemoveUserPalletResponse = {
       status: 201,
       message: 'ユーザーパレットを削除しました。',
-      palletId: palletId,
+      palletId: userpallet.palletId,
     };
     return ret;
   }

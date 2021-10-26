@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -16,6 +17,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
 // Service
 import { UserpalletService } from './user-pallet.service';
 // Guards
@@ -32,7 +34,6 @@ import {
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
-import jwtDecode from 'jwt-decode';
 
 // TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
@@ -51,9 +52,10 @@ export class UserPalletController {
   })
   // フックメソッド
   async create(
+    @Req() req: FastifyRequest,
     @Body() data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    return this.userPalletService.create(data);
+    return this.userPalletService.create(req, data);
   }
 
   @Get()
@@ -104,16 +106,16 @@ export class UserPalletController {
   @ApiResponse({ status: HttpStatus.OK, type: UpdateUserPalletResponse })
   @ApiParam({
     name: 'palletId',
-    description: 'ベーシックパレットのpallteId',
+    description: 'ユーザパレットのpallteId',
     type: String,
   })
   @ApiBody({ type: UpdateUserPalletRequest, description: '更新データ' })
   // フックメソッド
   async updateProfileData(
-    @Param('palletId') palletId: string,
+    @Req() req: FastifyRequest,
     @Body() data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    return this.userPalletService.updateUserPalletData(palletId, data);
+    return this.userPalletService.updateUserPalletData(req, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -123,13 +125,13 @@ export class UserPalletController {
   @ApiResponse({ status: HttpStatus.OK, type: RemoveUserPalletResponse })
   @ApiParam({
     name: 'palletId',
-    description: 'ユーザーパレットのpalletId',
+    description: 'ユーザパレットのpalletId',
     type: String,
   })
   // フックメソッド
   async removeUserPalletData(
-    @Param('palletId') palletId: string,
+    @Req() req: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    return this.userPalletService.removeUserPalletData(palletId);
+    return this.userPalletService.removeUserPalletData(req);
   }
 }
