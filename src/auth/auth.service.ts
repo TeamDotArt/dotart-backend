@@ -38,6 +38,7 @@ import {
   PasswordResetRequest,
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
+import { CreateUserRequest } from './dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -131,7 +132,7 @@ export class AuthService {
     return { status: 201, message: 'ログアウトしました。' };
   }
 
-  async signup(user: User): Promise<VerifyEmailResponse> {
+  async signup(user: CreateUserRequest): Promise<VerifyEmailResponse> {
     // userIdが存在するかチェック
     if (!user.userId) {
       throw new NotFoundException('userIdが存在しません。');
@@ -156,7 +157,6 @@ export class AuthService {
         userId: user.userId,
         name: user.name,
         email: user.email,
-        role: user.role,
         password: hash,
         hashActivation: emailToken,
         active: true,
