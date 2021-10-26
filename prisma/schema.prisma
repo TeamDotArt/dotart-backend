@@ -48,7 +48,7 @@ model UserPallet {
   id            Int      @default(autoincrement()) @id
   palletId      String   @unique
   userId        String
-  name          String   @unique
+  name          String
   data          String
   user          User?    @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())

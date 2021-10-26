@@ -80,7 +80,7 @@ export class UserpalletService {
     if (!name) {
       throw new NotFoundException('palletnameが存在しません。');
     }
-    const pallet = await this.prisma.userPallet.findUnique({
+    const pallet = await this.prisma.userPallet.findFirst({
       where: { name: name },
     });
     const ret: FindUserPalletResponse = {
