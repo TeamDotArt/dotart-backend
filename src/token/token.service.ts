@@ -4,6 +4,7 @@ import { PrismaService } from 'src/common/prisma.service';
 import { CreateTokenDto } from './dto/create-token.dto';
 import { UpdateTokenDto } from './dto/update-token.dto';
 
+// TODO: Token操作をこちらで行うようにする
 @Injectable()
 export class TokenService {
   constructor(private prisma: PrismaService) {}
