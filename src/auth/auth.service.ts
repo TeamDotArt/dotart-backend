@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
 // サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
@@ -38,6 +37,8 @@ import {
   PasswordResetRequest,
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
+import { CreateUserRequest } from './dto/create-user.dto';
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 
 @Injectable()
 export class AuthService {
@@ -109,12 +110,8 @@ export class AuthService {
   }
 
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
-
-    if (!user) {
-      throw new NotFoundException('ユーザが存在しません。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const userId: string = await this.usersService.getUserIdById(decoded.id);
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
@@ -125,13 +122,13 @@ export class AuthService {
     });
 
     await this.prisma.token.delete({
-      where: { userId: user.userId },
+      where: { userId: userId },
     });
 
     return { status: 201, message: 'ログアウトしました。' };
   }
 
-  async signup(user: User): Promise<VerifyEmailResponse> {
+  async signup(user: CreateUserRequest): Promise<VerifyEmailResponse> {
     // userIdが存在するかチェック
     if (!user.userId) {
       throw new NotFoundException('userIdが存在しません。');
@@ -156,7 +153,6 @@ export class AuthService {
         userId: user.userId,
         name: user.name,
         email: user.email,
-        role: user.role,
         password: hash,
         hashActivation: emailToken,
         active: true,
@@ -207,8 +203,8 @@ export class AuthService {
   async passwordResetReq(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -273,8 +269,8 @@ export class AuthService {
   }
 
   async me(req: FastifyRequest) {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');

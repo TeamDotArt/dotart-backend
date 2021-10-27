@@ -14,6 +14,8 @@ export class Constants {
   public static readonly PROPERTY_CONFIRMED_AT = 'アカウント認証日';
   public static readonly PROPERTY_USER_PALLET = 'ユーザパレット情報';
   public static readonly PROPERTY_TOKEN = 'トークン情報';
+  public static readonly PROPERTY_EMAIL_TOKEN = 'Emailトークン情報';
+  public static readonly PROPERTY_PASSWORD_TOKEN = 'パスワード認証情報';
   // エラー系
   public static readonly IS_NOT_EMPTY_USER_ID = 'ユーザIDが含まれていません。';
   public static readonly IS_NOT_EMPTY_EMAIL =
@@ -21,6 +23,10 @@ export class Constants {
   public static readonly IS_NOT_EMPTY_PASSWORD =
     'パスワードが含まれていません。';
   public static readonly IS_NOT_EMPTY_NAME = 'フルネームが含まれていません。';
+  public static readonly IS_NOT_EMPTY_EMAIL_TOKEN =
+    '認証トークンが含まれていません。';
+  public static readonly IS_NOT_EMPTY_PASSWORD_TOKEN =
+    'パスワード認証トークンが含まれていません。';
   // 制限系
   public static readonly IS_EMAIL = 'メールアドレスが不正な形式です。';
   public static readonly MIN_LENGTH_PASSWORD =

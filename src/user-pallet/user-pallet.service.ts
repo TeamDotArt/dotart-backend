@@ -4,6 +4,8 @@ import jwt_decode from 'jwt-decode';
 // Service
 import { PrismaService } from '../common/prisma.service';
 import { UsersService } from 'src/users/users.service';
+// Helper
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 // entity
 import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -96,7 +98,7 @@ export class UserpalletService {
     req: FastifyRequest,
     data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -125,7 +127,7 @@ export class UserpalletService {
   async removeUserPalletData(
     req: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');

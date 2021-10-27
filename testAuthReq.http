@@ -2,13 +2,13 @@
 ### 共通変数
 @host = http://localhost:5000/api/v1
 @id = dotart
-@password = dotart
+@password = dotartpass
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ3OTkwODksImV4cCI6MTYzNDgwMDI4OX0.FAkgRzsoa-kDgr8_IzFr403TcbxB9k_YWEmHv5gDNRI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzUyOTk2NzYsImV4cCI6MTYzNTMwMDg3Nn0.wmF9X6iWDQ-Y-dOOt__FQID9-oAkwNd9ghNeq9ACD0E
 
-@emailToken = 28787557
+@emailToken = 17615072
 
-@passwordToken = JDJiJDEwJGlEZHRaOHdaTXk1REtCUlZQL2x5RE9UNkdaNU5vamkuZ2RvMDVtcy5vVE1rY3JxOWZyZi5L
+@passwordToken = JDJiJDEwJEZBRGs1blNIMzJiSkhUc014V1BBY09yWTF1S1N0dElzNHdOM1JPMmt0LjdWQ0I3UnNydkY2
 
 ### レスポンステスト
 
@@ -79,9 +79,40 @@ Authorization: Bearer {{token}}
     "password": "{{password}}"
 }
 
-### all user fetch
+#### UserAPI ####
+
+### ユーザ全取得
 
 GET {{host}}/users HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+### ユーザIDからユーザ検索
+
+GET {{host}}/users/{{id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+### ユーザデータ更新
+
+PATCH {{host}}/users HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": "{{id}}",
+  "email": "info@dot.art",
+  "password": "{{password}}",
+  "name": "dotartAdmin"
+}
+
+### ユーザ削除
+
+DELETE {{host}}/users HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

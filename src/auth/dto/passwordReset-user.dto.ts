@@ -3,6 +3,15 @@ import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
 import { Constants } from 'src/common/constants';
 import { User } from 'src/users/entities/user.entity';
 
+export class PasswordResetParam {
+  @ApiProperty({ description: Constants.PROPERTY_PASSWORD_TOKEN })
+  @IsString()
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_PASSWORD_TOKEN,
+  })
+  passwordToken: string;
+}
+
 export class PasswordResetReqResponse {
   @ApiProperty({ description: Constants.VERIFY_STATUS })
   @IsNumber()

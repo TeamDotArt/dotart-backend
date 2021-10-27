@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const apiPrefix = 'api/v1';
@@ -25,6 +26,9 @@ async function bootstrap() {
       'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   });
+
+  // アプリケーションレベルでリクエストバリデーション
+  app.useGlobalPipes(new ValidationPipe());
 
   // swagger定義
   const config = new DocumentBuilder()
