@@ -89,18 +89,21 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = this.jwtService.sign(payload);
+    // const accessToken = this.jwtService.sign(payload);
 
-    await this.prisma.token.upsert({
-      where: { userId: user.userId },
-      update: {
-        token: accessToken,
-      },
-      create: {
-        userId: user.userId,
-        token: accessToken,
-      },
-    });
+    // await this.prisma.token.upsert({
+    //   where: { userId: user.userId },
+    //   update: {
+    //     token: accessToken,
+    //   },
+    //   create: {
+    //     userId: user.userId,
+    //     token: accessToken,
+    //   },
+    // });
+
+    // トークン作成、登録
+    const accessToken = await this.tokenService.createToken(payload);
 
     return {
       status: 201,
@@ -121,9 +124,11 @@ export class AuthService {
       },
     });
 
-    await this.prisma.token.delete({
-      where: { userId: userId },
-    });
+    await this.tokenService.removeTokenByUserId(userId);
+
+    // await this.prisma.token.delete({
+    //   where: { userId: userId },
+    // });
 
     return { status: 201, message: 'ログアウトしました。' };
   }
@@ -154,13 +159,21 @@ export class AuthService {
         name: user.name,
         email: user.email,
         password: hash,
-        hashActivation: emailToken,
         active: true,
       },
     });
 
+    // emailTokenの作成
+    // const token = await this.prisma.token.create({
+    //   data: {
+    //     userId: user.userId,
+    //     emailToken: emailToken,
+    //   },
+    // });
+    const token = await this.tokenService.createEmailToken(user.userId);
+
     // emailチェックのためメール送信する
-    sendEmailToken(createdUser.email, createdUser.hashActivation);
+    sendEmailToken(createdUser.email, token);
     return {
       status: 201,
       message: 'メールアドレスを認証してください。',
@@ -175,11 +188,12 @@ export class AuthService {
       throw new NotFoundException('emailTokenが存在しません。');
     }
     // 認証用トークンの検索
-    const user = await this.prisma.user.findFirst({
-      where: {
-        hashActivation: emailToken,
-      },
-    });
+    // const user = await this.prisma.user.findFirst({
+    //   where: {
+    //     hashActivation: emailToken, // FIXME: TokenのemailTokenに置き換える
+    //   },
+    // });
+    const user = await this.usersService.findUserByEmailToken(emailToken);
 
     if (user.emailVerified) {
       throw new NotAcceptableException('メール認証が完了しています');
@@ -232,11 +246,7 @@ export class AuthService {
       throw new NotFoundException('passwordResetTokenが存在しません。');
     }
 
-    const findToken = await this.prisma.token.findFirst({
-      where: {
-        passwordToken: token,
-      },
-    });
+    const findToken = await this.usersService.findUserByEmailToken(token);
 
     if (!findToken) {
       throw new NotAcceptableException(

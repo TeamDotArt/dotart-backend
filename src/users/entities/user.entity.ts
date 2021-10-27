@@ -62,11 +62,6 @@ export class User {
   @Exclude()
   emailVerified: PrismaUser['emailVerified'];
 
-  @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
-  @IsString()
-  @Exclude()
-  hashActivation: PrismaUser['hashActivation'];
-
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()
