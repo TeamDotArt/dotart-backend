@@ -88,7 +88,7 @@ export class UsersController {
    * @description ユーザ削除API
    */
   @UseGuards(JwtAuthGuard)
-  @Delete(':id')
+  @Delete()
   // Swagger定義
   @ApiOperation({ summary: 'ユーザデータ削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveUserResponse })

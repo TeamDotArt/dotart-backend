@@ -153,13 +153,6 @@ export class UsersService {
       throw new NotFoundException('ユーザが存在しません。');
     }
 
-    const userId = await this.prisma.user.findUnique({
-      where: { userId: data.userId },
-    });
-    if (userId) {
-      throw new NotFoundException('このユーザIdは存在します。');
-    }
-
     if (data.email) {
       // メールを未認証に
       this.prisma.user.update({
@@ -175,7 +168,7 @@ export class UsersService {
       data.password = getHash(data.password);
     }
 
-    this.prisma.user.update({
+    await this.prisma.user.update({
       where: { id: user.id },
       data,
     });
@@ -198,7 +191,22 @@ export class UsersService {
 
     const userId = user.userId;
 
-    this.prisma.user.delete({
+    // トークンを削除
+    await this.prisma.token.delete({
+      where: { userId: user.userId },
+    });
+
+    await this.prisma.user.delete({
+      where: { id: user.id },
+    });
+
+    // ユーザパレットを削除
+    await this.prisma.userPallet.delete({
+      where: { id: user.id },
+    });
+
+    // キャンバスを削除
+    await this.prisma.canvases.delete({
       where: { id: user.id },
     });
 
