@@ -13,34 +13,36 @@ generator client {
 // ユーザ情報
 model User {
   // アカウント情報
-  id            Int     @default(autoincrement()) @id
-  userId        String  @unique
-  email         String  @unique
-  name          String?
-  password      String
+  id              Int       @default(autoincrement()) @id
+  userId          String    @unique
+  email           String    @unique
+  name            String?
+  password        String
   // 認証系
-  emailVerified  Boolean    @default(false) @map(name: "email_verified")
-  hashActivation String
-  active         Boolean    @default(true)
-  confirmedAt    DateTime?  @map(name: "confirmed_at")
+  emailVerified   Boolean   @default(false) @map(name: "email_verified")
+  // TODO: emailTokenに置き換える
+  // hashActivation  String
+  active          Boolean   @default(true)
+  confirmedAt     DateTime? @map(name: "confirmed_at")
   // ユーザ情報
-  userPallet    UserPallet[]
+  userPallet      UserPallet[]
   // 付加情報
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   // 権限
-  role          Role     @default(USER)
-  token         Token?
+  role            Role      @default(USER)
+  token           Token?
 }
 
 // トークン情報
 model Token {
-  id            Int    @default(autoincrement()) @id
+  id            Int     @default(autoincrement()) @id
   userId        String
-  token         String
-  refreshToken  String?
-  passwordToken String?
-  user         User   @relation(fields: [userId], references: [userId])
+  token         String? @unique
+  refreshToken  String? @unique
+  emailToken    String? @unique
+  passwordToken String? @unique
+  user          User?   @relation(fields: [userId], references: [userId])
 }
 
 // ユーザパレット情報
