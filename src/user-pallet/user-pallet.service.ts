@@ -12,7 +12,6 @@ import { User } from 'src/users/entities/user.entity';
 // Dto
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
-import { FastifyRequest } from 'fastify';
 import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 import {
   UpdateUserPalletRequest,
