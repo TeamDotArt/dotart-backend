@@ -45,11 +45,6 @@ export class ConfirmedUserResponse {
   @Exclude()
   emailVerified: User['emailVerified'];
 
-  @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
-  @IsString()
-  @Exclude()
-  hashActivation: User['hashActivation'];
-
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()

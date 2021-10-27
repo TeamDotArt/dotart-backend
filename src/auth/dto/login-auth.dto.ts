@@ -68,10 +68,6 @@ export class ValidateUserResponse implements PasswordOmitUser {
   @IsBoolean()
   emailVerified: User['emailVerified'];
 
-  @ApiProperty({ description: Constants.PROPERTY_HASH_ACTIVETION })
-  @IsString()
-  hashActivation: User['hashActivation'];
-
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   active: User['active'];
