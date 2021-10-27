@@ -34,6 +34,9 @@ import { RemoveUserResponse } from './dto/remove-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * @description ユーザ全取得API
+   */
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard)
   @Get()
@@ -45,6 +48,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  /**
+   * @description ユーザ検索API
+   */
   @Get(':userId')
   // Swagger定義
   @ApiOperation({ summary: 'userIdから単一ユーザ検索' })
@@ -58,9 +64,12 @@ export class UsersController {
   async findByUserId(
     @Param() userParam: FindUserParam,
   ): Promise<FindUserResponse> {
-    return this.usersService.findByUserId(userParam.userId);
+    return this.usersService.getUserProfileByUserId(userParam.userId);
   }
 
+  /**
+   * @description ユーザ更新API
+   */
   @UseGuards(JwtAuthGuard)
   @Patch()
   // Swagger定義
@@ -75,6 +84,9 @@ export class UsersController {
     return this.usersService.updateProfileData(req, data);
   }
 
+  /**
+   * @description ユーザ削除API
+   */
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   // Swagger定義

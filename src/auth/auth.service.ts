@@ -111,11 +111,7 @@ export class AuthService {
 
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
-
-    if (!user) {
-      throw new NotFoundException('ユーザが存在しません。');
-    }
+    const userId: string = await this.usersService.getUserIdById(decoded.id);
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
@@ -126,7 +122,7 @@ export class AuthService {
     });
 
     await this.prisma.token.delete({
-      where: { userId: user.userId },
+      where: { userId: userId },
     });
 
     return { status: 201, message: 'ログアウトしました。' };
@@ -208,7 +204,7 @@ export class AuthService {
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -274,7 +270,7 @@ export class AuthService {
 
   async me(req: FastifyRequest) {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
