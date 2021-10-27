@@ -4,14 +4,6 @@ import { Constants } from 'src/common/constants';
 import { UserPallet } from '../entities/user-pallet.entity';
 
 export class UpdateUserPalletRequest {
-  @ApiProperty({ description: Constants.PROPERTY_USER_PALLET })
-  @IsString()
-  palletId: UserPallet['palletId'];
-
-  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
-  @IsString()
-  userId: UserPallet['userId'];
-
   @ApiProperty({ description: Constants.PROPERTY_PALLET_NAME })
   @IsString()
   name: UserPallet['name'];
@@ -29,4 +21,8 @@ export class UpdateUserPalletResponse {
   @ApiProperty({ description: Constants.VERIFY_MESSAGE })
   @IsString()
   message: string;
+
+  @ApiProperty({ description: Constants.PROPERTY_USER_PALLET })
+  @IsString()
+  palletId: UserPallet['palletId'];
 }

@@ -46,8 +46,8 @@ model Token {
 // ユーザパレット情報
 model UserPallet {
   id            Int      @default(autoincrement()) @id
-  palletId      Int      @unique
-  userId        String   
+  palletId      String   @unique
+  userId        String
   name          String
   data          String
   user          User?    @relation(fields: [userId], references: [userId])
