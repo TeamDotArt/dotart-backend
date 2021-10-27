@@ -78,7 +78,7 @@ export class UsersService {
   }
 
   /**
-   * @description ユーザ固有IDをからプロフィール情報を検索
+   * @description ユーザ固有IDからプロフィール情報を検索
    */
   async getUserProfileById(id: number): Promise<GetUserProfileResponse> {
     if (!id) {
@@ -195,11 +195,7 @@ export class UsersService {
     await this.prisma.token.delete({
       where: { userId: user.userId },
     });
-
-    await this.prisma.user.delete({
-      where: { id: user.id },
-    });
-
+    
     // ユーザパレットを削除
     await this.prisma.userPallet.delete({
       where: { id: user.id },
@@ -207,6 +203,11 @@ export class UsersService {
 
     // キャンバスを削除
     await this.prisma.canvases.delete({
+      where: { id: user.id },
+    });
+
+    // 依存関係を削除したのでユーザを削除
+    await this.prisma.user.delete({
       where: { id: user.id },
     });
 
