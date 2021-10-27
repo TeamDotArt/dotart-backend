@@ -4,22 +4,28 @@ import jwt_decode from 'jwt-decode';
 // Service
 import { PrismaService } from 'src/common/prisma.service';
 // Dto
-import { FindUserResponse } from './dto/find-user.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { getHash } from 'src/common/helpers/cipherHelper';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 import { User } from './entities/user.entity';
+import { GetUserProfileResponse } from './dto/get-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * @description ユーザ全検索
+   */
   async findAll(): Promise<FindAllUserResponse[]> {
     return this.prisma.user.findMany();
   }
 
+  /**
+   * @description ユーザを固有IDから検索
+   */
   async findOne(id: number): Promise<User> {
     if (!id) {
       throw new NotFoundException('idが存在しません。');
@@ -29,6 +35,98 @@ export class UsersService {
     });
   }
 
+  /**
+   * @description ユーザ固有IDからユーザIDを検索
+   */
+  async getUserIdById(id: number): Promise<string> {
+    if (!id) {
+      throw new NotFoundException('idが存在しません。');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    return user.userId;
+  }
+
+  /**
+   * @description ユーザ名からユーザIDを検索
+   */
+  async getUserIdByName(name: string): Promise<string> {
+    if (!name) {
+      throw new NotFoundException('idが存在しません。');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { name: name },
+    });
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    return user.userId;
+  }
+
+  /**
+   * @description ユーザ固有IDをからプロフィール情報を検索
+   */
+  async getUserProfileById(id: number): Promise<GetUserProfileResponse> {
+    if (!id) {
+      throw new NotFoundException('idが存在しません。');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    return {
+      userId: user.userId,
+      email: user.email,
+      name: user.name,
+      emailVerified: user.emailVerified,
+      createdAt: user.createdAt,
+    };
+  }
+
+  /**
+   * @description ユーザIDからプロフィール情報を検索
+   */
+  async getUserProfileByUserId(
+    userId: string,
+  ): Promise<GetUserProfileResponse> {
+    if (!userId) {
+      throw new NotFoundException('ユーザIdが存在しません。');
+    }
+    const user = await this.prisma.user.findUnique({
+      where: { userId: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+
+    return {
+      userId: user.userId,
+      email: user.email,
+      name: user.name,
+      emailVerified: user.emailVerified,
+      createdAt: user.createdAt,
+    };
+  }
+
+  /**
+   * @description ユーザIDからユーザデータを取得(認証用)
+   */
   async validateFindByUserId(userId: string): Promise<User> {
     if (!userId) {
       throw new NotFoundException('ユーザIdが存在しません。');
@@ -36,22 +134,6 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { userId: userId },
     });
-  }
-
-  async findByUserId(userId: string): Promise<FindUserResponse> {
-    if (!userId) {
-      throw new NotFoundException('ユーザIdが存在しません。');
-    }
-    const user = await this.prisma.user.findUnique({
-      where: { userId: userId },
-    });
-    const ret: FindUserResponse = {
-      userId: user.userId,
-      name: user.name,
-      createdAt: user.createdAt,
-    };
-
-    return ret;
   }
 
   async updateProfileData(
