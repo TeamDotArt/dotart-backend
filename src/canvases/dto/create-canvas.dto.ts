@@ -8,6 +8,10 @@ export class CreateCanvasRequest {
   @IsString()
   canvasId: Canvas['canvasId'];
 
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
+  @IsString()
+  userId: Canvas['userId'];
+
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_NAME })
   @IsString()
   canvasName: Canvas['canvasName'];

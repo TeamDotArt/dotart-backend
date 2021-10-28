@@ -40,6 +40,7 @@ export class CanvasesService {
     await this.prisma.canvases.create({
       data: {
         canvasId: data.canvasId,
+        userId: data.userId,
         canvasName: data.canvasName,
         canvasRange: data.canvasRange,
         pallet: data.pallet,
