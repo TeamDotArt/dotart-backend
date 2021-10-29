@@ -29,7 +29,7 @@ import {
   CreateCanvasResponse,
 } from './dto/create-canvas.dto';
 import { FindAllCanvasResponse } from './dto/findAll-canvas.dto';
-import { FindCanvasResponse } from './dto/find-canvas.dto';
+import { FindCanvasResponse, FindCanvasParam } from './dto/find-canvas.dto';
 import {
   UpdateCanvasRequest,
   UpdateCanvasResponse,
@@ -80,9 +80,9 @@ export class CanvasesController {
   })
   // フックメソッド
   findByCanvasId(
-    @Param('canvasId') canvasId: string,
+    @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findByCanvasId(canvasId);
+    return this.canvasesService.findByCanvasId(canvasParam.canvasId);
   }
 
   @Get('findCanvasName/:canvasName')
@@ -96,21 +96,16 @@ export class CanvasesController {
   })
   // フックメソッド
   findByCanvasName(
-    @Param('canvasName') canvasName: string,
+    @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findByCanvasName(canvasName);
+    return this.canvasesService.findByCanvasName(canvasParam.canvasName);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':canvasId')
+  @Patch()
   // Swagger定義
   @ApiOperation({ summary: 'キャンバス更新' })
   @ApiResponse({ status: HttpStatus.OK, type: UpdateCanvasResponse })
-  @ApiParam({
-    name: 'canvasId',
-    description: 'canvasId',
-    type: String,
-  })
   @ApiBody({ type: UpdateCanvasRequest, description: '更新データ' })
   // フックメソッド
   update(@Req() req: FastifyRequest, @Body() data: UpdateCanvasRequest) {
@@ -118,15 +113,10 @@ export class CanvasesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(':canvasId')
+  @Delete()
   // Swagger定義
   @ApiOperation({ summary: 'キャンバス削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
-  @ApiParam({
-    name: 'canvasId',
-    description: 'canvasId',
-    type: String,
-  })
   // フックメソッド
   remove(@Req() req: FastifyRequest): Promise<RemoveCanvasResponse> {
     return this.canvasesService.removeCanvasData(req);
