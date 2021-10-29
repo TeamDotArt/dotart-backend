@@ -91,7 +91,11 @@ export class AuthService {
     };
 
     // トークン作成、登録
-    const accessToken = await this.tokenService.createToken(payload);
+    const token = this.jwtService.sign(payload);
+    const accessToken = await this.tokenService.setAccessToken(
+      token,
+      payload.userId,
+    );
 
     return {
       status: 201,

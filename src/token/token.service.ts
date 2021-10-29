@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 // Service
 import { PrismaService } from 'src/common/prisma.service';
 // Helper
 import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
 // Dto
 import { RemoveTokenResponse } from './dto/remove-token.dto';
-import { PayloadDto } from 'src/auth/dto/payload.dto';
 
 @Injectable()
 export class TokenService {
-  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+  constructor(private prisma: PrismaService) {}
 
   /**
    * UserIdからtokenを取得する
@@ -85,24 +83,6 @@ export class TokenService {
   }
 
   /**
-   * Tokenを生成する
-   */
-  async createToken(payload: PayloadDto): Promise<string> {
-    const accessToken = this.jwtService.sign(payload);
-    await this.prisma.token.upsert({
-      where: { userId: payload.userId },
-      update: {
-        token: accessToken,
-      },
-      create: {
-        userId: payload.userId,
-        token: accessToken,
-      },
-    });
-    return accessToken;
-  }
-
-  /**
    * EmailTokenを生成する
    */
   async createEmailToken(userId: string): Promise<string> {
@@ -116,6 +96,26 @@ export class TokenService {
     return token.emailToken;
   }
 
+  /**
+   * AccessTokenをセットする
+   */
+  async setAccessToken(accessToken: string, userId: string): Promise<string> {
+    await this.prisma.token.upsert({
+      where: { userId: userId },
+      update: {
+        token: accessToken,
+      },
+      create: {
+        userId: userId,
+        token: accessToken,
+      },
+    });
+    return accessToken;
+  }
+
+  /**
+   * PasswordTokenをセットする
+   */
   async setPasswordToken(
     userId: string,
     passwordToken: string | null,
