@@ -49,7 +49,6 @@ export class Canvas {
   @IsNotEmpty()
   indexData: PrismaCanvas['indexData'];
 
-  //子要素系
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
   @IsOptional()
