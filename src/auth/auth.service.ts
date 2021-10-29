@@ -11,10 +11,7 @@ import { TokenService } from 'src/token/token.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
-import {
-  generateEmailToken,
-  generatePasswordToken,
-} from 'src/common/helpers/activationCodeHelper';
+import { generatePasswordToken } from 'src/common/helpers/activationCodeHelper';
 import {
   sendEmailToken,
   sendPasswordResetEmailToken,
@@ -49,7 +46,9 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  // ユーザーを認証する
+  /**
+   * @description ユーザーを認証する
+   */
   async validateUser(
     data: LogInUserRequest,
   ): Promise<ValidateUserResponse | null> {
@@ -69,7 +68,9 @@ export class AuthService {
     return null;
   }
 
-  // jwt tokenを返す
+  /**
+   * @description ログインしjwt tokenを返す
+   */
   async login(data: LogInUserRequest): Promise<LogInUserResponse> {
     const user = await this.validateUser(data);
 
@@ -89,19 +90,6 @@ export class AuthService {
       role: user.role,
     };
 
-    // const accessToken = this.jwtService.sign(payload);
-
-    // await this.prisma.token.upsert({
-    //   where: { userId: user.userId },
-    //   update: {
-    //     token: accessToken,
-    //   },
-    //   create: {
-    //     userId: user.userId,
-    //     token: accessToken,
-    //   },
-    // });
-
     // トークン作成、登録
     const accessToken = await this.tokenService.createToken(payload);
 
@@ -112,6 +100,9 @@ export class AuthService {
     };
   }
 
+  /**
+   * @description ログアウトする
+   */
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const userId: string = await this.usersService.getUserIdById(decoded.id);
@@ -126,13 +117,12 @@ export class AuthService {
 
     await this.tokenService.removeTokenByUserId(userId);
 
-    // await this.prisma.token.delete({
-    //   where: { userId: userId },
-    // });
-
     return { status: 201, message: 'ログアウトしました。' };
   }
 
+  /**
+   * @description サインインする
+   */
   async signup(user: CreateUserRequest): Promise<VerifyEmailResponse> {
     // userIdが存在するかチェック
     if (!user.userId) {
@@ -147,8 +137,6 @@ export class AuthService {
       throw new NotAcceptableException('ユーザが登録されています。');
     }
 
-    // emailチェックを行うためのEmainToken作成
-    const emailToken = generateEmailToken();
     // パスワードのハッシュ化
     const hash = getHash(user.password);
 
@@ -163,13 +151,6 @@ export class AuthService {
       },
     });
 
-    // emailTokenの作成
-    // const token = await this.prisma.token.create({
-    //   data: {
-    //     userId: user.userId,
-    //     emailToken: emailToken,
-    //   },
-    // });
     const token = await this.tokenService.createEmailToken(user.userId);
 
     // emailチェックのためメール送信する
@@ -181,18 +162,15 @@ export class AuthService {
     };
   }
 
-  // メール認証
+  /**
+   * @description メール認証する
+   */
   async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
     // emailTokenが存在しない
     if (!emailToken) {
       throw new NotFoundException('emailTokenが存在しません。');
     }
-    // 認証用トークンの検索
-    // const user = await this.prisma.user.findFirst({
-    //   where: {
-    //     hashActivation: emailToken, // FIXME: TokenのemailTokenに置き換える
-    //   },
-    // });
+
     const user = await this.usersService.findUserByEmailToken(emailToken);
 
     if (user.emailVerified) {
@@ -214,6 +192,9 @@ export class AuthService {
     return confirmedUser;
   }
 
+  /**
+   * パスワードリセットリクエストを送信する
+   */
   async passwordResetReq(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
@@ -238,6 +219,9 @@ export class AuthService {
     };
   }
 
+  /**
+   * パスワードリセットを行う
+   */
   async passwordReset(
     token: string,
     data: PasswordResetRequest,
@@ -278,6 +262,9 @@ export class AuthService {
     };
   }
 
+  /**
+   * ログイン後自分のProfileを表示する
+   */
   async me(req: FastifyRequest) {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserProfileById(decoded.id);
