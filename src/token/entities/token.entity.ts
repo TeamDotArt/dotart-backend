@@ -27,7 +27,6 @@ export class Token {
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_TOKEN })
   @IsString()
-  //TODO: Prismaを整える
   emailToken: PrismaToken['emailToken'];
 
   @ApiProperty({ description: Constants.PROPERTY_PASSWORD_TOKEN })
