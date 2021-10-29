@@ -228,10 +228,6 @@ export class UsersService {
 
     const userId = user.userId;
 
-    // トークンを削除
-    // await this.prisma.token.delete({
-    //   where: { userId: user.userId },
-    // });
     await this.tokenService.removeTokenByUserId(user.userId);
 
     // ユーザパレットを削除

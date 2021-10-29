@@ -1,11 +1,13 @@
-import { Token } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/common/prisma.service';
-import { PayloadDto } from 'src/auth/dto/payload.dto';
 import { JwtService } from '@nestjs/jwt';
+// Service
+import { PrismaService } from 'src/common/prisma.service';
+// Helper
 import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
+// Dto
+import { RemoveTokenResponse } from './dto/remove-token.dto';
+import { PayloadDto } from 'src/auth/dto/payload.dto';
 
-// TODO: Token操作をこちらで行うようにする
 @Injectable()
 export class TokenService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
@@ -114,10 +116,21 @@ export class TokenService {
     return token.emailToken;
   }
 
+  async setPasswordToken(
+    userId: string,
+    passwordToken: string | null,
+  ): Promise<string> {
+    const token = await this.prisma.token.update({
+      where: { userId: userId },
+      data: { passwordToken: passwordToken },
+    });
+    return token.passwordToken;
+  }
+
   /**
    * UserIdからトークンを削除する
    */
-  async removeTokenByUserId(userId: string) {
+  async removeTokenByUserId(userId: string): Promise<RemoveTokenResponse> {
     await this.prisma.token.delete({
       where: { userId: userId },
     });

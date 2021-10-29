@@ -207,12 +207,12 @@ export class AuthService {
 
     const passwordToken = generatePasswordToken(user.userId);
 
-    const token = await this.prisma.token.update({
-      where: { userId: user.userId },
-      data: { passwordToken: passwordToken },
-    });
+    const token = await this.tokenService.setPasswordToken(
+      user.userId,
+      passwordToken,
+    );
 
-    sendPasswordResetEmailToken(user.email, token.passwordToken);
+    sendPasswordResetEmailToken(user.email, token);
     return {
       status: 201,
       message: 'パスワードの再設定を行ってください。',
@@ -251,10 +251,7 @@ export class AuthService {
       },
     });
 
-    await this.prisma.token.update({
-      where: { userId: userId },
-      data: { passwordToken: null },
-    });
+    await this.tokenService.setPasswordToken(userId, null);
 
     return {
       status: 201,
