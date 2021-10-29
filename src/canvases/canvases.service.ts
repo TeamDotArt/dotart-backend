@@ -126,7 +126,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async removeCanvasData(req: FastifyRequest): Promise<RemoveCanvasResponse> {
+  async removeCanvas(req: FastifyRequest): Promise<RemoveCanvasResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {

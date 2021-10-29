@@ -119,6 +119,6 @@ export class CanvasesController {
   @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
   // フックメソッド
   remove(@Req() req: FastifyRequest): Promise<RemoveCanvasResponse> {
-    return this.canvasesService.removeCanvasData(req);
+    return this.canvasesService.removeCanvas(req);
   }
 }
