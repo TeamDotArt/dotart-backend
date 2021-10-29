@@ -4,11 +4,6 @@ import { Constants } from 'src/common/constants';
 import { Canvas } from 'src/canvases/entities/canvase.entity';
 
 export class FindAllCanvasResponse {
-  @ApiProperty({ description: Constants.PROPERTY_ID })
-  @IsNumber()
-  @IsNotEmpty()
-  id: Canvas['id'];
-
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
   @IsString()
   canvasId: Canvas['canvasId'];
