@@ -1,7 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsDate } from 'class-validator';
+import { IsString, IsNumber, IsDate, IsNotEmpty } from 'class-validator';
 import { Constants } from 'src/common/constants';
 import { Canvas } from 'src/canvases/entities/canvase.entity';
+
+export class FindCanvasParam {
+  @ApiProperty({ description: Constants.PROPERTY_USER_ID })
+  @IsNotEmpty()
+  @IsString()
+  canvasId: Canvas['canvasId'];
+
+  @ApiProperty({ description: Constants.PROPERTY_CANVAS_NAME })
+  @IsString()
+  canvasName: Canvas['canvasName'];
+}
 
 export class FindCanvasResponse {
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
