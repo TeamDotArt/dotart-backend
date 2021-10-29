@@ -14,6 +14,5 @@ export class RemoveCanvasResponse {
 
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
   @IsString()
-  @IsNotEmpty()
   canvasId: Canvas['canvasId'];
 }
