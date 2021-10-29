@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 // Service
 import { PrismaService } from '../common/prisma.service';
 import { UsersService } from 'src/users/users.service';
@@ -32,7 +32,7 @@ export class CanvasesService {
     req: FastifyRequest,
     data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -101,7 +101,7 @@ export class CanvasesService {
     req: FastifyRequest,
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -127,7 +127,7 @@ export class CanvasesService {
   }
 
   async removeCanvas(req: FastifyRequest): Promise<RemoveCanvasResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.usersService.findOne(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
