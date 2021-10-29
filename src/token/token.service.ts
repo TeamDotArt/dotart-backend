@@ -61,7 +61,7 @@ export class TokenService {
   }
 
   /**
-   * UserIdからPasswordTokenを取得する
+   * PasswordTokenからUserIdを取得する
    */
   async getUserIdByPasswordToken(passwordToken: string): Promise<string> {
     const findToken = await this.prisma.token.findUnique({

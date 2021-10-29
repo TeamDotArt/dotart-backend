@@ -59,7 +59,7 @@ export class UsersService {
   }
 
   /**
-   * @description passwordTokenから検索
+   * @description passwordTokenからUserの検索
    */
   async findUserByPasswordToken(passwordToken: string): Promise<User> {
     if (!passwordToken) {
