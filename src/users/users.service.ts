@@ -9,16 +9,19 @@ import { User } from './entities/user.entity';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 import { getHash } from 'src/common/helpers/cipherHelper';
 // Dto
-import { FindUserResponse } from './dto/find-user.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 import { GetUserProfileResponse } from './dto/get-user.dto';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private tokenService: TokenService,
+  ) {}
 
   /**
    * @description ユーザ全検索
@@ -36,6 +39,40 @@ export class UsersService {
     }
     return this.prisma.user.findUnique({
       where: { id: id },
+    });
+  }
+
+  /**
+   * @description emailTokenから検索
+   */
+  async findUserByEmailToken(emailToken: string): Promise<User> {
+    if (!emailToken) {
+      throw new NotFoundException('idが存在しません。');
+    }
+
+    // emailTokenからUserIdを検索
+    const userId = await this.tokenService.getUserIdByEmailToken(emailToken);
+
+    return this.prisma.user.findUnique({
+      where: { userId: userId },
+    });
+  }
+
+  /**
+   * @description passwordTokenからUserの検索
+   */
+  async findUserByPasswordToken(passwordToken: string): Promise<User> {
+    if (!passwordToken) {
+      throw new NotFoundException('idが存在しません。');
+    }
+
+    // emailTokenからUserIdを検索
+    const userId = await this.tokenService.getUserIdByPasswordToken(
+      passwordToken,
+    );
+
+    return this.prisma.user.findUnique({
+      where: { userId: userId },
     });
   }
 
@@ -191,11 +228,8 @@ export class UsersService {
 
     const userId = user.userId;
 
-    // トークンを削除
-    await this.prisma.token.delete({
-      where: { userId: user.userId },
-    });
-    
+    await this.tokenService.removeTokenByUserId(user.userId);
+
     // ユーザパレットを削除
     await this.prisma.userPallet.delete({
       where: { id: user.id },
