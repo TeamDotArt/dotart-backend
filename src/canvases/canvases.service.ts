@@ -33,14 +33,14 @@ export class CanvasesService {
     data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
     await this.prisma.canvases.create({
       data: {
         canvasId: data.canvasId,
-        userId: data.userId,
+        userId: user,
         canvasName: data.canvasName,
         canvasRange: data.canvasRange,
         pallet: data.pallet,
@@ -102,12 +102,12 @@ export class CanvasesService {
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
     const canvas: Canvas = await this.prisma.canvases.findFirst({
-      where: { userId: user.userId },
+      where: { userId: user },
     });
     if (!canvas) {
       throw new NotFoundException('キャンバスが存在しません。');
@@ -128,12 +128,12 @@ export class CanvasesService {
 
   async removeCanvas(req: FastifyRequest): Promise<RemoveCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
     const canvas: Canvas = await this.prisma.canvases.findFirst({
-      where: { userId: user.userId },
+      where: { userId: user },
     });
     if (!canvas) {
       throw new NotFoundException('キャンバスが存在しません。');
