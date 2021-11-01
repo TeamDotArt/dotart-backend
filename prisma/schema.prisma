@@ -66,7 +66,7 @@ model Canvases {
   canvasRange   Int
   // 使用するパレット情報
   pallet        String
-  canvases_data String
+  canvasesData  String
   user          User?   @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
