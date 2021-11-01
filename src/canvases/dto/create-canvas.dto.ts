@@ -29,10 +29,10 @@ export class CreateCanvasRequest {
   @IsNotEmpty()
   pallet: Canvas['pallet'];
 
-  @ApiProperty({ description: Constants.PROPERTY_INDEX_DATA })
+  @ApiProperty({ description: Constants.PROPERTY_CANVASES_DATA })
   @IsString()
   @IsNotEmpty()
-  indexData: Canvas['indexData'];
+  canvasesData: Canvas['canvasesData'];
 }
 
 export class CreateCanvasResponse {

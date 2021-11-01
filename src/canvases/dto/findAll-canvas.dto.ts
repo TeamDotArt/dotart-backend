@@ -24,9 +24,9 @@ export class FindAllCanvasResponse {
   @IsString()
   pallet: Canvas['pallet'];
 
-  @ApiProperty({ description: Constants.PROPERTY_INDEX_DATA })
+  @ApiProperty({ description: Constants.PROPERTY_CANVASES_DATA })
   @IsString()
-  indexData: Canvas['indexData'];
+  canvasesData: Canvas['canvasesData'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()

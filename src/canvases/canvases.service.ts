@@ -44,7 +44,7 @@ export class CanvasesService {
         canvasName: data.canvasName,
         canvasRange: data.canvasRange,
         pallet: data.pallet,
-        indexData: data.indexData,
+        canvasesData: data.canvasesData,
       },
     });
     const ret: CreateCanvasResponse = {
@@ -71,7 +71,7 @@ export class CanvasesService {
       canvasName: canvas.canvasName,
       canvasRange: canvas.canvasRange,
       pallet: canvas.pallet,
-      indexData: canvas.indexData,
+      canvasesData: canvas.canvasesData,
       createdAt: canvas.createdAt,
       updatedAt: canvas.updatedAt,
     };
@@ -90,7 +90,7 @@ export class CanvasesService {
       canvasName: canvas.canvasName,
       canvasRange: canvas.canvasRange,
       pallet: canvas.pallet,
-      indexData: canvas.indexData,
+      canvasesData: canvas.canvasesData,
       createdAt: canvas.createdAt,
       updatedAt: canvas.updatedAt,
     };

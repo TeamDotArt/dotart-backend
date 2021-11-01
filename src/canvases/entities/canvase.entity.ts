@@ -44,10 +44,10 @@ export class Canvas {
   @IsNotEmpty()
   pallet: PrismaCanvas['pallet'];
 
-  @ApiProperty({ description: Constants.PROPERTY_INDEX_DATA })
+  @ApiProperty({ description: Constants.PROPERTY_CANVASES_DATA })
   @IsString()
   @IsNotEmpty()
-  indexData: PrismaCanvas['indexData'];
+  canvasesData: PrismaCanvas['canvasesData'];
 
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()

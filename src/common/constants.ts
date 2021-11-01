@@ -46,5 +46,5 @@ export class Constants {
   public static readonly PROPERTY_CANVAS_NAME = 'キャンバス名';
   public static readonly PROPERTY_CANVAS_RANGE = 'キャンバスサイズ';
   public static readonly PROPERTY_PALLET = '選択されたベーシックパレット情報';
-  public static readonly PROPERTY_INDEX_DATA = 'キャンバス情報';
+  public static readonly PROPERTY_CANVASES_DATA = 'キャンバス情報';
 }
