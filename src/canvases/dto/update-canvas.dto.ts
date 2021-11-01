@@ -6,7 +6,6 @@ import { Canvas } from 'src/canvases/entities/canvase.entity';
 export class UpdateCanvasRequest {
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_NAME })
   @IsString()
-  @IsNotEmpty()
   canvasName: Canvas['canvasName'];
 
   @ApiProperty({ description: Constants.PROPERTY_PALLET })
