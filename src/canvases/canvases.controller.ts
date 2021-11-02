@@ -60,13 +60,14 @@ export class CanvasesController {
     return this.canvasesService.create(req, data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   // Swagger定義
   @ApiOperation({ summary: '全キャンバス検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllCanvasResponse })
   // フックメソッド
-  async findAll(): Promise<FindAllCanvasResponse[]> {
-    return this.canvasesService.findAll();
+  findAll(@Req() req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
+    return this.canvasesService.findAll(req);
   }
 
   @Get('findCanvasId/:canvasId')
@@ -118,7 +119,10 @@ export class CanvasesController {
   @ApiOperation({ summary: 'キャンバス削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
   // フックメソッド
-  remove(@Req() req: FastifyRequest): Promise<RemoveCanvasResponse> {
-    return this.canvasesService.removeCanvas(req);
+  remove(
+    @Req() req: FastifyRequest,
+    @Body() data: RemoveCanvasResponse,
+  ): Promise<RemoveCanvasResponse> {
+    return this.canvasesService.removeCanvas(req, data);
   }
 }
