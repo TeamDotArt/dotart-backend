@@ -24,7 +24,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 // Dto
 import { FindAllUserResponse } from './dto/findAll-user.dto';
-import { FindUserResponse } from './dto/find-user.dto';
+import { FindUserResponse, FindUserParam } from './dto/find-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 
@@ -56,9 +56,9 @@ export class UsersController {
   })
   // フックメソッド
   async findByUserId(
-    @Param('userId') userId: string,
+    @Param() userParam: FindUserParam,
   ): Promise<FindUserResponse> {
-    return this.usersService.findByUserId(userId);
+    return this.usersService.getUserProfileByUserId(userParam.userId);
   }
 
   @UseGuards(JwtAuthGuard)
