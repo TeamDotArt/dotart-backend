@@ -4,11 +4,11 @@ import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 // Service
 import { PrismaService } from '../common/prisma.service';
 import { UsersService } from 'src/users/users.service';
-// entity
-import { User } from 'src/users/entities/user.entity';
-import { Canvas } from 'src/canvases/entities/canvase.entity';
 // Dto
-import { RemoveCanvasResponse } from './dto/delete-canvas.dto';
+import {
+  RemoveCanvasResponse,
+  RemoveCanvasRequest,
+} from './dto/delete-canvas.dto';
 import {
   CreateCanvasRequest,
   CreateCanvasResponse,
@@ -55,8 +55,19 @@ export class CanvasesService {
     return ret;
   }
 
-  async findAll(): Promise<FindAllCanvasResponse[]> {
-    return this.prisma.canvases.findMany();
+  async findAll(req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this.usersService.getUserIdById(decoded.id);
+    if (!user) {
+      throw new NotFoundException('ユーザが存在しません。');
+    }
+    const canvas = await this.prisma.canvases.findMany({
+      where: { userId: user },
+    });
+    if (!canvas) {
+      throw new NotFoundException('キャンバスが存在しません。');
+    }
+    return canvas;
   }
 
   async findByCanvasId(canvasId: string): Promise<FindCanvasResponse> {
@@ -106,11 +117,34 @@ export class CanvasesService {
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const canvas: Canvas = await this.prisma.canvases.findFirst({
-      where: { userId: user },
+    const canvases = await this.prisma.canvases.findMany({
+      where: {
+        userId: user,
+      },
+    });
+    if (!canvases) {
+      throw new NotFoundException('作成しているキャンバスが存在しません。');
+    }
+    const canvas = await this.prisma.canvases.findUnique({
+      where: {
+        canvasId: data.canvasId,
+      },
     });
     if (!canvas) {
-      throw new NotFoundException('キャンバスが存在しません。');
+      throw new NotFoundException('指定したキャンバスが存在しません。');
+    }
+    let cnt = 0;
+    canvases.map((element) => {
+      console.log(element);
+      if (element.canvasId == canvas.canvasId) {
+        cnt++;
+      }
+    });
+    console.log(cnt);
+    if (cnt < 1) {
+      throw new NotFoundException(
+        '指定したキャンバスと保存されているキャンバスが一致しません。',
+      );
     }
     await this.prisma.canvases.update({
       where: {
@@ -126,17 +160,41 @@ export class CanvasesService {
     return ret;
   }
 
-  async removeCanvas(req: FastifyRequest): Promise<RemoveCanvasResponse> {
+  async removeCanvas(
+    req: FastifyRequest,
+    data: RemoveCanvasRequest,
+  ): Promise<RemoveCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const canvas: Canvas = await this.prisma.canvases.findFirst({
+    const canvases = await this.prisma.canvases.findMany({
       where: { userId: user },
     });
+    if (!canvases) {
+      throw new NotFoundException('作成しているキャンバスが存在しません。');
+    }
+    const canvas = await this.prisma.canvases.findUnique({
+      where: {
+        canvasId: data.canvasId,
+      },
+    });
     if (!canvas) {
-      throw new NotFoundException('キャンバスが存在しません。');
+      throw new NotFoundException('指定したキャンバスが存在しません。');
+    }
+    let cnt = 0;
+    canvases.map((element) => {
+      console.log(element);
+      if (element.canvasId == canvas.canvasId) {
+        cnt++;
+      }
+    });
+    console.log(cnt);
+    if (cnt < 1) {
+      throw new NotFoundException(
+        '指定したキャンバスと保存されているキャンバスが一致しません。',
+      );
     }
     await this.prisma.canvases.delete({
       where: { canvasId: canvas.canvasId },
