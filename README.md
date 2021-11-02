@@ -69,7 +69,8 @@ $ yarn prisma studio
 マイグレーションは以下の通り行ってください。
 
 ```bash
-$ yarn prisma migrate dev --preview-feature
+# テーブル
+$ yarn prisma migrate dev --preview-feature && yarn prisma db seed
 ```
 
 @prisma/client からマイグレーションしたものを扱えるように
