@@ -70,7 +70,7 @@ $ yarn prisma studio
 
 ```bash
 # テーブル
-$ yarn prisma migrate dev --preview-feature && yarn prisma db seed --preview-feature
+$ yarn prisma migrate dev --preview-feature && yarn prisma db seed
 ```
 
 @prisma/client からマイグレーションしたものを扱えるように
