@@ -4,6 +4,10 @@ import { Constants } from 'src/common/constants';
 import { Canvas } from 'src/canvases/entities/canvase.entity';
 
 export class UpdateCanvasRequest {
+  @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
+  @IsString()
+  canvasId: Canvas['canvasId'];
+
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_NAME })
   @IsString()
   canvasName: Canvas['canvasName'];
