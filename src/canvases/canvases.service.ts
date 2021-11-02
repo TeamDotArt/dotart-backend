@@ -134,13 +134,11 @@ export class CanvasesService {
       throw new NotFoundException('指定したキャンバスが存在しません。');
     }
     let cnt = 0;
-    canvases.map((element) => {
-      console.log(element);
+    canvases.forEach((element) => {
       if (element.canvasId == canvas.canvasId) {
         cnt++;
       }
     });
-    console.log(cnt);
     if (cnt < 1) {
       throw new NotFoundException(
         '指定したキャンバスと保存されているキャンバスが一致しません。',
@@ -184,13 +182,11 @@ export class CanvasesService {
       throw new NotFoundException('指定したキャンバスが存在しません。');
     }
     let cnt = 0;
-    canvases.map((element) => {
-      console.log(element);
+    canvases.forEach((element) => {
       if (element.canvasId == canvas.canvasId) {
         cnt++;
       }
     });
-    console.log(cnt);
     if (cnt < 1) {
       throw new NotFoundException(
         '指定したキャンバスと保存されているキャンバスが一致しません。',
