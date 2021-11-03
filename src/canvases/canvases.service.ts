@@ -20,7 +20,6 @@ import {
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
-import { fileURLToPath } from 'url';
 
 @Injectable()
 export class CanvasesService {
