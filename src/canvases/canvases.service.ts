@@ -20,6 +20,7 @@ import {
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { fileURLToPath } from 'url';
 
 @Injectable()
 export class CanvasesService {
@@ -133,13 +134,10 @@ export class CanvasesService {
     if (!canvas) {
       throw new NotFoundException('指定したキャンバスが存在しません。');
     }
-    let cnt = 0;
-    canvases.forEach((element) => {
-      if (element.canvasId == canvas.canvasId) {
-        cnt++;
-      }
-    });
-    if (cnt < 1) {
+    const canvasId = canvases.filter(
+      (canvases) => canvases.canvasId === canvas.canvasId,
+    );
+    if (!canvasId.length) {
       throw new NotFoundException(
         '指定したキャンバスと保存されているキャンバスが一致しません。',
       );
@@ -181,13 +179,10 @@ export class CanvasesService {
     if (!canvas) {
       throw new NotFoundException('指定したキャンバスが存在しません。');
     }
-    let cnt = 0;
-    canvases.forEach((element) => {
-      if (element.canvasId == canvas.canvasId) {
-        cnt++;
-      }
-    });
-    if (cnt < 1) {
+    const canvasId = canvases.filter(
+      (canvases) => canvases.canvasId === canvas.canvasId,
+    );
+    if (!canvasId.length) {
       throw new NotFoundException(
         '指定したキャンバスと保存されているキャンバスが一致しません。',
       );
