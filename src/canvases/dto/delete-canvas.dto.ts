@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
 import { Constants } from 'src/common/constants';
-import { Canvas } from 'src/canvases/entities/canvase.entity';
+import { Canvas } from 'src/canvases/entities/canvas.entity';
 
 export class RemoveCanvasRequest {
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
