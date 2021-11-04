@@ -1,18 +1,21 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { BasicPalletService } from './basic-pallet.service';
+import * as request from 'supertest';
+import { Test } from '@nestjs/testing';
+import { BasicPalletModule } from './../../src/basic-pallet/basic-pallet.module';
+import { INestApplication } from '@nestjs/common';
 
-describe('BasicPalletService', () => {
-  let service: BasicPalletService;
+describe('SamplesController (e2e)', () => {
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [BasicPalletService],
+  beforeAll(async () => {
+    const moduleFixture = await Test.createTestingModule({
+      imports: [BasicPalletModule],
     }).compile();
 
-    service = module.get<BasicPalletService>(BasicPalletService);
+    app = moduleFixture.createNestApplication();
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('/basic-pallet (GET)', (done) => {
+    return request(app.getHttpServer()).get('/basic-pallet').expect(200, done);
   });
 });
