@@ -23,7 +23,9 @@ model User {
   active          Boolean   @default(true)
   confirmedAt     DateTime? @map(name: "confirmed_at")
   // ユーザ情報
-  userPallet      UserPallet[]
+  userPallet    UserPallet[]
+  //キャンバス情報
+  canvas        Canvases[]
   // 付加情報
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -58,12 +60,14 @@ model UserPallet {
 // キャンバス情報
 model Canvases {
   id            Int      @default(autoincrement()) @id
-  canvasId      Int      @unique
-  userId        Int
+  canvasId      String   @unique
+  userId        String
   canvasName    String
   canvasRange   Int
+  // 使用するパレット情報
   pallet        String
-  indexData     String
+  canvasesData  String
+  user          User?   @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

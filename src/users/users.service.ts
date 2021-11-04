@@ -3,6 +3,7 @@ import { FastifyRequest } from 'fastify';
 
 // Service
 import { PrismaService } from 'src/common/prisma.service';
+import { TokenService } from 'src/token/token.service';
 // Entity
 import { User } from './entities/user.entity';
 // Helper
@@ -14,7 +15,6 @@ import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 import { GetUserProfileResponse } from './dto/get-user.dto';
-import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class UsersService {
@@ -177,6 +177,9 @@ export class UsersService {
     });
   }
 
+  /**
+   * @description ユーザのProfileを更新
+   */
   async updateProfileData(
     req: FastifyRequest,
     data: UpdateUserRequest,
@@ -216,6 +219,9 @@ export class UsersService {
     };
   }
 
+  /**
+   * @description ユーザの削除
+   */
   async removeAccountData(req: FastifyRequest): Promise<RemoveUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.prisma.user.findUnique({

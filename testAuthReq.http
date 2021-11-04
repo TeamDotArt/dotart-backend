@@ -4,9 +4,10 @@
 @id = dotart
 @password = dotartpass
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzUyOTk2NzYsImV4cCI6MTYzNTMwMDg3Nn0.wmF9X6iWDQ-Y-dOOt__FQID9-oAkwNd9ghNeq9ACD0E
+@email = {{id}}@dot.art
 
-@emailToken = 17615072
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoiZG90YXJ0IiwibmFtZSI6ImFkbWluIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ3OTkwODksImV4cCI6MTYzNDgwMDI4OX0.FAkgRzsoa-kDgr8_IzFr403TcbxB9k_YWEmHv5gDNRI
+@emailToken = 28787557
 
 @passwordToken = JDJiJDEwJEZBRGs1blNIMzJiSkhUc014V1BBY09yWTF1S1N0dElzNHdOM1JPMmt0LjdWQ0I3UnNydkY2
 
@@ -29,7 +30,7 @@ Content-Type: application/json
 {
     "userId": "{{id}}",
     "name": "admin",
-    "email": "info@dot.art",
+    "email": "{{email}}",
     "password": "{{password}}"
 }
 
