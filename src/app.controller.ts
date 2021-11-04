@@ -22,8 +22,12 @@ import { FastifyRequest } from 'fastify';
 // サービス
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
+// ガード
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 // DTO
 import { ConfirmedUserResponse } from './auth/dto/confirmed-user.dto';
+import { CreateUserRequest } from './auth/dto/create-user.dto';
+import { EmailTokenParam } from './auth/dto/email-token.dto';
 import {
   LogInUserRequest,
   LogInUserResponse,
@@ -31,16 +35,13 @@ import {
 } from './auth/dto/login-auth.dto';
 import { LogOutUserResponse } from './auth/dto/logout-auth.dto';
 import {
+  PasswordResetParam,
   PasswordResetReqResponse,
   PasswordResetRequest,
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
-// ガード
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { User } from './users/entities/user.entity';
 
-// TODO: ApiResponseを記載する
 @ApiTags('/')
 @Controller()
 export class AppController {
@@ -90,9 +91,9 @@ export class AppController {
     status: HttpStatus.NOT_ACCEPTABLE,
     type: NotAcceptableException,
   })
-  @ApiBody({ type: User, description: 'ユーザ情報' })
+  @ApiBody({ type: CreateUserRequest, description: 'ユーザ情報' })
   // フックメソッド
-  createUser(@Body() body: User): Promise<VerifyEmailResponse> {
+  createUser(@Body() body: CreateUserRequest): Promise<VerifyEmailResponse> {
     return this.authService.signup(body);
   }
 
@@ -111,13 +112,14 @@ export class AppController {
   @ApiParam({
     name: 'emailToken',
     description: 'emailToken情報',
-    type: String,
+    type: EmailTokenParam,
   })
   // フックメソッド
   confirmEmail(
-    @Param('emailToken') emailToken: string,
+    @Param() emailToken: EmailTokenParam,
   ): Promise<ConfirmedUserResponse> {
-    return this.authService.confirm(emailToken);
+    console.log(emailToken);
+    return this.authService.confirm(emailToken.emailToken);
   }
 
   /**
@@ -155,15 +157,15 @@ export class AppController {
   @ApiParam({
     name: 'passwordToken',
     description: 'passwordToken情報',
-    type: String,
+    type: PasswordResetParam,
   })
   @ApiBody({ type: PasswordResetRequest, description: 'パスワード' })
   // フックメソッド
   passwordReset(
-    @Param('passwordToken') passwordToken: string,
+    @Param() passwordToken: PasswordResetParam,
     @Body() data: PasswordResetRequest,
   ): Promise<PasswordResetResponse> {
-    return this.authService.passwordReset(passwordToken, data);
+    return this.authService.passwordReset(passwordToken.passwordToken, data);
   }
 
   /**

@@ -5,17 +5,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
-import jwt_decode from 'jwt-decode';
 // サービス
 import { UsersService } from 'src/users/users.service';
 import { TokenService } from 'src/token/token.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
-import {
-  generateEmailToken,
-  generatePasswordToken,
-} from 'src/common/helpers/activationCodeHelper';
+import { generatePasswordToken } from 'src/common/helpers/activationCodeHelper';
 import {
   sendEmailToken,
   sendPasswordResetEmailToken,
@@ -38,6 +34,8 @@ import {
   PasswordResetRequest,
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
+import { CreateUserRequest } from './dto/create-user.dto';
+import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 
 @Injectable()
 export class AuthService {
@@ -48,7 +46,9 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  // ユーザーを認証する
+  /**
+   * @description ユーザーを認証する
+   */
   async validateUser(
     data: LogInUserRequest,
   ): Promise<ValidateUserResponse | null> {
@@ -68,7 +68,9 @@ export class AuthService {
     return null;
   }
 
-  // jwt tokenを返す
+  /**
+   * @description ログインしjwt tokenを返す
+   */
   async login(data: LogInUserRequest): Promise<LogInUserResponse> {
     const user = await this.validateUser(data);
 
@@ -88,18 +90,12 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = this.jwtService.sign(payload);
-
-    await this.prisma.token.upsert({
-      where: { userId: user.userId },
-      update: {
-        token: accessToken,
-      },
-      create: {
-        userId: user.userId,
-        token: accessToken,
-      },
-    });
+    // トークン作成、登録
+    const token = this.jwtService.sign(payload);
+    const accessToken = await this.tokenService.setAccessToken(
+      token,
+      payload.userId,
+    );
 
     return {
       status: 201,
@@ -108,13 +104,12 @@ export class AuthService {
     };
   }
 
+  /**
+   * @description ログアウトする
+   */
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
-
-    if (!user) {
-      throw new NotFoundException('ユーザが存在しません。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const userId: string = await this.usersService.getUserIdById(decoded.id);
 
     // ログイン情報を非アクティブにする
     await this.prisma.user.update({
@@ -124,14 +119,15 @@ export class AuthService {
       },
     });
 
-    await this.prisma.token.delete({
-      where: { userId: user.userId },
-    });
+    await this.tokenService.removeTokenByUserId(userId);
 
     return { status: 201, message: 'ログアウトしました。' };
   }
 
-  async signup(user: User): Promise<VerifyEmailResponse> {
+  /**
+   * @description サインインする
+   */
+  async signup(user: CreateUserRequest): Promise<VerifyEmailResponse> {
     // userIdが存在するかチェック
     if (!user.userId) {
       throw new NotFoundException('userIdが存在しません。');
@@ -145,8 +141,6 @@ export class AuthService {
       throw new NotAcceptableException('ユーザが登録されています。');
     }
 
-    // emailチェックを行うためのEmainToken作成
-    const emailToken = generateEmailToken();
     // パスワードのハッシュ化
     const hash = getHash(user.password);
 
@@ -156,15 +150,15 @@ export class AuthService {
         userId: user.userId,
         name: user.name,
         email: user.email,
-        role: user.role,
         password: hash,
-        hashActivation: emailToken,
         active: true,
       },
     });
 
+    const token = await this.tokenService.createEmailToken(user.userId);
+
     // emailチェックのためメール送信する
-    sendEmailToken(createdUser.email, createdUser.hashActivation);
+    sendEmailToken(createdUser.email, token);
     return {
       status: 201,
       message: 'メールアドレスを認証してください。',
@@ -172,18 +166,16 @@ export class AuthService {
     };
   }
 
-  // メール認証
+  /**
+   * @description メール認証する
+   */
   async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
     // emailTokenが存在しない
     if (!emailToken) {
       throw new NotFoundException('emailTokenが存在しません。');
     }
-    // 認証用トークンの検索
-    const user = await this.prisma.user.findFirst({
-      where: {
-        hashActivation: emailToken,
-      },
-    });
+
+    const user = await this.usersService.findUserByEmailToken(emailToken);
 
     if (user.emailVerified) {
       throw new NotAcceptableException('メール認証が完了しています');
@@ -204,11 +196,14 @@ export class AuthService {
     return confirmedUser;
   }
 
+  /**
+   * パスワードリセットリクエストを送信する
+   */
   async passwordResetReq(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -216,18 +211,21 @@ export class AuthService {
 
     const passwordToken = generatePasswordToken(user.userId);
 
-    const token = await this.prisma.token.update({
-      where: { userId: user.userId },
-      data: { passwordToken: passwordToken },
-    });
+    const token = await this.tokenService.setPasswordToken(
+      user.userId,
+      passwordToken,
+    );
 
-    sendPasswordResetEmailToken(user.email, token.passwordToken);
+    sendPasswordResetEmailToken(user.email, token);
     return {
       status: 201,
       message: 'パスワードの再設定を行ってください。',
     };
   }
 
+  /**
+   * パスワードリセットを行う
+   */
   async passwordReset(
     token: string,
     data: PasswordResetRequest,
@@ -236,11 +234,7 @@ export class AuthService {
       throw new NotFoundException('passwordResetTokenが存在しません。');
     }
 
-    const findToken = await this.prisma.token.findFirst({
-      where: {
-        passwordToken: token,
-      },
-    });
+    const findToken = await this.usersService.findUserByEmailToken(token);
 
     if (!findToken) {
       throw new NotAcceptableException(
@@ -261,10 +255,7 @@ export class AuthService {
       },
     });
 
-    await this.prisma.token.update({
-      where: { userId: userId },
-      data: { passwordToken: null },
-    });
+    await this.tokenService.setPasswordToken(userId, null);
 
     return {
       status: 201,
@@ -272,9 +263,12 @@ export class AuthService {
     };
   }
 
+  /**
+   * ログイン後自分のProfileを表示する
+   */
   async me(req: FastifyRequest) {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this.usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
