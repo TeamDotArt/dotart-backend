@@ -35,7 +35,6 @@ import {
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
 
-// TODO: ApiResponseを記載する
 @ApiTags('canvases')
 @Controller('canvases')
 export class CanvasesController {
