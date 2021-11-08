@@ -51,7 +51,7 @@ model UserPallet {
   palletId      String   @unique
   userId        String
   name          String
-  data          String
+  data          Json
   user          User?    @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -65,8 +65,8 @@ model Canvases {
   canvasName    String
   canvasRange   Int
   // 使用するパレット情報
-  pallet        String
-  canvasesData  String
+  pallet        Json
+  canvasesData  Json
   user          User?   @relation(fields: [userId], references: [userId])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -78,7 +78,7 @@ model BasicPallet {
   palletId      String   @unique
   name          String   @unique
   description   String?
-  data          String
+  data          Json
   createdAt     DateTime @default(now())
 }
 
