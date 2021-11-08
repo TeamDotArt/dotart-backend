@@ -2,15 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 // Service
-import { PrismaService } from 'src/common/prisma.service';
-import { TokenService } from 'src/token/token.service';
+import { PrismaService } from '../common/prisma.service';
+import { TokenService } from '../token/token.service';
 // Entity
 import { User } from './entities/user.entity';
 // Helper
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
-import { getHash } from 'src/common/helpers/cipherHelper';
+import { jwtDecoded } from '../common/helpers/jwtDecoded';
+import { getHash } from '../common/helpers/cipherHelper';
 // Dto
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../auth/dto/decoded.dto';
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';

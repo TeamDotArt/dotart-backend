@@ -21,7 +21,7 @@ import { FastifyRequest } from 'fastify';
 // Service
 import { UserpalletService } from './user-pallet.service';
 // Guards
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Dto
 import {
   CreateUserPalletRequest,

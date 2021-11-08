@@ -1,9 +1,9 @@
 import { Role } from '@prisma/client';
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { DecodedDto } from '../dto/decoded.dto';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/entities/user.entity';
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { UsersService } from '../../users/users.service';
+import { User } from '../../users/entities/user.entity';
+import { jwtDecoded } from '../../common/helpers/jwtDecoded';
 
 @Injectable()
 export class RoleGuard implements CanActivate {

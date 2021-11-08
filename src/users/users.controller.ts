@@ -20,8 +20,8 @@ import { FastifyRequest } from 'fastify';
 // Service
 import { UsersService } from './users.service';
 // Guards
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/guards/role.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
 // Dto
 import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { FindUserParam, FindUserResponse } from './dto/find-user.dto';

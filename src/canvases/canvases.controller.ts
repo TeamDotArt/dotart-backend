@@ -21,7 +21,7 @@ import { FastifyRequest } from 'fastify';
 // Service
 import { CanvasesService } from './canvases.service';
 // Guards
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Dto
 import { RemoveCanvasResponse } from './dto/delete-canvas.dto';
 import {

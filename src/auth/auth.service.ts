@@ -6,18 +6,18 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 // サービス
-import { UsersService } from 'src/users/users.service';
-import { TokenService } from 'src/token/token.service';
-import { PrismaService } from 'src/common/prisma.service';
+import { UsersService } from '../users/users.service';
+import { TokenService } from '../token/token.service';
+import { PrismaService } from '../common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
-import { generatePasswordToken } from 'src/common/helpers/activationCodeHelper';
+import { generatePasswordToken } from '../common/helpers/activationCodeHelper';
 import {
   sendEmailToken,
   sendPasswordResetEmailToken,
-} from 'src/common/sendgrid.service';
+} from '../common/sendgrid.service';
 // Dto系
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../auth/dto/decoded.dto';
 import { VerifyEmailResponse } from './dto/verify-email.dto';
 import { PayloadDto } from './dto/payload.dto';
 import { LogOutUserResponse } from './dto/logout-auth.dto';
@@ -28,14 +28,14 @@ import {
   ValidateUserResponse,
 } from './dto/login-auth.dto';
 // Entity
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import {
   PasswordResetReqResponse,
   PasswordResetRequest,
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
 import { CreateUserRequest } from './dto/create-user.dto';
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { jwtDecoded } from '../common/helpers/jwtDecoded';
 
 @Injectable()
 export class AuthService {

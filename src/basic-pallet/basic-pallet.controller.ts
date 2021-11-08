@@ -19,7 +19,7 @@ import {
 // Service
 import { BasicPalletService } from './basic-pallet.service';
 // Guards
-import { RoleGuard } from 'src/auth/guards/role.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
 // Dto
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import {

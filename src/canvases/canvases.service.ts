@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { jwtDecoded } from '../common/helpers/jwtDecoded';
 // Service
 import { PrismaService } from '../common/prisma.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 // Dto
 import {
   RemoveCanvasResponse,
@@ -19,7 +19,7 @@ import {
   UpdateCanvasRequest,
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../auth/dto/decoded.dto';
 
 @Injectable()
 export class CanvasesService {

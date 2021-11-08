@@ -1,4 +1,4 @@
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../../auth/dto/decoded.dto';
 import jwt_decode from 'jwt-decode';
 
 export const jwtDecoded = (jwt: string): DecodedDto => {
