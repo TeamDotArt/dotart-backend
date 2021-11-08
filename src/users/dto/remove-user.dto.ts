@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 import { User } from '../entities/user.entity';
 
 export class RemoveUserResponse {

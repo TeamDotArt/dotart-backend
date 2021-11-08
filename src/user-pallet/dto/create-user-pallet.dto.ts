@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
+import { Constants } from '../../common/constants';
+import { UserPallet } from '../../user-pallet/entities/user-pallet.entity';
 
 export class CreateUserPalletRequest {
   @ApiProperty({ description: Constants.PROPERTY_USER_PALLET })
