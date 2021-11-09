@@ -27,6 +27,7 @@
     "npm": "当プロジェクトではnpmではなくyarnを利用してください。"
   },
   "dependencies": {
+    "@line/bot-sdk": "^7.4.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.2",
     "@nestjs/core": "^8.0.0",
