@@ -102,6 +102,7 @@ export class BasicPalletService {
     const ret: UpdateBasicPalletResponse = {
       status: 201,
       message: '更新しました。',
+      palletId: palletId,
     };
     return ret;
   }
