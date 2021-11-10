@@ -21,11 +21,7 @@ import { UserPalletModule } from './user-pallet/user-pallet.module';
       // envファイルを組み込むために使用
       isGlobal: true,
     }),
-    AuthModule,
     TokenModule,
-    UserPalletModule,
-    BasicPalletModule,
-    CanvasesModule,
     UserPalletModule,
   ],
   controllers: [AppController],
