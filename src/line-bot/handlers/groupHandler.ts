@@ -1,5 +1,6 @@
 import { MessageEvent, Group } from '@line/bot-sdk';
 import { Injectable } from '@nestjs/common';
+import { prefix } from '../helper/prefix';
 import { textMessage } from '../messageTemplate/textMessage';
 import { MessageTypes } from '../types/message';
 import { LineHandler } from './lineHandler';
@@ -16,7 +17,7 @@ export class GroupHandler {
     }
     // prefixをdotartまたはDotArtに設定
     const messageObj = message.text.split(' ');
-    if (!(messageObj[0] === 'dotart' || messageObj[0] === 'DotArt')) {
+    if (!prefix(messageObj[0])) {
       return;
     }
     // group情報
