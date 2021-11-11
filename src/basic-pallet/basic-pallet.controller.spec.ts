@@ -3,7 +3,7 @@ import { BasicPalletController } from './basic-pallet.controller';
 import { BasicPalletService } from './basic-pallet.service';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { PrismaService } from '../common/prisma.service';
-import { CreateBasicPalletResponse } from './dto/create-basic-pallet.dto';
+import { CreateBasicPalletRequest } from './dto/create-basic-pallet.dto';
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import { FindAllBasicPalletResponse } from './dto/findAll-basic-pallet.dto';
 import { FindBasicPalletResponse } from './dto/find-basic-pallet.dto';
@@ -28,7 +28,7 @@ describe('BasicPalletController', () => {
   describe('正常系', () => {
     describe('create', () => {
       it('ベーシックパレット生成のテスト', async () => {
-        const mock = {
+        const mock: CreateBasicPalletRequest = {
           palletId: 'test',
           name: 'test',
           description: 'ベーシックパレットのテストです',
@@ -38,7 +38,7 @@ describe('BasicPalletController', () => {
         try {
           result = await basicPalletController.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
           expect(result.palletId).toEqual('test');
           console.log(err);
         }
@@ -54,21 +54,6 @@ describe('BasicPalletController', () => {
         } catch (err) {
           expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
           expect(result.palletId).toEqual('test');
-          console.log(err);
-        }
-      });
-    });
-
-    describe('removeBasicPalletData', () => {
-      it('ベーシックパレット削除のテスト(name未入力)', async () => {
-        const palletId = 'test3';
-        let result;
-        try {
-          result = await basicPalletController.removeBasicPalletData(palletId);
-        } catch (err) {
-          expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
-          expect(result.palletId).toEqual('test3');
-          console.log(err);
         }
       });
     });
@@ -83,6 +68,7 @@ describe('BasicPalletController', () => {
           result.map((pallet, i) => {
             expect(pallet.palletId).toEqual(test[i]);
           });
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(FindAllBasicPalletResponse);
           expect(result.palletId).toEqual(test[i]);
@@ -111,6 +97,7 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.findByName(name);
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(FindBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -133,6 +120,7 @@ describe('BasicPalletController', () => {
             palletId,
             mock,
           );
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -140,7 +128,9 @@ describe('BasicPalletController', () => {
           console.log(err);
         }
       });
+    });
 
+    describe('updateProfileData', () => {
       it('ベーシックパレット更新のテスト（更新前に戻す）', async () => {
         const palletId = 'standard';
         const mock = {
@@ -154,6 +144,7 @@ describe('BasicPalletController', () => {
             palletId,
             mock,
           );
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -176,8 +167,8 @@ describe('BasicPalletController', () => {
         try {
           result = await basicPalletController.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
-          expect(result.palletId).toEqual('test');
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
+          expect(result.palletId).toEqual('');
           console.log(err);
         }
       });
@@ -193,12 +184,13 @@ describe('BasicPalletController', () => {
         try {
           result = await basicPalletController.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
-          expect(result.palletId).toEqual('test');
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
+          expect(result.palletId).toEqual('test3');
           console.log(err);
         }
       });
     });
+
     describe('removeBasicPalletData', () => {
       it('ベーシックパレット削除のテスト(palletId未入力)', async () => {
         const palletId = '';
@@ -209,6 +201,17 @@ describe('BasicPalletController', () => {
           expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
           expect(result.palletId).toEqual('');
           console.log(err);
+        }
+      });
+
+      it('ベーシックパレット削除のテスト(name未入力)', async () => {
+        const palletId = 'test3';
+        let result;
+        try {
+          result = await basicPalletController.removeBasicPalletData(palletId);
+        } catch (err) {
+          expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
+          expect(result.palletId).toEqual('test3');
         }
       });
     });

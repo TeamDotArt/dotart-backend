@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RoleGuard } from '../../src/auth/guards/role.guard';
 import { PrismaService } from '../common/prisma.service';
 import { BasicPalletService } from './basic-pallet.service';
-import { CreateBasicPalletResponse } from './dto/create-basic-pallet.dto';
+import { CreateBasicPalletRequest } from './dto/create-basic-pallet.dto';
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import { FindBasicPalletResponse } from './dto/find-basic-pallet.dto';
 import { FindAllBasicPalletResponse } from './dto/findAll-basic-pallet.dto';
@@ -28,7 +28,7 @@ describe('BasicPalletService', () => {
   describe('正常系', () => {
     describe('create', () => {
       it('ベーシックパレット生成のテスト', async () => {
-        const mock = {
+        const mock: CreateBasicPalletRequest = {
           palletId: 'test',
           name: 'test',
           description: 'ベーシックパレットのテストです',
@@ -38,7 +38,7 @@ describe('BasicPalletService', () => {
         try {
           result = await service.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
           expect(result.palletId).toEqual('test');
         }
       });
@@ -67,6 +67,7 @@ describe('BasicPalletService', () => {
           result.map((pallet, i) => {
             expect(pallet.palletId).toEqual(test[i]);
           });
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(FindAllBasicPalletResponse);
           expect(result.palletId).toEqual(test[i]);
@@ -93,6 +94,7 @@ describe('BasicPalletService', () => {
         let result;
         try {
           result = await service.findByName(name);
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(FindBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -111,6 +113,7 @@ describe('BasicPalletService', () => {
         let result;
         try {
           result = await service.updateBasicPalletData(palletId, mock);
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -130,6 +133,7 @@ describe('BasicPalletService', () => {
         let result;
         try {
           result = await service.updateBasicPalletData(palletId, mock);
+          console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
           expect(result.palletId).toEqual('standard');
@@ -152,7 +156,7 @@ describe('BasicPalletService', () => {
         try {
           result = await service.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
           expect(result.palletId).toEqual('');
         }
       });
@@ -166,9 +170,9 @@ describe('BasicPalletService', () => {
         };
         let result;
         try {
-          await service.create(mock);
+          result = await service.create(mock);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletResponse);
+          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
           expect(result.palletId).toEqual('test3');
         }
       });
