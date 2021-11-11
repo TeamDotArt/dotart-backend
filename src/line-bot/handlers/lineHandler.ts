@@ -2,14 +2,11 @@ import {
   BotInfoResponse,
   Client,
   FlexMessage,
-  FollowEvent,
   ImageMapMessage,
   Message,
   Profile,
 } from '@line/bot-sdk';
 import { Injectable } from '@nestjs/common';
-import { imageMapMessage } from '../messageTemplate/imageMapMessage';
-import { textMessage } from '../messageTemplate/textMessage';
 
 @Injectable()
 export class LineHandler {
