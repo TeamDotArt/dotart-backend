@@ -21,7 +21,7 @@ export class LineBotService {
   ) {}
 
   // eventHandler
-  async run(events: WebhookEvent) {
+  async run(events: WebhookEvent): Promise<void> {
     if (!events) {
       return;
     }
@@ -33,7 +33,7 @@ export class LineBotService {
         } else if (events.source.type === SourceTypes.GROUP) {
           await this.groupHandler.groupEvent(events);
         } else if (events.source.type === SourceTypes.ROOM) {
-          await this.roomHandler.roomEvent(events.source.roomId);
+          await this.roomHandler.roomEvent(events);
         }
         break;
 
