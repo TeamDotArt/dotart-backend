@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { BasicPallet } from './entities/basic-pallet.entity';
 // Service
 import { PrismaService } from '../common/prisma.service';
@@ -22,6 +26,14 @@ export class BasicPalletService {
   async create(
     data: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse> {
+    const basicpallet: BasicPallet = await this.prisma.basicPallet.findUnique({
+      where: { palletId: data.palletId },
+    });
+    if (basicpallet) {
+      throw new NotAcceptableException(
+        'すでにそのベーシックパレットは存在します。',
+      );
+    }
     await this.prisma.basicPallet.create({ data: data });
 
     const ret: CreateBasicPalletResponse = {
@@ -36,14 +48,6 @@ export class BasicPalletService {
   async findAll(): Promise<FindAllBasicPalletResponse[]> {
     return this.prisma.basicPallet.findMany();
   }
-
-  /*
-  async findOne(id: number) {
-    return this.prisma.basicPallet.findUnique({
-      where: { id: id },
-    });
-  }
-*/
 
   async findByBasicPalletId(
     palletId: string,
