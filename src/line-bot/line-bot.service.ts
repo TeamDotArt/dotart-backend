@@ -1,110 +1,85 @@
-import { Client, FlexMessage, Message, WebhookEvent } from '@line/bot-sdk';
 import { Injectable } from '@nestjs/common';
-import { CreateLineBotDto } from './dto/create-line-bot.dto';
-import { UpdateLineBotDto } from './dto/update-line-bot.dto';
+import { WebhookEvent } from '@line/bot-sdk';
+// Handler
+import { FollowHandler } from './handlers/followHandler';
+import { GroupHandler } from './handlers/groupHandler';
+import { JoinHandler } from './handlers/joinHandler';
+import { RoomHandler } from './handlers/roomHandler';
+import { UserHandler } from './handlers/userHandler';
+// Types
+import { EventTypes } from './types/event';
+import { SourceTypes } from './types/source';
 
 @Injectable()
 export class LineBotService {
-  private client: Client;
-  constructor() {
-    this.client = new Client({
-      channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-      channelSecret: process.env.LINE_CHANNEL_SERCRET,
-    });
-  }
+  constructor(
+    private readonly followHandler: FollowHandler,
+    private readonly joinHandler: JoinHandler,
+    private readonly userHandler: UserHandler,
+    private readonly groupHandler: GroupHandler,
+    private readonly roomHandler: RoomHandler,
+  ) {}
 
-  // postback
+  // eventHandler
   async run(events: WebhookEvent) {
+    if (!events) {
+      return;
+    }
+    console.log(events);
     switch (events.type) {
-      case 'message':
-        if (events.source.type === 'user') {
-          await this.userHandler(events);
-        } else if (events.source.type === 'group') {
-          await this.groupHandler(events);
-        } else if (events.source.type === 'room') {
-          await this.leaveRoom(events.source.roomId);
+      case EventTypes.MESSAGE:
+        if (events.source.type === SourceTypes.USER) {
+          await this.userHandler.userEvent(events);
+        } else if (events.source.type === SourceTypes.GROUP) {
+          await this.groupHandler.groupEvent(events);
+        } else if (events.source.type === SourceTypes.ROOM) {
+          await this.roomHandler.roomEvent(events.source.roomId);
         }
         break;
 
       // トーク取り消し
-      case 'unsend':
-        console.log('Event -> unsend');
+      case EventTypes.UN_SEND:
+        console.log('Event -> un_send');
         break;
 
       // 友達追加された
-      case 'follow':
-        console.log('Event -> follow');
+      case EventTypes.FOLLOW:
+        this.followHandler.followEvent(events);
         break;
 
       // ブロックまたは削除された
-      case 'unfollow':
-        console.log('Event -> follow');
+      case EventTypes.UN_FOLLOW:
+        console.log('Event -> un_follow');
         break;
 
       // 自分がグループに参加した
-      case 'join':
-        console.log('Event -> join');
+      case EventTypes.JOIN:
+        await this.joinHandler.joinEvent(events);
         break;
 
       // 自分がグループから退出した
-      case 'leave':
+      case EventTypes.LEAVE:
         console.log('Event -> leave');
         break;
 
       // 誰かがグループに参加した
-      case 'memberJoined':
+      case EventTypes.MEMBER_JOINED:
         console.log('Event -> memberJoined');
         break;
 
       // 誰かがグループから退出した
-      case 'memberLeft':
+      case EventTypes.MEMBER_LEFT:
         console.log('Event -> memberLeft');
+        break;
+
+      // Postback
+      case EventTypes.POSTBACK:
+        console.log('Event -> postback');
         break;
 
       default:
         console.log(events);
         break;
     }
-    return events;
-  }
-
-  async userHandler(event) {
-    const message: Message = {
-      type: 'text',
-      text: 'user chat',
-    };
-    await this.replyMessage(event.replyToken, message);
-  }
-
-  async groupHandler(event) {
-    const message: Message = {
-      type: 'text',
-      text: 'group chat',
-    };
-    await this.replyMessage(event.replyToken, message);
-  }
-
-  // MessageEvent
-  async pushMessage(
-    user_id: string,
-    messageTemplate: Message | Message[] | FlexMessage,
-  ): Promise<void> {
-    try {
-      await this.client.pushMessage(user_id, messageTemplate);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async replyMessage(
-    reply_token: string,
-    messageTemplate: Message | Message[] | FlexMessage,
-  ): Promise<void> {
-    await this.client.replyMessage(reply_token, messageTemplate);
-  }
-
-  // RoomEvent
-  async leaveRoom(room_id: string): Promise<void> {
-    await this.client.leaveRoom(room_id);
   }
 }

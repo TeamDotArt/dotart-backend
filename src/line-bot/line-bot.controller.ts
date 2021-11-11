@@ -8,7 +8,6 @@ export class LineBotController {
 
   @Post('webhook')
   async lineWebhook(@Body() { events }: WebhookRequestBody): Promise<any> {
-    console.log(events[0]);
     return this.lineBotService.run(events[0]);
   }
 }
