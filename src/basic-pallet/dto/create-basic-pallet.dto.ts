@@ -1,15 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 import { Constants } from '../../common/constants';
 import { BasicPallet } from '../../basic-pallet/entities/basic-pallet.entity';
 
 export class CreateBasicPalletRequest {
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_ID })
   @IsString()
+  @IsNotEmpty()
   palletId: BasicPallet['palletId'];
 
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_NAME })
   @IsString()
+  @IsNotEmpty()
   name: BasicPallet['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_BASIC_PALLET_DESCRIPTION })
