@@ -1,10 +1,11 @@
 import { Constants } from '../../common/constants';
 
 export const prefix = (text: string): boolean => {
+  let cmdFlg = false;
   Constants.LINE_BOT_PREFIX.forEach((prefix) => {
-    if (text.startsWith(prefix)) {
-      return true;
+    if (text === prefix) {
+      cmdFlg = true;
     }
   });
-  return false;
+  return cmdFlg;
 };
