@@ -18,6 +18,7 @@ import {
   UpdateBasicPalletResponse,
 } from './dto/update-basic-pallet.dto';
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 @Injectable()
 export class BasicPalletService {
@@ -30,9 +31,16 @@ export class BasicPalletService {
       where: { palletId: data.palletId },
     });
     if (basicpallet) {
-      throw new NotAcceptableException(
-        'すでにそのベーシックパレットは存在します。',
+      throw new PrismaClientKnownRequestError(
+        'ベーシックパレットがすでに存在します',
+        'P1009',
+        '3.3.0',
+        '{target:["palletId"]}',
       );
+    } else if (data.palletId == '') {
+      throw new NotAcceptableException('palletIdが未入力です。');
+    } else if (data.name == '') {
+      throw new NotAcceptableException('nameが未入力です。');
     }
     await this.prisma.basicPallet.create({ data: data });
 
@@ -94,6 +102,8 @@ export class BasicPalletService {
     });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
+    } else if ((palletId = '')) {
+      throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.update({
       where: { palletId: palletId },
@@ -119,6 +129,8 @@ export class BasicPalletService {
     });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
+    } else if ((palletId = '')) {
+      throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.delete({
       where: { palletId: palletId },
