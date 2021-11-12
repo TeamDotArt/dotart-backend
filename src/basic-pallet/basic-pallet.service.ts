@@ -37,9 +37,9 @@ export class BasicPalletService {
         '3.3.0',
         '{target:["palletId"]}',
       );
-    } else if (data.palletId == '') {
+    } else if (!data.palletId) {
       throw new NotAcceptableException('palletIdが未入力です。');
-    } else if (data.name == '') {
+    } else if (!data.name) {
       throw new NotAcceptableException('nameが未入力です。');
     }
     await this.prisma.basicPallet.create({ data: data });
@@ -102,7 +102,7 @@ export class BasicPalletService {
     });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
-    } else if ((palletId = '')) {
+    } else if (!palletId) {
       throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.update({
@@ -129,7 +129,7 @@ export class BasicPalletService {
     });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
-    } else if ((palletId = '')) {
+    } else if (!palletId) {
       throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.delete({
