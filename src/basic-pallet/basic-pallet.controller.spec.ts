@@ -77,11 +77,11 @@ describe('BasicPalletController', () => {
     });
 
     describe('findPalletId/:palletId', () => {
-      it('nameによる単一取得のテスト', async () => {
-        const name = 'スタンダード';
+      it('palletIdによる単一取得のテスト', async () => {
+        const palletId = 'standard';
         let result;
         try {
-          result = await basicPalletController.findByName(name);
+          result = await basicPalletController.findByBasicPalletId(palletId);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
