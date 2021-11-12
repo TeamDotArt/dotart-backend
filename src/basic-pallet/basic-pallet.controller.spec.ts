@@ -4,10 +4,8 @@ import { BasicPalletService } from './basic-pallet.service';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { PrismaService } from '../common/prisma.service';
 import { CreateBasicPalletRequest } from './dto/create-basic-pallet.dto';
-import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
-import { FindAllBasicPalletResponse } from './dto/findAll-basic-pallet.dto';
-import { FindBasicPalletResponse } from './dto/find-basic-pallet.dto';
-import { UpdateBasicPalletResponse } from './dto/update-basic-pallet.dto';
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 describe('BasicPalletController', () => {
   let basicPalletController: BasicPalletController;
@@ -37,9 +35,9 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.create(mock);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
-          expect(result.palletId).toEqual('test');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });
@@ -51,41 +49,42 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.removeBasicPalletData(palletId);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
-          expect(result.palletId).toEqual('test');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
+          console.log(err);
         }
       });
     });
 
     describe('findAll', () => {
       it('ベーシックパレット全取得のテスト', async () => {
-        const test = ['monoqlo', 'retroGame', 'standard'];
+        //const test = ['monoqlo', 'retroGame', 'standard'];
         let result;
-        let i;
         try {
           result = await basicPalletController.findAll();
+          /*
           result.map((pallet, i) => {
             expect(pallet.palletId).toEqual(test[i]);
           });
+          */
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(FindAllBasicPalletResponse);
-          expect(result.palletId).toEqual(test[i]);
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });
     });
 
     describe('findPalletId/:palletId', () => {
-      it('palletIdによる単一取得のテスト', async () => {
-        const palletId = 'standard';
+      it('nameによる単一取得のテスト', async () => {
+        const name = 'スタンダード';
         let result;
         try {
-          result = await basicPalletController.findByBasicPalletId(palletId);
+          result = await basicPalletController.findByName(name);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(FindBasicPalletResponse);
-          expect(result.name).toEqual('スタンダード');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });
@@ -99,8 +98,7 @@ describe('BasicPalletController', () => {
           result = await basicPalletController.findByName(name);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(FindBasicPalletResponse);
-          expect(result.palletId).toEqual('standard');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });
@@ -122,9 +120,7 @@ describe('BasicPalletController', () => {
           );
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
-          expect(result.palletId).toEqual('standard');
-          expect(result.palletId).toMatchSnapshot('standard');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });
@@ -146,9 +142,8 @@ describe('BasicPalletController', () => {
           );
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(UpdateBasicPalletResponse);
-          expect(result.palletId).toEqual('standard');
-          expect(result.palletId).toMatchSnapshot('standard');
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
+          console.log(err);
         }
       });
     });
@@ -166,9 +161,9 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.create(mock);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
-          expect(result.palletId).toEqual('');
+          expect(err).toBeInstanceOf(NotAcceptableException);
           console.log(err);
         }
       });
@@ -183,9 +178,9 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.create(mock);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(CreateBasicPalletRequest);
-          expect(result.palletId).toEqual('test3');
+          expect(err).toBeInstanceOf(NotAcceptableException);
           console.log(err);
         }
       });
@@ -197,21 +192,10 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.removeBasicPalletData(palletId);
+          console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
-          expect(result.palletId).toEqual('');
+          expect(err).toBeInstanceOf(NotFoundException);
           console.log(err);
-        }
-      });
-
-      it('ベーシックパレット削除のテスト(name未入力)', async () => {
-        const palletId = 'test3';
-        let result;
-        try {
-          result = await basicPalletController.removeBasicPalletData(palletId);
-        } catch (err) {
-          expect(err).toBeInstanceOf(RemoveBasicPalletResponse);
-          expect(result.palletId).toEqual('test3');
         }
       });
     });
