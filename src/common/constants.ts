@@ -63,4 +63,12 @@ export class Constants {
   public static readonly PROPERTY_CANVAS_RANGE = 'キャンバスサイズ';
   public static readonly PROPERTY_PALLET = '選択されたベーシックパレット情報';
   public static readonly PROPERTY_CANVASES_DATA = 'キャンバス情報';
+
+  // Linebot Prefix
+  public static readonly LINE_BOT_PREFIX = [
+    'dotart',
+    'DotArt',
+    'Dotart',
+    'dotArt',
+  ];
 }
