@@ -7,6 +7,15 @@ import { TokenService } from '../token/token.service';
 
 @Module({
   controllers: [CanvasesController],
-  providers: [CanvasesService, PrismaService, UsersService, TokenService],
+  providers: [
+    {
+      provide: 'CanvasesServiceInterface',
+      useClass: CanvasesService,
+    },
+    CanvasesService,
+    PrismaService,
+    UsersService,
+    TokenService,
+  ],
 })
 export class CanvasesModule {}

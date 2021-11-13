@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -39,6 +40,7 @@ import {
 @Controller('basic-pallet')
 export class BasicPalletController implements BasicPalletControllerInterface {
   constructor(
+    @Inject('BasicPalletServiceInterface')
     private readonly basicPalletService: BasicPalletServiceInterface,
   ) {}
 

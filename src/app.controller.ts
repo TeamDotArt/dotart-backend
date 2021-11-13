@@ -41,14 +41,13 @@ import {
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
-import { AuthServiceInterface } from './auth/interface/auth.service.interface';
 
 @ApiTags('/')
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly authService: AuthServiceInterface,
+    private readonly authService: AuthService,
   ) {}
 
   /**

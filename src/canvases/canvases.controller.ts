@@ -9,6 +9,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -39,7 +40,10 @@ import {
 @ApiTags('canvases')
 @Controller('canvases')
 export class CanvasesController implements CanvasesControllerInterface {
-  constructor(private readonly canvasesService: CanvasesServiceInterface) {}
+  constructor(
+    @Inject('CanvasesServiceInterface')
+    private readonly canvasesService: CanvasesServiceInterface,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
