@@ -16,8 +16,9 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
-// Service
-import { BasicPalletService } from './basic-pallet.service';
+// interface
+import { BasicPalletControllerInterface } from './interface/basicPallet.controller.interface';
+import { BasicPalletServiceInterface } from './interface/basicPallet.service.interface';
 // Guards
 import { RoleGuard } from 'src/auth/guards/role.guard';
 // Dto
@@ -36,8 +37,10 @@ import {
 // TODO: ApiResponseを記載する
 @ApiTags('basic-pallet')
 @Controller('basic-pallet')
-export class BasicPalletController {
-  constructor(private readonly basicPalletService: BasicPalletService) {}
+export class BasicPalletController implements BasicPalletControllerInterface {
+  constructor(
+    private readonly basicPalletService: BasicPalletServiceInterface,
+  ) {}
 
   @UseGuards(RoleGuard)
   @Post()
@@ -51,10 +54,10 @@ export class BasicPalletController {
     description: 'ベーシックパレットの詳細情報',
   })
   // フックメソッド
-  async create(
-    @Body() data: CreateBasicPalletRequest,
+  async createBasicPallet(
+    @Body() basicPallet: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse> {
-    return this.basicPalletService.create(data);
+    return this.basicPalletService.create(basicPallet);
   }
 
   @Get()
@@ -62,7 +65,7 @@ export class BasicPalletController {
   @ApiOperation({ summary: '全ベーシックパレット検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllBasicPalletResponse })
   // フックメソッド
-  async findAll(): Promise<FindAllBasicPalletResponse[]> {
+  async getBasicPallets(): Promise<FindAllBasicPalletResponse[]> {
     return this.basicPalletService.findAll();
   }
 
@@ -76,10 +79,10 @@ export class BasicPalletController {
     type: String,
   })
   // フックメソッド
-  async findByBasicPalletId(
-    @Param('palletId') palletId: string,
+  async getBasicPallet(
+    @Param('palletId') basicPalletId: string,
   ): Promise<FindBasicPalletResponse> {
-    return this.basicPalletService.findByBasicPalletId(palletId);
+    return this.basicPalletService.findBasicPalletId(basicPalletId);
   }
 
   @Get('findName/:name')
@@ -92,10 +95,10 @@ export class BasicPalletController {
     type: String,
   })
   // フックメソッド
-  async findByName(
+  async getBasicPalletByName(
     @Param('name') name: string,
   ): Promise<FindBasicPalletResponse> {
-    return this.basicPalletService.findByName(name);
+    return this.basicPalletService.findBasicPalletByName(name);
   }
 
   @UseGuards(RoleGuard)
@@ -112,11 +115,11 @@ export class BasicPalletController {
   })
   @ApiBody({ type: UpdateBasicPalletRequest, description: '更新データ' })
   // フックメソッド
-  async updateProfileData(
-    @Param('palletId') palletId: string,
-    @Body() data: UpdateBasicPalletRequest,
+  async updateBasicPallet(
+    @Param('palletId') basicPalletId: string,
+    @Body() basicPallet: UpdateBasicPalletRequest,
   ): Promise<UpdateBasicPalletResponse> {
-    return this.basicPalletService.updateBasicPalletData(palletId, data);
+    return this.basicPalletService.update(basicPalletId, basicPallet);
   }
 
   @UseGuards(RoleGuard)
@@ -132,9 +135,9 @@ export class BasicPalletController {
     type: String,
   })
   // フックメソッド
-  async removeBasicPalletData(
-    @Param('palletId') palletId: string,
+  async deleteBasicPallet(
+    @Param('palletId') basicPalletId: string,
   ): Promise<RemoveBasicPalletResponse> {
-    return this.basicPalletService.removeBasicPalletData(palletId);
+    return this.basicPalletService.remove(basicPalletId);
   }
 }
