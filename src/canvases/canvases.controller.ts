@@ -18,18 +18,19 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
-// Service
-import { CanvasesService } from './canvases.service';
+// Interface
+import { CanvasesServiceInterface } from './interface/canvases.service.interface';
 // Guards
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 // Dto
 import { RemoveCanvasResponse } from './dto/delete-canvas.dto';
+import { FindAllCanvasResponse } from './dto/findAll-canvas.dto';
+import { FindCanvasResponse, FindCanvasParam } from './dto/find-canvas.dto';
+import { CanvasesControllerInterface } from './interface/canvases.controller.interface';
 import {
   CreateCanvasRequest,
   CreateCanvasResponse,
 } from './dto/create-canvas.dto';
-import { FindAllCanvasResponse } from './dto/findAll-canvas.dto';
-import { FindCanvasResponse, FindCanvasParam } from './dto/find-canvas.dto';
 import {
   UpdateCanvasRequest,
   UpdateCanvasResponse,
@@ -37,8 +38,8 @@ import {
 
 @ApiTags('canvases')
 @Controller('canvases')
-export class CanvasesController {
-  constructor(private readonly canvasesService: CanvasesService) {}
+export class CanvasesController implements CanvasesControllerInterface {
+  constructor(private readonly canvasesService: CanvasesServiceInterface) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -52,7 +53,7 @@ export class CanvasesController {
     description: 'キャンバスの詳細情報',
   })
   // フックメソッド
-  create(
+  createCanvas(
     @Req() req: FastifyRequest,
     @Body() data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
@@ -65,7 +66,7 @@ export class CanvasesController {
   @ApiOperation({ summary: '全キャンバス検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllCanvasResponse })
   // フックメソッド
-  findAll(@Req() req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
+  getCanvases(@Req() req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
     return this.canvasesService.findAll(req);
   }
 
@@ -79,10 +80,10 @@ export class CanvasesController {
     type: String,
   })
   // フックメソッド
-  findByCanvasId(
+  getCanvas(
     @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findByCanvasId(canvasParam.canvasId);
+    return this.canvasesService.findCanvasId(canvasParam.canvasId);
   }
 
   @Get('findCanvasName/:canvasName')
@@ -95,10 +96,10 @@ export class CanvasesController {
     type: String,
   })
   // フックメソッド
-  findByCanvasName(
+  getCanvasByName(
     @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findByCanvasName(canvasParam.canvasName);
+    return this.canvasesService.findCanvasByName(canvasParam.canvasName);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -108,8 +109,11 @@ export class CanvasesController {
   @ApiResponse({ status: HttpStatus.OK, type: UpdateCanvasResponse })
   @ApiBody({ type: UpdateCanvasRequest, description: '更新データ' })
   // フックメソッド
-  update(@Req() req: FastifyRequest, @Body() data: UpdateCanvasRequest) {
-    return this.canvasesService.updateCanvas(req, data);
+  updateCanvas(
+    @Req() req: FastifyRequest,
+    @Body() data: UpdateCanvasRequest,
+  ): Promise<UpdateCanvasResponse> {
+    return this.canvasesService.update(req, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -118,10 +122,10 @@ export class CanvasesController {
   @ApiOperation({ summary: 'キャンバス削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
   // フックメソッド
-  remove(
+  deleteCanvas(
     @Req() req: FastifyRequest,
     @Body() data: RemoveCanvasResponse,
   ): Promise<RemoveCanvasResponse> {
-    return this.canvasesService.removeCanvas(req, data);
+    return this.canvasesService.remove(req, data);
   }
 }

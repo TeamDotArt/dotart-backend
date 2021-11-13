@@ -20,9 +20,10 @@ import {
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { CanvasesServiceInterface } from './interface/canvases.service.interface';
 
 @Injectable()
-export class CanvasesService {
+export class CanvasesService implements CanvasesServiceInterface {
   constructor(
     private prisma: PrismaService,
     private usersService: UsersService,
@@ -70,7 +71,7 @@ export class CanvasesService {
     return canvas;
   }
 
-  async findByCanvasId(canvasId: string): Promise<FindCanvasResponse> {
+  async findCanvasId(canvasId: string): Promise<FindCanvasResponse> {
     if (!canvasId) {
       throw new NotFoundException('canvasIdが存在しません。');
     }
@@ -89,7 +90,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async findByCanvasName(canvasNaeme: string): Promise<FindCanvasResponse> {
+  async findCanvasByName(canvasNaeme: string): Promise<FindCanvasResponse> {
     if (!canvasNaeme) {
       throw new NotFoundException('canvasNameが存在しません。');
     }
@@ -108,7 +109,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async updateCanvas(
+  async update(
     req: FastifyRequest,
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
@@ -155,7 +156,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async removeCanvas(
+  async remove(
     req: FastifyRequest,
     data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
