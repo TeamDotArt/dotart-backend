@@ -41,13 +41,14 @@ import {
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
+import { AuthServiceInterface } from './auth/interface/auth.service.interface';
 
 @ApiTags('/')
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthServiceInterface,
   ) {}
 
   /**
@@ -119,7 +120,7 @@ export class AppController {
     @Param() emailToken: EmailTokenParam,
   ): Promise<ConfirmedUserResponse> {
     console.log(emailToken);
-    return this.authService.confirm(emailToken.emailToken);
+    return this.authService.emailConfirm(emailToken.emailToken);
   }
 
   /**
@@ -139,7 +140,7 @@ export class AppController {
   passwordResetReq(
     @Request() req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    return this.authService.passwordResetReq(req);
+    return this.authService.passwordResetRequest(req);
   }
 
   /**

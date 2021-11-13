@@ -36,9 +36,11 @@ import {
 } from './dto/passwordReset-user.dto';
 import { CreateUserRequest } from './dto/create-user.dto';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { MeResponse } from './dto/me-auth.dto';
+import { AuthServiceInterface } from './interface/auth.service.interface';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements AuthServiceInterface {
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
@@ -169,7 +171,7 @@ export class AuthService {
   /**
    * @description メール認証する
    */
-  async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
+  async emailConfirm(emailToken: string): Promise<ConfirmedUserResponse> {
     // emailTokenが存在しない
     if (!emailToken) {
       throw new NotFoundException('emailTokenが存在しません。');
@@ -199,7 +201,7 @@ export class AuthService {
   /**
    * パスワードリセットリクエストを送信する
    */
-  async passwordResetReq(
+  async passwordResetRequest(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
@@ -266,7 +268,7 @@ export class AuthService {
   /**
    * ログイン後自分のProfileを表示する
    */
-  async me(req: FastifyRequest) {
+  async me(req: FastifyRequest): Promise<MeResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserProfileById(decoded.id);
 
@@ -286,7 +288,7 @@ export class AuthService {
 
     return {
       status: 201,
-      userData,
+      ...userData,
     };
   }
 }

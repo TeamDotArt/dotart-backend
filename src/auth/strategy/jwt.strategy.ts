@@ -1,7 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from '../auth.service';
 import {
   // ForbiddenException,
   Injectable,
@@ -9,6 +8,7 @@ import {
 } from '@nestjs/common';
 // import { plainToClass } from 'class-transformer';
 import { PayloadDto } from '../dto/payload.dto';
+import { AuthServiceInterface } from '../interface/auth.service.interface';
 
 /**
  * @description JWTの認証処理を行うクラス
@@ -17,7 +17,7 @@ import { PayloadDto } from '../dto/payload.dto';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthServiceInterface,
   ) {
     super({
       // Authorization bearerからトークンを読み込む関数を返す
