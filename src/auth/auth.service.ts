@@ -37,10 +37,9 @@ import {
 import { CreateUserRequest } from './dto/create-user.dto';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 import { MeResponse } from './dto/me-auth.dto';
-import { AuthServiceInterface } from './interface/auth.service.interface';
 
 @Injectable()
-export class AuthService implements AuthServiceInterface {
+export class AuthService implements AuthService {
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,

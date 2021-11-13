@@ -1,14 +1,14 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { AuthServiceInterface } from '../interface/auth.service.interface';
+import { AuthService } from '../auth.service';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthServiceInterface) {
+  constructor(private readonly authService: AuthService) {
     super();
   }
 
