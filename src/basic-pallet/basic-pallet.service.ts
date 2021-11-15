@@ -54,7 +54,11 @@ export class BasicPalletService {
   }
 
   async findAll(): Promise<FindAllBasicPalletResponse[]> {
-    return this.prisma.basicPallet.findMany();
+    const basicpallets = await this.prisma.basicPallet.findMany();
+    if (!basicpallets) {
+      throw new NotFoundException('basicpalletが存在しません。');
+    }
+    return basicpallets;
   }
 
   async findByBasicPalletId(
@@ -66,6 +70,9 @@ export class BasicPalletService {
     const basicpallet = await this.prisma.basicPallet.findUnique({
       where: { palletId: palletId },
     });
+    if (!basicpallet) {
+      throw new NotFoundException('指定したbasicPalletが存在しません。');
+    }
     const ret: FindBasicPalletResponse = {
       palletId: palletId,
       name: basicpallet.name,
@@ -83,6 +90,9 @@ export class BasicPalletService {
     const basicpallet = await this.prisma.basicPallet.findUnique({
       where: { name: name },
     });
+    if (!basicpallet) {
+      throw new NotFoundException('指定したbasicPalletが存在しません。');
+    }
     const ret: FindBasicPalletResponse = {
       palletId: basicpallet.palletId,
       name: name,
@@ -128,7 +138,7 @@ export class BasicPalletService {
       where: { palletId: palletId },
     });
     if (!basicpallet) {
-      throw new NotFoundException('ベーシックパレットが存在しません。');
+      throw new NotFoundException('指定したベーシックパレットが存在しません。');
     } else if (!palletId) {
       throw new NotAcceptableException('palletIdが指定されていません。');
     }
