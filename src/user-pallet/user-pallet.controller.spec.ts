@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserPalletController } from './user-pallet.controller';
-import { UserpalletService } from './user-pallet.service';
+import { UserPalletService } from './user-pallet.service';
 
 describe('UserPalletController', () => {
   let controller: UserPalletController;
@@ -8,7 +8,7 @@ describe('UserPalletController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserPalletController],
-      providers: [UserpalletService],
+      providers: [UserPalletService],
     }).compile();
 
     controller = module.get<UserPalletController>(UserPalletController);

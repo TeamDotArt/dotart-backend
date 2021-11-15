@@ -9,6 +9,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -18,8 +19,9 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
-// Service
-import { UserpalletService } from './user-pallet.service';
+// Interface
+import { UserPalletControllerInterface } from './Interface/userPallet.controller.interface';
+import { UserPalletServiceInterface } from './Interface/userPallet.service.interface';
 // Guards
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 // Dto
@@ -35,11 +37,13 @@ import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
 import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 
-// TODO: ApiResponseを記載する
 @ApiTags('user-pallet')
 @Controller('user-pallet')
-export class UserPalletController {
-  constructor(private readonly userPalletService: UserpalletService) {}
+export class UserPalletController implements UserPalletControllerInterface {
+  constructor(
+    @Inject('UserPalletServiceInterface')
+    private readonly userPalletService: UserPalletServiceInterface,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -51,7 +55,7 @@ export class UserPalletController {
     description: 'ユーザーパレットの詳細情報',
   })
   // フックメソッド
-  async create(
+  async createUserPallet(
     @Req() req: FastifyRequest,
     @Body() data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
@@ -63,7 +67,7 @@ export class UserPalletController {
   @ApiOperation({ summary: '全ユーザパレット検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllUserPalletResponse })
   // フックメソッド
-  async findAll(): Promise<FindAllUserPalletResponse[]> {
+  async getUserPallets(): Promise<FindAllUserPalletResponse[]> {
     return this.userPalletService.findAll();
   }
 
@@ -77,10 +81,10 @@ export class UserPalletController {
     type: String,
   })
   // フックメソッド
-  async findByUserPalletId(
+  async getUserPallet(
     @Param('palletId') palletId: string,
   ): Promise<FindUserPalletResponse> {
-    return this.userPalletService.findByUserPalletId(palletId);
+    return this.userPalletService.findUserPalletId(palletId);
   }
 
   @Get('findPalletName/:name')
@@ -93,10 +97,10 @@ export class UserPalletController {
     type: String,
   })
   // フックメソッド
-  async findByUserPalletName(
+  async getUserPalletByName(
     @Param('name') name: string,
   ): Promise<FindUserPalletResponse> {
-    return this.userPalletService.findByUserPallletName(name);
+    return this.userPalletService.findUserPalletByName(name);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -111,11 +115,11 @@ export class UserPalletController {
   })
   @ApiBody({ type: UpdateUserPalletRequest, description: '更新データ' })
   // フックメソッド
-  async updateProfileData(
+  async updateUserPallet(
     @Req() req: FastifyRequest,
     @Body() data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    return this.userPalletService.updateUserPalletData(req, data);
+    return this.userPalletService.update(req, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -129,9 +133,9 @@ export class UserPalletController {
     type: String,
   })
   // フックメソッド
-  async removeUserPalletData(
+  async deleteUserPallet(
     @Req() req: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    return this.userPalletService.removeUserPalletData(req);
+    return this.userPalletService.remove(req);
   }
 }
