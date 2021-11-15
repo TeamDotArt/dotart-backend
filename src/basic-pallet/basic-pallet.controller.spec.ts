@@ -1,4 +1,4 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { BasicPalletController } from './basic-pallet.controller';
 import { BasicPalletService } from './basic-pallet.service';
 import { RoleGuard } from '../auth/guards/role.guard';
@@ -11,7 +11,7 @@ describe('BasicPalletController', () => {
   let basicPalletController: BasicPalletController;
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [BasicPalletController],
       providers: [BasicPalletService, PrismaService],
     })
@@ -59,15 +59,9 @@ describe('BasicPalletController', () => {
 
     describe('findAll', () => {
       it('ベーシックパレット全取得のテスト', async () => {
-        //const test = ['monoqlo', 'retroGame', 'standard'];
         let result;
         try {
           result = await basicPalletController.findAll();
-          /*
-          result.map((pallet, i) => {
-            expect(pallet.palletId).toEqual(test[i]);
-          });
-          */
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
@@ -149,7 +143,7 @@ describe('BasicPalletController', () => {
     });
   });
 
-  describe('例外系', () => {
+  describe('異常系', () => {
     describe('create', () => {
       it('ベーシックパレット生成のテスト(palletId未入力)', async () => {
         const mock = {
@@ -192,6 +186,132 @@ describe('BasicPalletController', () => {
         let result;
         try {
           result = await basicPalletController.removeBasicPalletData(palletId);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('findPalletId/:palletId', () => {
+      it('palletIdによる単一取得のテスト（palletId未入力）', async () => {
+        const palletId = '';
+        let result;
+        try {
+          result = await basicPalletController.findByBasicPalletId(palletId);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('findName/:name', () => {
+      it('nameによる単一取得のテスト(name未入力)', async () => {
+        const name = '';
+        let result;
+        try {
+          result = await basicPalletController.findByName(name);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('updateProfileData', () => {
+      it('ベーシックパレット更新のテスト(palletId未入力)', async () => {
+        const palletId = '';
+        const mock = {
+          name: 'スタンダード2',
+          description: '使いやすそうな色をまとめてみました。',
+          data: '[test]',
+        };
+        let result;
+        try {
+          result = await basicPalletController.updateProfileData(
+            palletId,
+            mock,
+          );
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+    describe('removeBasicPalletData', () => {
+      it('ベーシックパレット削除のテスト(palletIdがDBにない)', async () => {
+        const palletId = 'test999';
+        let result;
+        try {
+          result = await basicPalletController.removeBasicPalletData(palletId);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('findAll', () => {
+      it('ベーシックパレット全取得のテスト（DBにない）', async () => {
+        let result;
+        try {
+          result = await basicPalletController.findAll();
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('findPalletId/:palletId', () => {
+      it('palletIdによる単一取得のテスト(palletIdがDBにない)', async () => {
+        const palletId = 'standardtest';
+        let result;
+        try {
+          result = await basicPalletController.findByBasicPalletId(palletId);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('findName/:name', () => {
+      it('nameによる単一取得のテスト(palletIdがDBにない)', async () => {
+        const name = 'スタンダードtest';
+        let result;
+        try {
+          result = await basicPalletController.findByName(name);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+    });
+
+    describe('updateProfileData', () => {
+      it('ベーシックパレット更新のテスト(palletIdがDBにない)', async () => {
+        const palletId = 'standard999';
+        const mock = {
+          name: 'スタンダード2',
+          description: '使いやすそうな色をまとめてみました。',
+          data: '[test]',
+        };
+        let result;
+        try {
+          result = await basicPalletController.updateProfileData(
+            palletId,
+            mock,
+          );
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
