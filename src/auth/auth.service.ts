@@ -38,15 +38,16 @@ import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 import { MeResponse } from './dto/me-auth.dto';
 import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
 import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
+import { AuthServiceInterface } from './interface/auth.service.interface';
 
 @Injectable()
-export class AuthService implements AuthService {
+export class AuthService implements AuthServiceInterface {
   constructor(
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
     @Inject('TokenServiceInterface')
     private readonly tokenService: TokenServiceInterface,
     private readonly jwtService: JwtService,
-    @Inject('UsersServiceInterface')
-    private readonly usersService: UsersServiceInterface,
     private readonly prisma: PrismaService,
   ) {}
 

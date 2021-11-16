@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 // import { plainToClass } from 'class-transformer';
 import { PayloadDto } from '../dto/payload.dto';
-import { AuthService } from '../auth.service';
+import { AuthServiceInterface } from '../interface/auth.service.interface';
 
 /**
  * @description JWTの認証処理を行うクラス
@@ -17,8 +17,9 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
+    @Inject('AuthServiceInterface')
+    private readonly authService: AuthServiceInterface,
     private readonly configService: ConfigService,
-    private readonly authService: AuthService,
   ) {
     super({
       // Authorization bearerからトークンを読み込む関数を返す

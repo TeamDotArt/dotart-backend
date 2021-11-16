@@ -10,6 +10,7 @@ import {
   Req,
   Request,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -21,7 +22,6 @@ import {
 import { FastifyRequest } from 'fastify';
 // サービス
 import { AppService } from './app.service';
-import { AuthService } from './auth/auth.service';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 // DTO
@@ -41,13 +41,15 @@ import {
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
+import { AuthServiceInterface } from './auth/interface/auth.service.interface';
 
 @ApiTags('/')
 @Controller()
 export class AppController {
   constructor(
+    @Inject('AuthServiceInterface')
+    private readonly authService: AuthServiceInterface,
     private readonly appService: AppService,
-    private readonly authService: AuthService,
   ) {}
 
   /**
