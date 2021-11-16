@@ -12,26 +12,26 @@ import {
 } from '../dto/update-user-pallet.dto';
 
 export interface UserPalletControllerInterface {
-  // get user pallet
+  // ユーザパレットの検索処理
   getUserPallet(palletId: string): Promise<FindUserPalletResponse>;
-
+  // 名前からユーザパレットの検索をする処理
   getUserPalletByName(name: string): Promise<FindUserPalletResponse>;
-  // get all user pallet
+  // すべてのユーザパレットを検索する処理
   getUserPallets(): Promise<FindAllUserPalletResponse[]>;
 
-  // create user pallet
+  // ユーザパレットの作成処理
   createUserPallet(
     authorization: FastifyRequest,
     userPallet: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse>;
 
-  // update user pallet
+  // ユーザパレットの更新処理
   updateUserPallet(
     authorization: FastifyRequest,
     userPallet: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse>;
 
-  // delete user pallet
+  // ユーザパレットの削除処理
   deleteUserPallet(
     authorization: FastifyRequest,
   ): Promise<RemoveUserPalletResponse>;

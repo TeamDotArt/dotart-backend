@@ -5,18 +5,18 @@ import { RemoveUserResponse } from '../dto/remove-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from '../dto/update-user.dto';
 
 export interface UsersControllerInterface {
-  // get user pallet
+  // ユーザの取得処理
   getUser(userParam: FindUserParam): Promise<FindUserResponse>;
 
-  // get all user pallet
+  // すべてのユーザの取得処理
   getUsers(): Promise<FindAllUserResponse[]>;
 
-  // update user pallet
+  // ユーザプロフィールの更新処理
   updateProfile(
     authorization: FastifyRequest,
     user: UpdateUserRequest,
   ): Promise<UpdateUserResponse>;
 
-  // delete user pallet
+  // ユーザの削除処理
   deleteUser(authorization: FastifyRequest): Promise<RemoveUserResponse>;
 }

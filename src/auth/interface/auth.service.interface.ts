@@ -15,26 +15,29 @@ import {
   PasswordResetResponse,
 } from '../dto/passwordReset-user.dto';
 
+/** @implements {AuthService}
+ * AuthServiceのインターフェース
+ */
 export interface AuthServiceInterface {
-  // get pasic pallet
+  // ユーザのバリデーション
   validateUser(data: LogInUserRequest): Promise<ValidateUserResponse | null>;
+  // ログイン処理
   login(data: LogInUserRequest): Promise<LogInUserResponse>;
+  // ログアウト処理
   logout(authorization: FastifyRequest): Promise<LogOutUserResponse>;
-
-  // create basic pallet
+  // アカウント作成の処理
   signup(user: CreateUserRequest): Promise<VerifyEmailResponse>;
-
-  // update basic pallet
+  // メール認証の処理
   emailConfirm(emailToken: string): Promise<ConfirmedUserResponse>;
-
-  // delete basic pallet
+  // パスワードリセットのリクエスト処理
   passwordResetRequest(
     authorization: FastifyRequest,
   ): Promise<PasswordResetReqResponse>;
+  // パスワードリセットの処理
   passwordReset(
     token: string,
     data: PasswordResetRequest,
   ): Promise<PasswordResetResponse>;
-
+  // ログイン情報の処理
   me(authorization: FastifyRequest): Promise<MeResponse>;
 }

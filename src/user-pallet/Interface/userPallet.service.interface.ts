@@ -12,25 +12,26 @@ import {
 } from '../dto/update-user-pallet.dto';
 
 export interface UserPalletServiceInterface {
-  // get pasic pallet
+  // 固有IDを指定してユーザーパレットを取得
   findUserPalletId(userPalletId: string): Promise<FindUserPalletResponse>;
+  // 名前からユーザーパレットを取得する処理
   findUserPalletByName(name: string): Promise<FindUserPalletResponse>;
 
-  // get all basic pallet
+  // すべてのユーザーパレットを取得する処理
   findAll(): Promise<FindAllUserPalletResponse[]>;
 
-  // create basic pallet
+  // ユーザパレットの作成処理
   create(
     authorization: FastifyRequest,
     userPallet: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse>;
 
-  // update basic pallet
+  // ユーザパレットの更新処理
   update(
     authorization: FastifyRequest,
     userPallet: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse>;
 
-  // delete basic pallet
+  // ユーザパレットの削除処理
   remove(authorization: FastifyRequest): Promise<RemoveUserPalletResponse>;
 }

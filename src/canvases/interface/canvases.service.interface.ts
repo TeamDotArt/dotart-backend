@@ -15,26 +15,27 @@ import {
 } from '../dto/delete-canvas.dto';
 
 export interface CanvasesServiceInterface {
-  // get pasic pallet
+  // キャンバスの検索処理
   findCanvasId(canvasId: string): Promise<FindCanvasResponse>;
+  // 名前からキャンバスを検索する処理
   findCanvasByName(canvasNaeme: string): Promise<FindCanvasResponse>;
 
-  // get all basic pallet
+  // すべてのキャンバスの検索処理
   findAll(authorization: FastifyRequest): Promise<FindAllCanvasResponse[]>;
 
-  // create basic pallet
+  // キャンバスの作成処理
   create(
     authorization: FastifyRequest,
     canvas: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse>;
 
-  // update basic pallet
+  // キャンバスの更新処理
   update(
     authorization: FastifyRequest,
     canvas: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse>;
 
-  // delete basic pallet
+  // キャンバスの削除処理
   remove(
     authorization: FastifyRequest,
     canvas: RemoveCanvasRequest,

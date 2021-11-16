@@ -12,25 +12,26 @@ import {
 import { RemoveCanvasResponse } from '../dto/delete-canvas.dto';
 
 export interface CanvasesControllerInterface {
-  // get canvas
+  // キャンバスの検索処理
   getCanvas(canvasParam: FindCanvasParam): Promise<FindCanvasResponse>;
+  // 名前からキャンバスを検索する処理
   getCanvasByName(canvasParam: FindCanvasParam): Promise<FindCanvasResponse>;
-  // get all canvases
+  // すべてのキャンバスを検索する処理
   getCanvases(authorization: FastifyRequest): Promise<FindAllCanvasResponse[]>;
 
-  // create canvas
+  // キャンバスの作成処理
   createCanvas(
     authorization: FastifyRequest,
     canvas: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse>;
 
-  // update canvas
+  // キャンバスの更新処理
   updateCanvas(
     authorization: FastifyRequest,
     canvas: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse>;
 
-  // delete canvas
+  // キャンバスの削除処理
   deleteCanvas(
     authorization: FastifyRequest,
     canvas: RemoveCanvasResponse,

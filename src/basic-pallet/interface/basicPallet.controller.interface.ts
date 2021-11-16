@@ -10,26 +10,30 @@ import {
   UpdateBasicPalletResponse,
 } from '../dto/update-basic-pallet.dto';
 
+/** @implements {BasicPalletController}
+ * BasicPalletControllerのインターフェース
+ */
 export interface BasicPalletControllerInterface {
-  // get pasic pallet
+  // ベーシックパレット取得の処理
   getBasicPallet(basicPalletId: string): Promise<FindBasicPalletResponse>;
+  // 名前からベーシックパレットを取得する処理
   getBasicPalletByName(
     basicPalletName: string,
   ): Promise<FindBasicPalletResponse>;
-  // get all basic pallet
+  // すべてのベーシックパレット取得処理
   getBasicPallets(): Promise<FindAllBasicPalletResponse[]>;
 
-  // create basic pallet
+  // ベーシックパレット作成処理
   createBasicPallet(
     basicPallet: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse>;
 
-  // update basic pallet
+  // ベーシックパレット更新処理
   updateBasicPallet(
     basicPalletId: string,
     basicPallet: UpdateBasicPalletRequest,
   ): Promise<UpdateBasicPalletResponse>;
 
-  // delete basic pallet
+  // ベーシックパレット削除処理
   deleteBasicPallet(basicPalletId: string): Promise<RemoveBasicPalletResponse>;
 }

@@ -6,31 +6,35 @@ import { UpdateUserRequest, UpdateUserResponse } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 
 export interface UsersServiceInterface {
-  // get pasic pallet
+  // 固有IDでユーザーを取得
   findUserById(id: number): Promise<User>;
+  // Emailトークンでユーザーを取得
   findUserByEmailToken(emailToken: string): Promise<User>;
+  // パスワードトークンでユーザーを取得
   findUserByPasswordToken(passwordToken: string): Promise<User>;
 
-  // userData
+  // 固有IDでユーザーIDを取得
   getUserIdById(id: number): Promise<string>;
+  // 名前でユーザーIDを取得
   getUserIdByName(name: string): Promise<string>;
 
-  // profile
+  // ユーザプロフィールを取得
   getUserProfile(userId: string): Promise<GetUserProfileResponse>;
+  // 固有IDでユーザプロフィールを取得
   getUserProfileById(id: number): Promise<GetUserProfileResponse>;
 
-  // get all basic pallet
+  // すべてのユーザーの取得処理
   findAll(): Promise<FindAllUserResponse[]>;
 
-  // 認証用
+  // 認証用検索処理
   validateFindByUserId(userId: string): Promise<User>;
 
-  // update basic pallet
+  // ユーザプロフィールの更新処理
   updateProfile(
     authorization: FastifyRequest,
     user: UpdateUserRequest,
   ): Promise<UpdateUserResponse>;
 
-  // delete basic pallet
+  // ユーザの削除処理
   remove(authorization: FastifyRequest): Promise<RemoveUserResponse>;
 }
