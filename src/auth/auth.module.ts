@@ -35,7 +35,7 @@ import { TokenService } from 'src/token/token.service';
   providers: [
     AuthService,
     { provide: 'TokenServiceInterface', useClass: TokenService },
-    UsersService,
+    { provide: 'UsersServiceInterface', useClass: UsersService },
     PrismaService,
     LocalStrategy,
     JwtStrategy,

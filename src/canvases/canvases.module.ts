@@ -13,8 +13,8 @@ import { TokenService } from '../token/token.service';
       useClass: CanvasesService,
     },
     { provide: 'TokenServiceInterface', useClass: TokenService },
+    { provide: 'UsersServiceInterface', useClass: UsersService },
     PrismaService,
-    UsersService,
   ],
 })
 export class CanvasesModule {}

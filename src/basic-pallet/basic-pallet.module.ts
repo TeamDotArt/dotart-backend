@@ -10,8 +10,8 @@ import { TokenService } from 'src/token/token.service';
   providers: [
     { provide: 'BasicPalletServiceInterface', useClass: BasicPalletService },
     { provide: 'TokenServiceInterface', useClass: TokenService },
+    { provide: 'UsersServiceInterface', useClass: UsersService },
     PrismaService,
-    UsersService,
   ],
 })
 export class BasicPalletModule {}

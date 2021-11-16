@@ -8,7 +8,7 @@ import { TokenService } from 'src/token/token.service';
   controllers: [UsersController],
   providers: [
     { provide: 'TokenServiceInterface', useClass: TokenService },
-    UsersService,
+    { provide: 'UsersServiceInterface', useClass: UsersService },
     PrismaService,
   ],
 })
