@@ -5,87 +5,95 @@ import { PrismaService } from 'src/common/prisma.service';
 import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
 // Dto
 import { RemoveTokenResponse } from './dto/remove-token.dto';
+import { AccessTokenResponse } from './dto/access-token.dto';
+import { RefreshTokenResponse } from './dto/refresh-token.dto';
+import { EmailTokenResponse } from './dto/email-token.dto';
+import { UserIdResponse } from './dto/user-id.dto';
+import { PasswordTokenResponse } from './dto/password-token.dto';
+import { TokenServiceInterface } from './interface/token.service.interface';
 
 @Injectable()
-export class TokenService {
+export class TokenService implements TokenServiceInterface {
   constructor(private prisma: PrismaService) {}
 
   /**
    * UserIdからtokenを取得する
    */
-  async getTokenByUserId(userId: string): Promise<string> {
+  async getToken(userId: string): Promise<AccessTokenResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         userId: userId,
       },
     });
-    return findToken.token;
+    return { token: findToken.token };
   }
 
   /**
    * UserIdからrefreshTokenを取得する
    */
-  async getRefreshTokenByUserId(userId: string): Promise<string> {
+  async getRefreshToken(userId: string): Promise<RefreshTokenResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         userId: userId,
       },
     });
-    return findToken.refreshToken;
+    return { refreshToken: findToken.refreshToken };
   }
 
   /**
    * UserIdからEmailTokenを取得する
    */
-  async getEmailTokenByUserId(userId: string): Promise<string> {
+  async getEmailToken(userId: string): Promise<EmailTokenResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         userId: userId,
       },
     });
-    return findToken.emailToken;
+    return { emailToken: findToken.emailToken };
   }
 
   /**
    * EmailTokenからUserIdを取得する
    */
-  async getUserIdByEmailToken(emailToken: string): Promise<string> {
+  async getUserIdByEmailToken(emailToken: string): Promise<UserIdResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         emailToken: emailToken,
       },
     });
-    return findToken.userId;
+    return { userId: findToken.userId };
   }
 
   /**
    * PasswordTokenからUserIdを取得する
    */
-  async getUserIdByPasswordToken(passwordToken: string): Promise<string> {
+  async getUserIdByPasswordToken(
+    passwordToken: string,
+  ): Promise<UserIdResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         passwordToken: passwordToken,
       },
     });
-    return findToken.userId;
+    return { userId: findToken.userId };
   }
 
   /**
    * UserIdからPasswordTokenを取得する
    */
-  async getPasswordTokenByUserId(userId: string): Promise<string> {
+  async getPasswordToken(userId: string): Promise<PasswordTokenResponse> {
     const findToken = await this.prisma.token.findUnique({
       where: {
         userId: userId,
       },
     });
-    return findToken.passwordToken;
+    return { passwordToken: findToken.passwordToken };
   }
 
   /**
    * EmailTokenを生成する
    */
-  async createEmailToken(userId: string): Promise<string> {
+  async createEmailToken(userId: string): Promise<EmailTokenResponse> {
     const emailToken = generateEmailToken();
     const token = await this.prisma.token.create({
       data: {
@@ -93,13 +101,16 @@ export class TokenService {
         emailToken: emailToken,
       },
     });
-    return token.emailToken;
+    return { emailToken: token.emailToken };
   }
 
   /**
    * AccessTokenをセットする
    */
-  async setAccessToken(accessToken: string, userId: string): Promise<string> {
+  async setAccessToken(
+    accessToken: string,
+    userId: string,
+  ): Promise<AccessTokenResponse> {
     await this.prisma.token.upsert({
       where: { userId: userId },
       update: {
@@ -110,7 +121,7 @@ export class TokenService {
         token: accessToken,
       },
     });
-    return accessToken;
+    return { token: accessToken };
   }
 
   /**
@@ -119,12 +130,12 @@ export class TokenService {
   async setPasswordToken(
     userId: string,
     passwordToken: string | null,
-  ): Promise<string> {
+  ): Promise<PasswordTokenResponse> {
     const token = await this.prisma.token.update({
       where: { userId: userId },
       data: { passwordToken: passwordToken },
     });
-    return token.passwordToken;
+    return { passwordToken: token.passwordToken };
   }
 
   /**
