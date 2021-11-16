@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 // Service
 import { PrismaService } from 'src/common/prisma.service';
-import { TokenService } from 'src/token/token.service';
 // Entity
 import { User } from './entities/user.entity';
 // Helper
@@ -15,12 +14,14 @@ import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 import { GetUserProfileResponse } from './dto/get-user.dto';
+import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private prisma: PrismaService,
-    private tokenService: TokenService,
+    @Inject('TokenServiceInterface')
+    private readonly tokenService: TokenServiceInterface,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -51,10 +52,10 @@ export class UsersService {
     }
 
     // emailTokenからUserIdを検索
-    const userId = await this.tokenService.getUserIdByEmailToken(emailToken);
+    const user = await this.tokenService.getUserIdByEmailToken(emailToken);
 
     return this.prisma.user.findUnique({
-      where: { userId: userId },
+      where: { userId: user.userId },
     });
   }
 
@@ -67,12 +68,12 @@ export class UsersService {
     }
 
     // emailTokenからUserIdを検索
-    const userId = await this.tokenService.getUserIdByPasswordToken(
+    const user = await this.tokenService.getUserIdByPasswordToken(
       passwordToken,
     );
 
     return this.prisma.user.findUnique({
-      where: { userId: userId },
+      where: { userId: user.userId },
     });
   }
 

@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -7,7 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 // サービス
 import { UsersService } from 'src/users/users.service';
-import { TokenService } from 'src/token/token.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
@@ -37,14 +37,16 @@ import {
 import { CreateUserRequest } from './dto/create-user.dto';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 import { MeResponse } from './dto/me-auth.dto';
+import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
 
 @Injectable()
 export class AuthService implements AuthService {
   constructor(
-    private jwtService: JwtService,
-    private usersService: UsersService,
-    private tokenService: TokenService,
-    private prisma: PrismaService,
+    @Inject('TokenServiceInterface')
+    private readonly tokenService: TokenServiceInterface,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -101,7 +103,7 @@ export class AuthService implements AuthService {
     return {
       status: 201,
       message: 'ログインしました。\nメール認証を行ってください。',
-      accessToken: accessToken,
+      accessToken: accessToken.token,
     };
   }
 
@@ -159,7 +161,7 @@ export class AuthService implements AuthService {
     const token = await this.tokenService.createEmailToken(user.userId);
 
     // emailチェックのためメール送信する
-    sendEmailToken(createdUser.email, token);
+    sendEmailToken(createdUser.email, token.emailToken);
     return {
       status: 201,
       message: 'メールアドレスを認証してください。',
@@ -217,7 +219,7 @@ export class AuthService implements AuthService {
       passwordToken,
     );
 
-    sendPasswordResetEmailToken(user.email, token);
+    sendPasswordResetEmailToken(user.email, token.passwordToken);
     return {
       status: 201,
       message: 'パスワードの再設定を行ってください。',
