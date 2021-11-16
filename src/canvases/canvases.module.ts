@@ -12,7 +12,6 @@ import { TokenService } from '../token/token.service';
       provide: 'CanvasesServiceInterface',
       useClass: CanvasesService,
     },
-    CanvasesService,
     PrismaService,
     UsersService,
     TokenService,
