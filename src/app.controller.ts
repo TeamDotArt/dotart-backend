@@ -77,8 +77,8 @@ export class AppController {
   @ApiResponse({ status: HttpStatus.OK, type: LogOutUserResponse })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   // フックメソッド
-  logout(@Req() req: FastifyRequest): Promise<LogOutUserResponse> {
-    return this.authService.logout(req);
+  logout(@Req() authorization: FastifyRequest): Promise<LogOutUserResponse> {
+    return this.authService.logout(authorization);
   }
 
   /**
@@ -139,9 +139,9 @@ export class AppController {
   })
   // フックメソッド
   passwordResetReq(
-    @Request() req: FastifyRequest,
+    @Request() authorization: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    return this.authService.passwordResetRequest(req);
+    return this.authService.passwordResetRequest(authorization);
   }
 
   /**

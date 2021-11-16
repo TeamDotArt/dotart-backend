@@ -58,10 +58,10 @@ export class CanvasesController implements CanvasesControllerInterface {
   })
   // フックメソッド
   createCanvas(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
-    return this.canvasesService.create(req, data);
+    return this.canvasesService.create(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -70,8 +70,10 @@ export class CanvasesController implements CanvasesControllerInterface {
   @ApiOperation({ summary: '全キャンバス検索' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllCanvasResponse })
   // フックメソッド
-  getCanvases(@Req() req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
-    return this.canvasesService.findAll(req);
+  getCanvases(
+    @Req() authorization: FastifyRequest,
+  ): Promise<FindAllCanvasResponse[]> {
+    return this.canvasesService.findAll(authorization);
   }
 
   @Get('findCanvasId/:canvasId')
@@ -114,10 +116,10 @@ export class CanvasesController implements CanvasesControllerInterface {
   @ApiBody({ type: UpdateCanvasRequest, description: '更新データ' })
   // フックメソッド
   updateCanvas(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
-    return this.canvasesService.update(req, data);
+    return this.canvasesService.update(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -127,9 +129,9 @@ export class CanvasesController implements CanvasesControllerInterface {
   @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
   // フックメソッド
   deleteCanvas(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: RemoveCanvasResponse,
   ): Promise<RemoveCanvasResponse> {
-    return this.canvasesService.remove(req, data);
+    return this.canvasesService.remove(authorization, data);
   }
 }

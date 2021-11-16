@@ -81,10 +81,10 @@ export class UsersController implements UsersControllerInterface {
   @ApiBody({ type: UpdateUserRequest, description: '更新データ' })
   // フックメソッド
   async updateProfile(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
-    return this.usersService.updateProfile(req, data);
+    return this.usersService.updateProfile(authorization, data);
   }
 
   /**
@@ -96,7 +96,9 @@ export class UsersController implements UsersControllerInterface {
   @ApiOperation({ summary: 'ユーザデータ削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveUserResponse })
   // フックメソッド
-  async deleteUser(@Req() req: FastifyRequest): Promise<RemoveUserResponse> {
-    return this.usersService.remove(req);
+  async deleteUser(
+    @Req() authorization: FastifyRequest,
+  ): Promise<RemoveUserResponse> {
+    return this.usersService.remove(authorization);
   }
 }

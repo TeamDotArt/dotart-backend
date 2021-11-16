@@ -56,10 +56,10 @@ export class UserPalletController implements UserPalletControllerInterface {
   })
   // フックメソッド
   async createUserPallet(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    return this.userPalletService.create(req, data);
+    return this.userPalletService.create(authorization, data);
   }
 
   @Get()
@@ -116,10 +116,10 @@ export class UserPalletController implements UserPalletControllerInterface {
   @ApiBody({ type: UpdateUserPalletRequest, description: '更新データ' })
   // フックメソッド
   async updateUserPallet(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
     @Body() data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    return this.userPalletService.update(req, data);
+    return this.userPalletService.update(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -134,8 +134,8 @@ export class UserPalletController implements UserPalletControllerInterface {
   })
   // フックメソッド
   async deleteUserPallet(
-    @Req() req: FastifyRequest,
+    @Req() authorization: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    return this.userPalletService.remove(req);
+    return this.userPalletService.remove(authorization);
   }
 }
