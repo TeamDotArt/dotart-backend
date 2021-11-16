@@ -20,8 +20,8 @@ import {
 } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
 // Interface
-import { UserPalletControllerInterface } from './Interface/userPallet.controller.interface';
-import { UserPalletServiceInterface } from './Interface/userPallet.service.interface';
+import { UserPalletControllerInterface } from './interface/userPallet.controller.interface';
+import { UserPalletServiceInterface } from './interface/userPallet.service.interface';
 // Guards
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 // Dto

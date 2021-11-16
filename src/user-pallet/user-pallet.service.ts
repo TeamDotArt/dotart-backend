@@ -22,7 +22,7 @@ import {
   CreateUserPalletResponse,
 } from './dto/create-user-pallet.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
-import { UserPalletServiceInterface } from './Interface/userPallet.service.interface';
+import { UserPalletServiceInterface } from './interface/userPallet.service.interface';
 
 @Injectable()
 export class UserPalletService implements UserPalletServiceInterface {
