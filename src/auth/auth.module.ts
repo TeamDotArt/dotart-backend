@@ -34,7 +34,7 @@ import { TokenService } from 'src/token/token.service';
   // controllers: [AuthController],
   providers: [
     AuthService,
-    TokenService,
+    { provide: 'TokenServiceInterface', useClass: TokenService },
     UsersService,
     PrismaService,
     LocalStrategy,

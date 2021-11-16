@@ -15,7 +15,7 @@ import { TokenService } from 'src/token/token.service';
     // UserpalletService,
     PrismaService,
     UsersService,
-    TokenService,
+    { provide: 'TokenServiceInterface', useClass: TokenService },
   ],
 })
 export class UserPalletModule {}

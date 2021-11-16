@@ -6,6 +6,10 @@ import { TokenService } from 'src/token/token.service';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, PrismaService, TokenService],
+  providers: [
+    { provide: 'TokenServiceInterface', useClass: TokenService },
+    UsersService,
+    PrismaService,
+  ],
 })
 export class UsersModule {}
