@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TokenModule } from './token/token.module';
 import { UserPalletModule } from './user-pallet/user-pallet.module';
+import { LineBotModule } from './line-bot/line-bot.module';
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ import { UserPalletModule } from './user-pallet/user-pallet.module';
     }),
     TokenModule,
     UserPalletModule,
+    BasicPalletModule,
+    CanvasesModule,
+    UserPalletModule,
+    LineBotModule,
   ],
   controllers: [AppController],
   providers: [AppService],
