@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpStatus,
   Req,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -18,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
 // Service
-import { UsersService } from './users.service';
+
 // Guards
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
@@ -27,12 +28,16 @@ import { FindAllUserResponse } from './dto/findAll-user.dto';
 import { FindUserParam, FindUserResponse } from './dto/find-user.dto';
 import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
+import { UsersControllerInterface } from './interface/users.controller.interface';
+import { UsersServiceInterface } from './interface/users.service.interface';
 
-// TODO: ApiResponseを記載する
 @ApiTags('users')
 @Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UsersController implements UsersControllerInterface {
+  constructor(
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
+  ) {}
 
   /**
    * @description ユーザ全取得API
@@ -44,7 +49,7 @@ export class UsersController {
   @ApiOperation({ summary: '全ユーザ検索(ロールがADMINのユーザのみ)' })
   @ApiResponse({ status: HttpStatus.OK, type: FindAllUserResponse })
   // フックメソッド
-  async findAll(): Promise<FindAllUserResponse[]> {
+  async getUsers(): Promise<FindAllUserResponse[]> {
     return this.usersService.findAll();
   }
 
@@ -61,10 +66,8 @@ export class UsersController {
     type: FindUserParam,
   })
   // フックメソッド
-  async findByUserId(
-    @Param() userParam: FindUserParam,
-  ): Promise<FindUserResponse> {
-    return this.usersService.getUserProfileByUserId(userParam.userId);
+  async getUser(@Param() userParam: FindUserParam): Promise<FindUserResponse> {
+    return this.usersService.getUserProfile(userParam.userId);
   }
 
   /**
@@ -77,11 +80,11 @@ export class UsersController {
   @ApiResponse({ status: HttpStatus.OK, type: UpdateUserResponse })
   @ApiBody({ type: UpdateUserRequest, description: '更新データ' })
   // フックメソッド
-  async updateProfileData(
+  async updateProfile(
     @Req() req: FastifyRequest,
     @Body() data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
-    return this.usersService.updateProfileData(req, data);
+    return this.usersService.updateProfile(req, data);
   }
 
   /**
@@ -93,9 +96,7 @@ export class UsersController {
   @ApiOperation({ summary: 'ユーザデータ削除' })
   @ApiResponse({ status: HttpStatus.OK, type: RemoveUserResponse })
   // フックメソッド
-  async removeAccountData(
-    @Req() req: FastifyRequest,
-  ): Promise<RemoveUserResponse> {
-    return this.usersService.removeAccountData(req);
+  async deleteUser(@Req() req: FastifyRequest): Promise<RemoveUserResponse> {
+    return this.usersService.remove(req);
   }
 }

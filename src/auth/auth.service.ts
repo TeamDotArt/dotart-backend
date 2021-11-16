@@ -7,7 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 // サービス
-import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
@@ -38,6 +37,7 @@ import { CreateUserRequest } from './dto/create-user.dto';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 import { MeResponse } from './dto/me-auth.dto';
 import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
+import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
 
 @Injectable()
 export class AuthService implements AuthService {
@@ -45,7 +45,8 @@ export class AuthService implements AuthService {
     @Inject('TokenServiceInterface')
     private readonly tokenService: TokenServiceInterface,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
     private readonly prisma: PrismaService,
   ) {}
 

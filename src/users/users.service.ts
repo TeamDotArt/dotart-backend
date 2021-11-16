@@ -15,9 +15,10 @@ import { UpdateUserRequest, UpdateUserResponse } from './dto/update-user.dto';
 import { RemoveUserResponse } from './dto/remove-user.dto';
 import { GetUserProfileResponse } from './dto/get-user.dto';
 import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
+import { UsersServiceInterface } from './interface/users.service.interface';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements UsersServiceInterface {
   constructor(
     @Inject('TokenServiceInterface')
     private readonly tokenService: TokenServiceInterface,
@@ -34,7 +35,7 @@ export class UsersService {
   /**
    * @description ユーザを固有IDから検索
    */
-  async findOne(id: number): Promise<User> {
+  async findUserById(id: number): Promise<User> {
     if (!id) {
       throw new NotFoundException('idが存在しません。');
     }
@@ -143,9 +144,7 @@ export class UsersService {
   /**
    * @description ユーザIDからプロフィール情報を検索
    */
-  async getUserProfileByUserId(
-    userId: string,
-  ): Promise<GetUserProfileResponse> {
+  async getUserProfile(userId: string): Promise<GetUserProfileResponse> {
     if (!userId) {
       throw new NotFoundException('ユーザIdが存在しません。');
     }
@@ -181,7 +180,7 @@ export class UsersService {
   /**
    * @description ユーザのProfileを更新
    */
-  async updateProfileData(
+  async updateProfile(
     req: FastifyRequest,
     data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
@@ -223,7 +222,7 @@ export class UsersService {
   /**
    * @description ユーザの削除
    */
-  async removeAccountData(req: FastifyRequest): Promise<RemoveUserResponse> {
+  async remove(req: FastifyRequest): Promise<RemoveUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user: User = await this.prisma.user.findUnique({
       where: { id: decoded.id },
