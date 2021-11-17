@@ -6,9 +6,9 @@ import {
   Inject,
 } from '@nestjs/common';
 import { DecodedDto } from '../dto/decoded.dto';
-import { User } from 'src/users/entities/user.entity';
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
-import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
+import { User } from '../../users/entities/user.entity';
+import { jwtDecoded } from '../../common/helpers/jwtDecoded';
+import { UsersServiceInterface } from '../../users/interface/users.service.interface';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
