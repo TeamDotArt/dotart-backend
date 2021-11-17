@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 
 export class EmailTokenParam {
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_TOKEN })

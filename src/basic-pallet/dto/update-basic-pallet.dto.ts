@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 import { BasicPallet } from '../entities/basic-pallet.entity';
 
 export class UpdateBasicPalletRequest {
