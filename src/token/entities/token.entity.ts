@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Token as PrismaToken } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 
 export class Token {
   @ApiProperty({ description: Constants.PROPERTY_ID })

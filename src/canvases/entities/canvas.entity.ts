@@ -8,7 +8,7 @@ import {
   IsOptional,
   IsDate,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 
 export class Canvas {
   @ApiProperty({ description: Constants.PROPERTY_ID })
