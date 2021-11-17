@@ -14,21 +14,17 @@ import { LineBotModule } from './line-bot/line-bot.module';
 
 @Module({
   imports: [
-    UsersModule,
+    AuthModule,
     BasicPalletModule,
     CanvasesModule,
-    AuthModule,
     ConfigModule.forRoot({
       // envファイルを組み込むために使用
       isGlobal: true,
     }),
-    AuthModule,
-    TokenModule,
-    UserPalletModule,
-    BasicPalletModule,
-    CanvasesModule,
-    UserPalletModule,
     LineBotModule,
+    TokenModule,
+    UsersModule,
+    UserPalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],

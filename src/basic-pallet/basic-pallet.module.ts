@@ -7,6 +7,11 @@ import { TokenService } from 'src/token/token.service';
 
 @Module({
   controllers: [BasicPalletController],
-  providers: [BasicPalletService, PrismaService, UsersService, TokenService],
+  providers: [
+    { provide: 'BasicPalletServiceInterface', useClass: BasicPalletService },
+    { provide: 'TokenServiceInterface', useClass: TokenService },
+    { provide: 'UsersServiceInterface', useClass: UsersService },
+    PrismaService,
+  ],
 })
 export class BasicPalletModule {}

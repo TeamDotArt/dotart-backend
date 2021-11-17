@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 // Service
 import { PrismaService } from '../common/prisma.service';
-import { UsersService } from 'src/users/users.service';
 // Dto
 import {
   RemoveCanvasResponse,
@@ -20,12 +19,15 @@ import {
   UpdateCanvasResponse,
 } from './dto/update-canvas.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { CanvasesServiceInterface } from './interface/canvases.service.interface';
+import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
 
 @Injectable()
-export class CanvasesService {
+export class CanvasesService implements CanvasesServiceInterface {
   constructor(
     private prisma: PrismaService,
-    private usersService: UsersService,
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
   ) {}
 
   async create(
@@ -70,7 +72,7 @@ export class CanvasesService {
     return canvas;
   }
 
-  async findByCanvasId(canvasId: string): Promise<FindCanvasResponse> {
+  async findCanvasId(canvasId: string): Promise<FindCanvasResponse> {
     if (!canvasId) {
       throw new NotFoundException('canvasIdが存在しません。');
     }
@@ -89,7 +91,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async findByCanvasName(canvasNaeme: string): Promise<FindCanvasResponse> {
+  async findCanvasByName(canvasNaeme: string): Promise<FindCanvasResponse> {
     if (!canvasNaeme) {
       throw new NotFoundException('canvasNameが存在しません。');
     }
@@ -108,7 +110,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async updateCanvas(
+  async update(
     req: FastifyRequest,
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
@@ -155,7 +157,7 @@ export class CanvasesService {
     return ret;
   }
 
-  async removeCanvas(
+  async remove(
     req: FastifyRequest,
     data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {

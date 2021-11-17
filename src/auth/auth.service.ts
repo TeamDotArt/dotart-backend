@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -6,8 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 // サービス
-import { UsersService } from 'src/users/users.service';
-import { TokenService } from 'src/token/token.service';
 import { PrismaService } from 'src/common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
@@ -36,14 +35,20 @@ import {
 } from './dto/passwordReset-user.dto';
 import { CreateUserRequest } from './dto/create-user.dto';
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { MeResponse } from './dto/me-auth.dto';
+import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
+import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
+import { AuthServiceInterface } from './interface/auth.service.interface';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements AuthServiceInterface {
   constructor(
-    private jwtService: JwtService,
-    private usersService: UsersService,
-    private tokenService: TokenService,
-    private prisma: PrismaService,
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
+    @Inject('TokenServiceInterface')
+    private readonly tokenService: TokenServiceInterface,
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -100,7 +105,7 @@ export class AuthService {
     return {
       status: 201,
       message: 'ログインしました。\nメール認証を行ってください。',
-      accessToken: accessToken,
+      accessToken: accessToken.token,
     };
   }
 
@@ -158,7 +163,7 @@ export class AuthService {
     const token = await this.tokenService.createEmailToken(user.userId);
 
     // emailチェックのためメール送信する
-    sendEmailToken(createdUser.email, token);
+    sendEmailToken(createdUser.email, token.emailToken);
     return {
       status: 201,
       message: 'メールアドレスを認証してください。',
@@ -169,7 +174,7 @@ export class AuthService {
   /**
    * @description メール認証する
    */
-  async confirm(emailToken: string): Promise<ConfirmedUserResponse> {
+  async emailConfirm(emailToken: string): Promise<ConfirmedUserResponse> {
     // emailTokenが存在しない
     if (!emailToken) {
       throw new NotFoundException('emailTokenが存在しません。');
@@ -199,7 +204,7 @@ export class AuthService {
   /**
    * パスワードリセットリクエストを送信する
    */
-  async passwordResetReq(
+  async passwordResetRequest(
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
@@ -216,7 +221,7 @@ export class AuthService {
       passwordToken,
     );
 
-    sendPasswordResetEmailToken(user.email, token);
+    sendPasswordResetEmailToken(user.email, token.passwordToken);
     return {
       status: 201,
       message: 'パスワードの再設定を行ってください。',
@@ -266,7 +271,7 @@ export class AuthService {
   /**
    * ログイン後自分のProfileを表示する
    */
-  async me(req: FastifyRequest) {
+  async me(req: FastifyRequest): Promise<MeResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserProfileById(decoded.id);
 
@@ -286,7 +291,7 @@ export class AuthService {
 
     return {
       status: 201,
-      userData,
+      ...userData,
     };
   }
 }

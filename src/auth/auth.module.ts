@@ -33,13 +33,13 @@ import { TokenService } from 'src/token/token.service';
   ],
   // controllers: [AuthController],
   providers: [
-    AuthService,
-    TokenService,
-    UsersService,
+    { provide: 'AuthServiceInterface', useClass: AuthService },
+    { provide: 'TokenServiceInterface', useClass: TokenService },
+    { provide: 'UsersServiceInterface', useClass: UsersService },
     PrismaService,
     LocalStrategy,
     JwtStrategy,
   ],
-  exports: [AuthService],
+  exports: [{ provide: 'AuthServiceInterface', useClass: AuthService }],
 })
 export class AuthModule {}

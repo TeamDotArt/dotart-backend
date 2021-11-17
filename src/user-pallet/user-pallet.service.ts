@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import jwt_decode from 'jwt-decode';
 // Service
 import { PrismaService } from '../common/prisma.service';
-import { UsersService } from 'src/users/users.service';
 // Helper
 import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
 // entity
@@ -22,12 +21,15 @@ import {
   CreateUserPalletResponse,
 } from './dto/create-user-pallet.dto';
 import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { UserPalletServiceInterface } from './interface/userPallet.service.interface';
+import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
 
 @Injectable()
-export class UserpalletService {
+export class UserPalletService implements UserPalletServiceInterface {
   constructor(
     private prisma: PrismaService,
-    private usersService: UsersService,
+    @Inject('UsersServiceInterface')
+    private readonly usersService: UsersServiceInterface,
   ) {}
 
   async create(
@@ -35,7 +37,7 @@ export class UserpalletService {
     data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
     const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user: User = await this.usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
@@ -62,7 +64,7 @@ export class UserpalletService {
     return this.prisma.userPallet.findMany();
   }
 
-  async findByUserPalletId(palletId: string): Promise<FindUserPalletResponse> {
+  async findUserPalletId(palletId: string): Promise<FindUserPalletResponse> {
     if (!palletId) {
       throw new NotFoundException('palletIdが存在しません。');
     }
@@ -78,7 +80,7 @@ export class UserpalletService {
     return ret;
   }
 
-  async findByUserPallletName(name: string): Promise<FindUserPalletResponse> {
+  async findUserPalletByName(name: string): Promise<FindUserPalletResponse> {
     if (!name) {
       throw new NotFoundException('palletnameが存在しません。');
     }
@@ -94,12 +96,12 @@ export class UserpalletService {
     return ret;
   }
 
-  async updateUserPalletData(
+  async update(
     req: FastifyRequest,
     data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user: User = await this.usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
@@ -124,11 +126,9 @@ export class UserpalletService {
     return ret;
   }
 
-  async removeUserPalletData(
-    req: FastifyRequest,
-  ): Promise<RemoveUserPalletResponse> {
+  async remove(req: FastifyRequest): Promise<RemoveUserPalletResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.usersService.findOne(decoded.id);
+    const user: User = await this.usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }

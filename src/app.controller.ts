@@ -10,6 +10,7 @@ import {
   Req,
   Request,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -21,7 +22,6 @@ import {
 import { FastifyRequest } from 'fastify';
 // サービス
 import { AppService } from './app.service';
-import { AuthService } from './auth/auth.service';
 // ガード
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 // DTO
@@ -41,13 +41,15 @@ import {
   PasswordResetResponse,
 } from './auth/dto/passwordReset-user.dto';
 import { VerifyEmailResponse } from './auth/dto/verify-email.dto';
+import { AuthServiceInterface } from './auth/interface/auth.service.interface';
 
 @ApiTags('/')
 @Controller()
 export class AppController {
   constructor(
+    @Inject('AuthServiceInterface')
+    private readonly authService: AuthServiceInterface,
     private readonly appService: AppService,
-    private readonly authService: AuthService,
   ) {}
 
   /**
@@ -75,8 +77,8 @@ export class AppController {
   @ApiResponse({ status: HttpStatus.OK, type: LogOutUserResponse })
   @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   // フックメソッド
-  logout(@Req() req: FastifyRequest): Promise<LogOutUserResponse> {
-    return this.authService.logout(req);
+  logout(@Req() authorization: FastifyRequest): Promise<LogOutUserResponse> {
+    return this.authService.logout(authorization);
   }
 
   /**
@@ -119,7 +121,7 @@ export class AppController {
     @Param() emailToken: EmailTokenParam,
   ): Promise<ConfirmedUserResponse> {
     console.log(emailToken);
-    return this.authService.confirm(emailToken.emailToken);
+    return this.authService.emailConfirm(emailToken.emailToken);
   }
 
   /**
@@ -137,9 +139,9 @@ export class AppController {
   })
   // フックメソッド
   passwordResetReq(
-    @Request() req: FastifyRequest,
+    @Request() authorization: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    return this.authService.passwordResetReq(req);
+    return this.authService.passwordResetRequest(authorization);
   }
 
   /**
