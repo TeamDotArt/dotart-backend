@@ -4,10 +4,10 @@ import jwt_decode from 'jwt-decode';
 // Service
 import { PrismaService } from '../common/prisma.service';
 // Helper
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { jwtDecoded } from '../common/helpers/jwtDecoded';
 // entity
-import { UserPallet } from 'src/user-pallet/entities/user-pallet.entity';
-import { User } from 'src/users/entities/user.entity';
+import { UserPallet } from '../user-pallet/entities/user-pallet.entity';
+import { User } from '../users/entities/user.entity';
 // Dto
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
@@ -20,9 +20,9 @@ import {
   CreateUserPalletRequest,
   CreateUserPalletResponse,
 } from './dto/create-user-pallet.dto';
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../auth/dto/decoded.dto';
 import { UserPalletServiceInterface } from './interface/userPallet.service.interface';
-import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
+import { UsersServiceInterface } from '../users/interface/users.service.interface';
 
 @Injectable()
 export class UserPalletService implements UserPalletServiceInterface {

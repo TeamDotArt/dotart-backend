@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 // Service
-import { PrismaService } from 'src/common/prisma.service';
+import { PrismaService } from '../common/prisma.service';
 // Helper
-import { generateEmailToken } from 'src/common/helpers/activationCodeHelper';
+import { generateEmailToken } from '../common/helpers/activationCodeHelper';
 // Dto
 import { RemoveTokenResponse } from './dto/remove-token.dto';
 import { AccessTokenResponse } from './dto/access-token.dto';
