@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { User } from 'src/users/entities/user.entity';
+import { Constants } from '../../common/constants';
+import { User } from '../../users/entities/user.entity';
 
 export class CreateUserRequest {
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })

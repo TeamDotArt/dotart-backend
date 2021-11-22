@@ -9,9 +9,9 @@ import {
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { ResponseBase } from 'src/common/dtoBase/response.dtoBase';
-import { User } from 'src/users/entities/user.entity';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
+import { User } from '../../users/entities/user.entity';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 

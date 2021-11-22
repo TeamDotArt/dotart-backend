@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { ResponseBase } from 'src/common/dtoBase/response.dtoBase';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
 import { UserPallet } from '../entities/user-pallet.entity';
 
 export class UpdateUserPalletRequest {

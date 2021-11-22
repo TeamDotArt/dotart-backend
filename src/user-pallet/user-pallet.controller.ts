@@ -23,7 +23,7 @@ import { FastifyRequest } from 'fastify';
 import { UserPalletControllerInterface } from './interface/userPallet.controller.interface';
 import { UserPalletServiceInterface } from './interface/userPallet.service.interface';
 // Guards
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Dto
 import {
   CreateUserPalletRequest,

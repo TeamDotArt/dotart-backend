@@ -21,7 +21,7 @@ import {
 import { BasicPalletControllerInterface } from './interface/basicPallet.controller.interface';
 import { BasicPalletServiceInterface } from './interface/basicPallet.service.interface';
 // Guards
-import { RoleGuard } from 'src/auth/guards/role.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
 // Dto
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import {

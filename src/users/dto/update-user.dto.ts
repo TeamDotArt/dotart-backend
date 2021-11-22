@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { ResponseBase } from 'src/common/dtoBase/response.dtoBase';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
 import { User } from '../entities/user.entity';
 
 export class UpdateUserRequest {

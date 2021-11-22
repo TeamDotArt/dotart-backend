@@ -5,9 +5,8 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
-  MinLength,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 import { User } from '../../users/entities/user.entity';
 
 /**
