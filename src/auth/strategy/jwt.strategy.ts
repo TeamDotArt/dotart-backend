@@ -44,7 +44,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // if (!user) {
     //   throw new UnauthorizedException();
     // }
-    // if (!user.active) {
+    // if (!user.isLoggedIn) {
     //   throw new ForbiddenException('Log in first');
     // }
     // return plainToClass(PayloadDto, payloadObj);

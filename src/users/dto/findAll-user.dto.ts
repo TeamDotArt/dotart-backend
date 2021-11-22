@@ -40,7 +40,11 @@ export class FindAllUserResponse implements PasswordOmitUser {
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
-  active: User['active'];
+  isLoggedIn: User['isLoggedIn'];
+
+  @ApiProperty({ description: Constants.PROPERTY_LOGIN_TYPE })
+  @IsString()
+  loginType: User['loginType'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
