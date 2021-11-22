@@ -138,6 +138,7 @@ export class UsersService implements UsersServiceInterface {
       name: user.name,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      confirmedAt: user.confirmedAt,
     };
   }
 
@@ -162,6 +163,7 @@ export class UsersService implements UsersServiceInterface {
       name: user.name,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      confirmedAt: user.confirmedAt,
     };
   }
 

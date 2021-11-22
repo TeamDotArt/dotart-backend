@@ -83,7 +83,7 @@ export class AuthService implements AuthServiceInterface {
     await this.prisma.user.update({
       where: { userId: user.userId },
       data: {
-        active: true,
+        isLoggedIn: true,
       },
     });
 
@@ -120,10 +120,10 @@ export class AuthService implements AuthServiceInterface {
     await this.prisma.user.update({
       where: { id: decoded.id },
       data: {
-        active: false,
+        isLoggedIn: false,
       },
     });
-
+    console.log(req);
     await this.tokenService.removeTokenByUserId(userId);
 
     return { status: 201, message: 'ログアウトしました。' };
@@ -156,7 +156,7 @@ export class AuthService implements AuthServiceInterface {
         name: user.name,
         email: user.email,
         password: hash,
-        active: true,
+        isLoggedIn: true,
       },
     });
 
@@ -283,10 +283,9 @@ export class AuthService implements AuthServiceInterface {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      emailVerified: user.emailVerified
-        ? 'メールアドレス確認済みです'
-        : '未認証',
+      emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      confirmedAt: user.confirmedAt,
     };
 
     return {
