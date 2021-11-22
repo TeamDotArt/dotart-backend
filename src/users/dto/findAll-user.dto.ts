@@ -8,8 +8,8 @@ import {
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { User } from 'src/users/entities/user.entity';
+import { Constants } from '../../common/constants';
+import { User } from '../../users/entities/user.entity';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
@@ -40,7 +40,11 @@ export class FindAllUserResponse implements PasswordOmitUser {
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
-  active: User['active'];
+  isLoggedIn: User['isLoggedIn'];
+
+  @ApiProperty({ description: Constants.PROPERTY_LOGIN_TYPE })
+  @IsString()
+  loginType: User['loginType'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()

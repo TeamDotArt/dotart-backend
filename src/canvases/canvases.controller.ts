@@ -22,7 +22,7 @@ import { FastifyRequest } from 'fastify';
 // Interface
 import { CanvasesServiceInterface } from './interface/canvases.service.interface';
 // Guards
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Dto
 import { RemoveCanvasResponse } from './dto/delete-canvas.dto';
 import { FindAllCanvasResponse } from './dto/findAll-canvas.dto';

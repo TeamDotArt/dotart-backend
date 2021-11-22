@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsNotEmpty, IsDate } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { BasicPallet } from 'src/basic-pallet/entities/basic-pallet.entity';
+import { Constants } from '../../common/constants';
+import { BasicPallet } from '../../basic-pallet/entities/basic-pallet.entity';
 
 export class FindAllBasicPalletResponse {
   @ApiProperty({ description: Constants.PROPERTY_ID })

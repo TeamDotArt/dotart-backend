@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { User } from 'src/users/entities/user.entity';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
+import { User } from '../../users/entities/user.entity';
 
 export class PasswordResetParam {
   @ApiProperty({ description: Constants.PROPERTY_PASSWORD_TOKEN })
@@ -12,15 +13,7 @@ export class PasswordResetParam {
   passwordToken: string;
 }
 
-export class PasswordResetReqResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-}
+export class PasswordResetReqResponse extends ResponseBase {}
 
 export class PasswordResetRequest {
   @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
@@ -30,12 +23,4 @@ export class PasswordResetRequest {
   password: User['password'];
 }
 
-export class PasswordResetResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-}
+export class PasswordResetResponse extends ResponseBase {}

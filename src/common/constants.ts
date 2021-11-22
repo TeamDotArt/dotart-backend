@@ -10,7 +10,8 @@ export class Constants {
   public static readonly PROPERTY_EMAIL_VERIFIED = 'メール認証されているか';
   public static readonly PROPERTY_HASH_ACTIVETION = 'メール認証番号';
   public static readonly PROPERTY_ACTIVE = 'アカウントが有効か';
-
+  public static readonly PROPERTY_LOGIN_TYPE =
+    'ログインにどの認証をつかっているか';
   // 日付等
   public static readonly PROPERTY_CREATED_AT = 'アカウント作成日';
   public static readonly PROPERTY_UPDATED_AT = 'アカウント情報更新日';

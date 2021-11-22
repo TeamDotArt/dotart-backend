@@ -9,8 +9,9 @@ import {
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { User } from 'src/users/entities/user.entity';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
+import { User } from '../../users/entities/user.entity';
 
 type PasswordOmitUser = Omit<User, 'password'>;
 
@@ -29,15 +30,7 @@ export class LogInUserRequest {
   password: User['password'];
 }
 
-export class LogInUserResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-
+export class LogInUserResponse extends ResponseBase {
   @ApiProperty({ description: Constants.PROPERTY_TOKEN })
   @IsString()
   accessToken: string;
@@ -70,7 +63,11 @@ export class ValidateUserResponse implements PasswordOmitUser {
 
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
-  active: User['active'];
+  isLoggedIn: User['isLoggedIn'];
+
+  @ApiProperty({ description: Constants.PROPERTY_LOGIN_TYPE })
+  @IsString()
+  loginType: User['loginType'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()

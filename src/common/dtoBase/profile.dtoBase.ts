@@ -1,28 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import {
+  IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsString,
-  IsDate,
-  IsNumber,
-  IsBoolean,
-  MinLength,
 } from 'class-validator';
 import { Constants } from '../../common/constants';
 import { User } from '../../users/entities/user.entity';
 
-export class ConfirmedUserResponse {
-  @ApiProperty({ description: Constants.PROPERTY_ID })
-  @IsNumber()
-  id: User['id'];
-
+/**
+ * プロフィール情報のベース
+ * userId -> ユーザの任意ID
+ * email -> メールアドレス
+ * name -> 名前
+ * emailVerified -> メールアドレスが確認済みかどうか
+ * createdAt -> 作成日時
+ * confirmedAt -> メールアドレス確認日時
+ */
+export class ProfileBase {
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsNotEmpty()
   @IsString()
   userId: User['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL })
+  @IsNotEmpty({
+    message: Constants.IS_NOT_EMPTY_EMAIL,
+  })
   @IsEmail()
   email: User['email'];
 
@@ -30,38 +35,15 @@ export class ConfirmedUserResponse {
   @IsString()
   name: User['name'];
 
-  @ApiProperty({ description: Constants.PROPERTY_ROLE })
-  role: User['role'];
-
-  @ApiProperty({ description: Constants.PROPERTY_PASSWORD })
-  @IsNotEmpty()
-  @MinLength(8, { message: Constants.MIN_LENGTH_PASSWORD })
-  @IsString()
-  @Exclude()
-  password: User['password'];
-
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsBoolean()
-  @Exclude()
   emailVerified: User['emailVerified'];
-
-  @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
-  @IsBoolean()
-  @Exclude()
-  isLoggedIn: User['isLoggedIn'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
-  @Exclude()
   createdAt: User['createdAt'];
-
-  @ApiProperty({ description: Constants.PROPERTY_UPDATED_AT })
-  @IsDate()
-  @Exclude()
-  updatedAt: User['updatedAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_CONFIRMED_AT })
   @IsDate()
-  @Exclude()
   confirmedAt: User['confirmedAt'];
 }

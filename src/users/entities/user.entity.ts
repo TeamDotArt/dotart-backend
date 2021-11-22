@@ -11,7 +11,7 @@ import {
   IsBoolean,
   IsDate,
 } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 
 export class User {
   @ApiProperty({ description: Constants.PROPERTY_ID })
@@ -65,7 +65,12 @@ export class User {
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()
-  active: PrismaUser['active'];
+  isLoggedIn: PrismaUser['isLoggedIn'];
+
+  @ApiProperty({ description: Constants.PROPERTY_LOGIN_TYPE })
+  @IsOptional()
+  @IsString()
+  loginType: PrismaUser['loginType'];
 
   // 時間系
 

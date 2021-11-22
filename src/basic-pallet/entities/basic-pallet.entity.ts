@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BasicPallet as PrismaBasicPallet } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { IsNumber, IsString, IsNotEmpty, IsDate } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 export class BasicPallet {
   @ApiProperty({ description: Constants.PROPERTY_ID })
   @IsNumber()

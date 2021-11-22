@@ -1,12 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  MinLength,
-} from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
 import { User } from '../entities/user.entity';
 
 export class UpdateUserRequest {
@@ -33,12 +28,4 @@ export class UpdateUserRequest {
   name: User['name'];
 }
 
-export class UpdateUserResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-}
+export class UpdateUserResponse extends ResponseBase {}

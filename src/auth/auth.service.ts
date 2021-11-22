@@ -7,16 +7,16 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 // サービス
-import { PrismaService } from 'src/common/prisma.service';
+import { PrismaService } from '../common/prisma.service';
 // ヘルパー
 import { compare, getHash } from '../common/helpers/cipherHelper';
-import { generatePasswordToken } from 'src/common/helpers/activationCodeHelper';
+import { generatePasswordToken } from '../common/helpers/activationCodeHelper';
 import {
   sendEmailToken,
   sendPasswordResetEmailToken,
-} from 'src/common/sendgrid.service';
+} from '../common/sendgrid.service';
 // Dto系
-import { DecodedDto } from 'src/auth/dto/decoded.dto';
+import { DecodedDto } from '../auth/dto/decoded.dto';
 import { VerifyEmailResponse } from './dto/verify-email.dto';
 import { PayloadDto } from './dto/payload.dto';
 import { LogOutUserResponse } from './dto/logout-auth.dto';
@@ -27,17 +27,17 @@ import {
   ValidateUserResponse,
 } from './dto/login-auth.dto';
 // Entity
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import {
   PasswordResetReqResponse,
   PasswordResetRequest,
   PasswordResetResponse,
 } from './dto/passwordReset-user.dto';
 import { CreateUserRequest } from './dto/create-user.dto';
-import { jwtDecoded } from 'src/common/helpers/jwtDecoded';
+import { jwtDecoded } from '../common/helpers/jwtDecoded';
 import { MeResponse } from './dto/me-auth.dto';
-import { TokenServiceInterface } from 'src/token/interface/token.service.interface';
-import { UsersServiceInterface } from 'src/users/interface/users.service.interface';
+import { TokenServiceInterface } from '../token/interface/token.service.interface';
+import { UsersServiceInterface } from '../users/interface/users.service.interface';
 import { AuthServiceInterface } from './interface/auth.service.interface';
 
 @Injectable()
@@ -83,7 +83,7 @@ export class AuthService implements AuthServiceInterface {
     await this.prisma.user.update({
       where: { userId: user.userId },
       data: {
-        active: true,
+        isLoggedIn: true,
       },
     });
 
@@ -120,10 +120,10 @@ export class AuthService implements AuthServiceInterface {
     await this.prisma.user.update({
       where: { id: decoded.id },
       data: {
-        active: false,
+        isLoggedIn: false,
       },
     });
-
+    console.log(req);
     await this.tokenService.removeTokenByUserId(userId);
 
     return { status: 201, message: 'ログアウトしました。' };
@@ -156,7 +156,7 @@ export class AuthService implements AuthServiceInterface {
         name: user.name,
         email: user.email,
         password: hash,
-        active: true,
+        isLoggedIn: true,
       },
     });
 
@@ -283,10 +283,9 @@ export class AuthService implements AuthServiceInterface {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      emailVerified: user.emailVerified
-        ? 'メールアドレス確認済みです'
-        : '未認証',
+      emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      confirmedAt: user.confirmedAt,
     };
 
     return {

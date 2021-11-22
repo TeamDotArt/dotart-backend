@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
-import { Constants } from 'src/common/constants';
-import { Canvas } from 'src/canvases/entities/canvas.entity';
+import { IsString, IsNotEmpty } from 'class-validator';
+import { Constants } from '../../common/constants';
+import { Canvas } from '../../canvases/entities/canvas.entity';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
 
 export class UpdateCanvasRequest {
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
@@ -23,15 +24,7 @@ export class UpdateCanvasRequest {
   canvasesData: Canvas['canvasesData'];
 }
 
-export class UpdateCanvasResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-
+export class UpdateCanvasResponse extends ResponseBase {
   @ApiProperty({ description: Constants.PROPERTY_CANVAS_ID })
   @IsString()
   canvasId: Canvas['canvasId'];
