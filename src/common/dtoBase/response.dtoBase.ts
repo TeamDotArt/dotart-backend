@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 import { Constants } from 'src/common/constants';
 
+/**
+ * レスポンスのベース
+ * status -> ステータスコード
+ * message -> ステータスメッセージ
+ */
 export class ResponseBase {
   @ApiProperty({ description: Constants.VERIFY_STATUS })
   @IsNumber()
