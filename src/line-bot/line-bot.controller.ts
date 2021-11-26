@@ -4,10 +4,10 @@ import { WebhookRequestBody } from '@line/bot-sdk';
 
 @Controller('line-bot')
 export class LineBotController {
-  constructor(private readonly lineBotService: LineBotService) {}
+  constructor(private readonly _lineBotService: LineBotService) {}
 
   @Post('webhook')
   async lineWebhook(@Body() { events }: WebhookRequestBody): Promise<any> {
-    return this.lineBotService.run(events[0]);
+    return this._lineBotService.run(events[0]);
   }
 }

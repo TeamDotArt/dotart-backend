@@ -6,7 +6,7 @@ import { prefix } from '../helper/prefix';
 
 @Injectable()
 export class RoomHandler {
-  constructor(private readonly lineHandler: LineHandler) {}
+  constructor(private readonly _lineHandler: LineHandler) {}
 
   // RoomEvent
   async roomEvent(event: MessageEvent): Promise<void> {
@@ -20,6 +20,6 @@ export class RoomHandler {
     }
     // room情報
     const room = source as Room;
-    await this.lineHandler.leaveChat(room.roomId);
+    await this._lineHandler.leaveChat(room.roomId);
   }
 }

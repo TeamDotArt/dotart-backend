@@ -10,9 +10,9 @@ import { Constants } from '../../common/constants';
 export class ResponseBase {
   @ApiProperty({ description: Constants.VERIFY_STATUS })
   @IsNumber()
-  status: number;
+  public status: number;
 
   @ApiProperty({ description: Constants.VERIFY_MESSAGE })
   @IsString()
-  message: string;
+  public message: string;
 }

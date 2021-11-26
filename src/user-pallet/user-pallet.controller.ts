@@ -42,7 +42,7 @@ import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
 export class UserPalletController implements UserPalletControllerInterface {
   constructor(
     @Inject('UserPalletServiceInterface')
-    private readonly userPalletService: UserPalletServiceInterface,
+    private readonly _userPalletService: UserPalletServiceInterface,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -59,7 +59,7 @@ export class UserPalletController implements UserPalletControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    return this.userPalletService.create(authorization, data);
+    return this._userPalletService.create(authorization, data);
   }
 
   @Get()
@@ -68,7 +68,7 @@ export class UserPalletController implements UserPalletControllerInterface {
   @ApiResponse({ status: HttpStatus.OK, type: FindAllUserPalletResponse })
   // フックメソッド
   async getUserPallets(): Promise<FindAllUserPalletResponse[]> {
-    return this.userPalletService.findAll();
+    return this._userPalletService.findAll();
   }
 
   @Get('findPalletId/:palletId')
@@ -84,7 +84,7 @@ export class UserPalletController implements UserPalletControllerInterface {
   async getUserPallet(
     @Param('palletId') palletId: string,
   ): Promise<FindUserPalletResponse> {
-    return this.userPalletService.findUserPalletId(palletId);
+    return this._userPalletService.findUserPalletId(palletId);
   }
 
   @Get('findPalletName/:name')
@@ -100,7 +100,7 @@ export class UserPalletController implements UserPalletControllerInterface {
   async getUserPalletByName(
     @Param('name') name: string,
   ): Promise<FindUserPalletResponse> {
-    return this.userPalletService.findUserPalletByName(name);
+    return this._userPalletService.findUserPalletByName(name);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -119,7 +119,7 @@ export class UserPalletController implements UserPalletControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    return this.userPalletService.update(authorization, data);
+    return this._userPalletService.update(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -136,6 +136,6 @@ export class UserPalletController implements UserPalletControllerInterface {
   async deleteUserPallet(
     @Req() authorization: FastifyRequest,
   ): Promise<RemoveUserPalletResponse> {
-    return this.userPalletService.remove(authorization);
+    return this._userPalletService.remove(authorization);
   }
 }

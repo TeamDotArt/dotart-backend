@@ -48,8 +48,8 @@ import { AuthServiceInterface } from './auth/interface/auth.service.interface';
 export class AppController {
   constructor(
     @Inject('AuthServiceInterface')
-    private readonly authService: AuthServiceInterface,
-    private readonly appService: AppService,
+    private readonly _authService: AuthServiceInterface,
+    private readonly _appService: AppService,
   ) {}
 
   /**
@@ -63,7 +63,7 @@ export class AppController {
   @ApiBody({ type: LogInUserRequest, description: 'ログイン情報' })
   // フックメソッド
   async login(@Body() req: LogInUserRequest): Promise<LogInUserResponse> {
-    return this.authService.login(req);
+    return this._authService.login(req);
   }
 
   /**
@@ -78,7 +78,7 @@ export class AppController {
   @ApiResponse({ status: HttpStatus.NOT_FOUND, type: NotFoundException })
   // フックメソッド
   logout(@Req() authorization: FastifyRequest): Promise<LogOutUserResponse> {
-    return this.authService.logout(authorization);
+    return this._authService.logout(authorization);
   }
 
   /**
@@ -96,7 +96,7 @@ export class AppController {
   @ApiBody({ type: CreateUserRequest, description: 'ユーザ情報' })
   // フックメソッド
   createUser(@Body() body: CreateUserRequest): Promise<VerifyEmailResponse> {
-    return this.authService.signup(body);
+    return this._authService.signup(body);
   }
 
   /**
@@ -121,7 +121,7 @@ export class AppController {
     @Param() emailToken: EmailTokenParam,
   ): Promise<ConfirmedUserResponse> {
     console.log(emailToken);
-    return this.authService.emailConfirm(emailToken.emailToken);
+    return this._authService.emailConfirm(emailToken.emailToken);
   }
 
   /**
@@ -141,7 +141,7 @@ export class AppController {
   passwordResetReq(
     @Request() authorization: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
-    return this.authService.passwordResetRequest(authorization);
+    return this._authService.passwordResetRequest(authorization);
   }
 
   /**
@@ -167,7 +167,7 @@ export class AppController {
     @Param() passwordToken: PasswordResetParam,
     @Body() data: PasswordResetRequest,
   ): Promise<PasswordResetResponse> {
-    return this.authService.passwordReset(passwordToken.passwordToken, data);
+    return this._authService.passwordReset(passwordToken.passwordToken, data);
   }
 
   /**
@@ -180,11 +180,11 @@ export class AppController {
   @ApiResponse({ status: HttpStatus.OK, type: ValidateUserResponse })
   // フックメソッド
   getProfile(@Request() req: FastifyRequest) {
-    return this.authService.me(req);
+    return this._authService.me(req);
   }
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return this._appService.getHello();
   }
 }
