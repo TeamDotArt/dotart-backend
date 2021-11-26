@@ -10,9 +10,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class LineHandler {
-  private client: Client;
+  #_client: Client;
   constructor() {
-    this.client = new Client({
+    this.#_client = new Client({
       channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
       channelSecret: process.env.LINE_CHANNEL_SERCRET,
     });
@@ -24,7 +24,7 @@ export class LineHandler {
     messageTemplate: Message | Message[] | FlexMessage | ImageMapMessage,
   ): Promise<void> {
     try {
-      await this.client.pushMessage(user_id, messageTemplate);
+      await this.#_client.pushMessage(user_id, messageTemplate);
     } catch (e) {
       console.log(e);
     }
@@ -34,43 +34,44 @@ export class LineHandler {
     reply_token: string,
     messageTemplate: Message | Message[] | FlexMessage | ImageMapMessage,
   ): Promise<void> {
-    await this.client.replyMessage(reply_token, messageTemplate);
+    await this.#_client.replyMessage(reply_token, messageTemplate);
   }
 
   async multiCastMessage(
     ids: string[],
     message: Message | Message[] | FlexMessage | ImageMapMessage,
   ): Promise<void> {
-    await this.client.multicast(ids, message);
+    await this.#_client.multicast(ids, message);
   }
 
   async broadCastMessage(
     message: Message | Message[] | FlexMessage | ImageMapMessage,
   ): Promise<void> {
-    await this.client.broadcast(message);
+    await this.#_client.broadcast(message);
   }
 
   async narrowcCastCastMessage(
     message: Message | Message[] | FlexMessage | ImageMapMessage,
   ): Promise<void> {
-    await this.client.narrowcast(message);
+    await this.#_client.narrowcast(message);
   }
 
+  // bot info
   async getBotInfo(): Promise<BotInfoResponse> {
-    return await this.client.getBotInfo();
+    return await this.#_client.getBotInfo();
   }
 
   // bot Event
   async leaveChat(groupOrRoomId: string): Promise<void> {
     if (groupOrRoomId.startsWith('C')) {
-      await this.client.leaveGroup(groupOrRoomId);
+      await this.#_client.leaveGroup(groupOrRoomId);
     } else if (groupOrRoomId.startsWith('R')) {
-      await this.client.leaveRoom(groupOrRoomId);
+      await this.#_client.leaveRoom(groupOrRoomId);
     }
   }
 
   // Profile
   async getProfile(user_id: string): Promise<Profile> {
-    return await this.client.getProfile(user_id);
+    return await this.#_client.getProfile(user_id);
   }
 }
