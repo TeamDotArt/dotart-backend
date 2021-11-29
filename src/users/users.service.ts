@@ -21,15 +21,15 @@ import { UsersServiceInterface } from './interface/users.service.interface';
 export class UsersService implements UsersServiceInterface {
   constructor(
     @Inject('TokenServiceInterface')
-    private readonly tokenService: TokenServiceInterface,
-    private readonly prisma: PrismaService,
+    private readonly _tokenService: TokenServiceInterface,
+    private readonly _prismaService: PrismaService,
   ) {}
 
   /**
    * @description ユーザ全検索
    */
   async findAll(): Promise<FindAllUserResponse[]> {
-    return this.prisma.user.findMany();
+    return this._prismaService.user.findMany();
   }
 
   /**
@@ -39,7 +39,7 @@ export class UsersService implements UsersServiceInterface {
     if (!id) {
       throw new NotFoundException('idが存在しません。');
     }
-    return this.prisma.user.findUnique({
+    return this._prismaService.user.findUnique({
       where: { id: id },
     });
   }
@@ -53,9 +53,9 @@ export class UsersService implements UsersServiceInterface {
     }
 
     // emailTokenからUserIdを検索
-    const user = await this.tokenService.getUserIdByEmailToken(emailToken);
+    const user = await this._tokenService.getUserIdByEmailToken(emailToken);
 
-    return this.prisma.user.findUnique({
+    return this._prismaService.user.findUnique({
       where: { userId: user.userId },
     });
   }
@@ -69,11 +69,11 @@ export class UsersService implements UsersServiceInterface {
     }
 
     // emailTokenからUserIdを検索
-    const user = await this.tokenService.getUserIdByPasswordToken(
+    const user = await this._tokenService.getUserIdByPasswordToken(
       passwordToken,
     );
 
-    return this.prisma.user.findUnique({
+    return this._prismaService.user.findUnique({
       where: { userId: user.userId },
     });
   }
@@ -86,7 +86,7 @@ export class UsersService implements UsersServiceInterface {
       throw new NotFoundException('idが存在しません。');
     }
 
-    const user = await this.prisma.user.findUnique({
+    const user = await this._prismaService.user.findUnique({
       where: { id: id },
     });
 
@@ -105,7 +105,7 @@ export class UsersService implements UsersServiceInterface {
       throw new NotFoundException('idが存在しません。');
     }
 
-    const user = await this.prisma.user.findFirst({
+    const user = await this._prismaService.user.findFirst({
       where: { name: name },
     });
 
@@ -124,7 +124,7 @@ export class UsersService implements UsersServiceInterface {
       throw new NotFoundException('idが存在しません。');
     }
 
-    const user = await this.prisma.user.findUnique({
+    const user = await this._prismaService.user.findUnique({
       where: { id: id },
     });
 
@@ -149,7 +149,7 @@ export class UsersService implements UsersServiceInterface {
     if (!userId) {
       throw new NotFoundException('ユーザIdが存在しません。');
     }
-    const user = await this.prisma.user.findUnique({
+    const user = await this._prismaService.user.findUnique({
       where: { userId: userId },
     });
 
@@ -174,7 +174,7 @@ export class UsersService implements UsersServiceInterface {
     if (!userId) {
       throw new NotFoundException('ユーザIdが存在しません。');
     }
-    return this.prisma.user.findUnique({
+    return this._prismaService.user.findUnique({
       where: { userId: userId },
     });
   }
@@ -187,7 +187,7 @@ export class UsersService implements UsersServiceInterface {
     data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.prisma.user.findUnique({
+    const user: User = await this._prismaService.user.findUnique({
       where: { id: decoded.id },
     });
 
@@ -197,7 +197,7 @@ export class UsersService implements UsersServiceInterface {
 
     if (data.email) {
       // メールを未認証に
-      this.prisma.user.update({
+      this._prismaService.user.update({
         where: { id: user.id },
         data: {
           emailVerified: false,
@@ -210,7 +210,7 @@ export class UsersService implements UsersServiceInterface {
       data.password = getHash(data.password);
     }
 
-    await this.prisma.user.update({
+    await this._prismaService.user.update({
       where: { id: user.id },
       data,
     });
@@ -226,7 +226,7 @@ export class UsersService implements UsersServiceInterface {
    */
   async remove(req: FastifyRequest): Promise<RemoveUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this.prisma.user.findUnique({
+    const user: User = await this._prismaService.user.findUnique({
       where: { id: decoded.id },
     });
 
@@ -236,20 +236,20 @@ export class UsersService implements UsersServiceInterface {
 
     const userId = user.userId;
 
-    await this.tokenService.removeTokenByUserId(user.userId);
+    await this._tokenService.removeTokenByUserId(user.userId);
 
     // ユーザパレットを削除
-    await this.prisma.userPallet.delete({
+    await this._prismaService.userPallet.delete({
       where: { id: user.id },
     });
 
     // キャンバスを削除
-    await this.prisma.canvases.delete({
+    await this._prismaService.canvases.delete({
       where: { id: user.id },
     });
 
     // 依存関係を削除したのでユーザを削除
-    await this.prisma.user.delete({
+    await this._prismaService.user.delete({
       where: { id: user.id },
     });
 

@@ -18,8 +18,8 @@ import { AuthServiceInterface } from '../interface/auth.service.interface';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject('AuthServiceInterface')
-    private readonly authService: AuthServiceInterface,
-    private readonly configService: ConfigService,
+    private readonly _authService: AuthServiceInterface,
+    private readonly _configService: ConfigService,
   ) {
     super({
       // Authorization bearerからトークンを読み込む関数を返す
@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // 有効期間を無視するかどうか
       ignoreExpiration: false,
       // envファイルから秘密鍵を渡す
-      secretOrKey: configService.get<string>('JWT_SECRET_KEY'),
+      secretOrKey: _configService.get<string>('JWT_SECRET_KEY'),
     });
   }
 

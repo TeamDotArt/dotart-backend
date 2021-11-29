@@ -13,11 +13,11 @@ import { SourceTypes } from './types/source';
 @Injectable()
 export class LineBotService {
   constructor(
-    private readonly followHandler: FollowHandler,
-    private readonly joinHandler: JoinHandler,
-    private readonly userHandler: UserHandler,
-    private readonly groupHandler: GroupHandler,
-    private readonly roomHandler: RoomHandler,
+    private readonly _followHandler: FollowHandler,
+    private readonly _joinHandler: JoinHandler,
+    private readonly _userHandler: UserHandler,
+    private readonly _groupHandler: GroupHandler,
+    private readonly _roomHandler: RoomHandler,
   ) {}
 
   // eventHandler
@@ -29,11 +29,11 @@ export class LineBotService {
     switch (events.type) {
       case EventTypes.MESSAGE:
         if (events.source.type === SourceTypes.USER) {
-          await this.userHandler.userEvent(events);
+          await this._userHandler.userEvent(events);
         } else if (events.source.type === SourceTypes.GROUP) {
-          await this.groupHandler.groupEvent(events);
+          await this._groupHandler.groupEvent(events);
         } else if (events.source.type === SourceTypes.ROOM) {
-          await this.roomHandler.roomEvent(events);
+          await this._roomHandler.roomEvent(events);
         }
         break;
 
@@ -44,7 +44,7 @@ export class LineBotService {
 
       // 友達追加された
       case EventTypes.FOLLOW:
-        this.followHandler.followEvent(events);
+        this._followHandler.followEvent(events);
         break;
 
       // ブロックまたは削除された
@@ -54,7 +54,7 @@ export class LineBotService {
 
       // 自分がグループに参加した
       case EventTypes.JOIN:
-        await this.joinHandler.joinEvent(events);
+        await this._joinHandler.joinEvent(events);
         break;
 
       // 自分がグループから退出した

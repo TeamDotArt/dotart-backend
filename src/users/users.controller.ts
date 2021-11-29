@@ -36,7 +36,7 @@ import { UsersServiceInterface } from './interface/users.service.interface';
 export class UsersController implements UsersControllerInterface {
   constructor(
     @Inject('UsersServiceInterface')
-    private readonly usersService: UsersServiceInterface,
+    private readonly _usersService: UsersServiceInterface,
   ) {}
 
   /**
@@ -50,7 +50,7 @@ export class UsersController implements UsersControllerInterface {
   @ApiResponse({ status: HttpStatus.OK, type: FindAllUserResponse })
   // フックメソッド
   async getUsers(): Promise<FindAllUserResponse[]> {
-    return this.usersService.findAll();
+    return this._usersService.findAll();
   }
 
   /**
@@ -67,7 +67,7 @@ export class UsersController implements UsersControllerInterface {
   })
   // フックメソッド
   async getUser(@Param() userParam: FindUserParam): Promise<FindUserResponse> {
-    return this.usersService.getUserProfile(userParam.userId);
+    return this._usersService.getUserProfile(userParam.userId);
   }
 
   /**
@@ -84,7 +84,7 @@ export class UsersController implements UsersControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
-    return this.usersService.updateProfile(authorization, data);
+    return this._usersService.updateProfile(authorization, data);
   }
 
   /**
@@ -99,6 +99,6 @@ export class UsersController implements UsersControllerInterface {
   async deleteUser(
     @Req() authorization: FastifyRequest,
   ): Promise<RemoveUserResponse> {
-    return this.usersService.remove(authorization);
+    return this._usersService.remove(authorization);
   }
 }

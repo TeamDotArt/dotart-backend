@@ -7,7 +7,7 @@ import { LineHandler } from './lineHandler';
 
 @Injectable()
 export class GroupHandler {
-  constructor(private readonly lineHandler: LineHandler) {}
+  constructor(private readonly _lineHandler: LineHandler) {}
 
   // handler
   async groupEvent(event: MessageEvent) {
@@ -25,15 +25,15 @@ export class GroupHandler {
 
     switch (messageObj[1]) {
       case '使い方':
-        await this.lineHandler.replyMessage(replyToken, textMessage('使い方'));
+        await this._lineHandler.replyMessage(replyToken, textMessage('使い方'));
         break;
 
       case '退会':
-        await this.lineHandler.replyMessage(
+        await this._lineHandler.replyMessage(
           replyToken,
           textMessage('ありがとうございました。'),
         );
-        await this.lineHandler.leaveChat(group.groupId);
+        await this._lineHandler.leaveChat(group.groupId);
         break;
 
       default:

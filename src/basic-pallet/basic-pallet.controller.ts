@@ -35,13 +35,12 @@ import {
   UpdateBasicPalletResponse,
 } from './dto/update-basic-pallet.dto';
 
-// TODO: ApiResponseを記載する
 @ApiTags('basic-pallet')
 @Controller('basic-pallet')
 export class BasicPalletController implements BasicPalletControllerInterface {
   constructor(
     @Inject('BasicPalletServiceInterface')
-    private readonly basicPalletService: BasicPalletServiceInterface,
+    private readonly _basicPalletService: BasicPalletServiceInterface,
   ) {}
 
   @UseGuards(RoleGuard)
@@ -59,7 +58,7 @@ export class BasicPalletController implements BasicPalletControllerInterface {
   async createBasicPallet(
     @Body() basicPallet: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse> {
-    return this.basicPalletService.create(basicPallet);
+    return this._basicPalletService.create(basicPallet);
   }
 
   @Get()
@@ -68,7 +67,7 @@ export class BasicPalletController implements BasicPalletControllerInterface {
   @ApiResponse({ status: HttpStatus.OK, type: FindAllBasicPalletResponse })
   // フックメソッド
   async getBasicPallets(): Promise<FindAllBasicPalletResponse[]> {
-    return this.basicPalletService.findAll();
+    return this._basicPalletService.findAll();
   }
 
   @Get('findPalletId/:palletId')
@@ -84,7 +83,7 @@ export class BasicPalletController implements BasicPalletControllerInterface {
   async getBasicPallet(
     @Param('palletId') basicPalletId: string,
   ): Promise<FindBasicPalletResponse> {
-    return this.basicPalletService.findBasicPalletId(basicPalletId);
+    return this._basicPalletService.findBasicPalletId(basicPalletId);
   }
 
   @Get('findName/:name')
@@ -100,7 +99,7 @@ export class BasicPalletController implements BasicPalletControllerInterface {
   async getBasicPalletByName(
     @Param('name') name: string,
   ): Promise<FindBasicPalletResponse> {
-    return this.basicPalletService.findBasicPalletByName(name);
+    return this._basicPalletService.findBasicPalletByName(name);
   }
 
   @UseGuards(RoleGuard)
@@ -121,7 +120,7 @@ export class BasicPalletController implements BasicPalletControllerInterface {
     @Param('palletId') basicPalletId: string,
     @Body() basicPallet: UpdateBasicPalletRequest,
   ): Promise<UpdateBasicPalletResponse> {
-    return this.basicPalletService.update(basicPalletId, basicPallet);
+    return this._basicPalletService.update(basicPalletId, basicPallet);
   }
 
   @UseGuards(RoleGuard)
@@ -140,6 +139,6 @@ export class BasicPalletController implements BasicPalletControllerInterface {
   async deleteBasicPallet(
     @Param('palletId') basicPalletId: string,
   ): Promise<RemoveBasicPalletResponse> {
-    return this.basicPalletService.remove(basicPalletId);
+    return this._basicPalletService.remove(basicPalletId);
   }
 }

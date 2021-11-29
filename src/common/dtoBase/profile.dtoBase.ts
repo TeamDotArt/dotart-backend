@@ -22,28 +22,28 @@ export class ProfileBase {
   @ApiProperty({ description: Constants.PROPERTY_USER_ID })
   @IsNotEmpty()
   @IsString()
-  userId: User['userId'];
+  public userId: User['userId'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL })
   @IsNotEmpty({
     message: Constants.IS_NOT_EMPTY_EMAIL,
   })
   @IsEmail()
-  email: User['email'];
+  public email: User['email'];
 
   @ApiProperty({ description: Constants.PROPERTY_NAME })
   @IsString()
-  name: User['name'];
+  public name: User['name'];
 
   @ApiProperty({ description: Constants.PROPERTY_EMAIL_VERIFIED })
   @IsBoolean()
-  emailVerified: User['emailVerified'];
+  public emailVerified: User['emailVerified'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()
-  createdAt: User['createdAt'];
+  public createdAt: User['createdAt'];
 
   @ApiProperty({ description: Constants.PROPERTY_CONFIRMED_AT })
   @IsDate()
-  confirmedAt: User['confirmedAt'];
+  public confirmedAt: User['confirmedAt'];
 }
