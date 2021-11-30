@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { BasicPallet } from '../basic-pallet/entities/basic-pallet.entity';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
+import { BasicPallet } from './entities/basic-pallet.entity';
 // Service
 import { PrismaService } from '../common/prisma.service';
 // Dto
@@ -15,6 +19,7 @@ import {
 } from './dto/update-basic-pallet.dto';
 import { RemoveBasicPalletResponse } from './dto/delete-basic-pallet.dto';
 import { BasicPalletServiceInterface } from './interface/basicPallet.service.interface';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 @Injectable()
 export class BasicPalletService implements BasicPalletServiceInterface {
@@ -23,6 +28,21 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   async create(
     data: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse> {
+    const basicpallet: BasicPallet = await this.prisma.basicPallet.findUnique({
+      where: { palletId: data.palletId },
+    });
+    if (basicpallet) {
+      throw new PrismaClientKnownRequestError(
+        'ベーシックパレットがすでに存在します',
+        'P1009',
+        '3.3.0',
+        '{target:["palletId"]}',
+      );
+    } else if (!data.palletId) {
+      throw new NotAcceptableException('palletIdが未入力です。');
+    } else if (!data.name) {
+      throw new NotAcceptableException('nameが未入力です。');
+    }
     await this.prisma.basicPallet.create({ data: data });
 
     const ret: CreateBasicPalletResponse = {
@@ -35,16 +55,12 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   }
 
   async findAll(): Promise<FindAllBasicPalletResponse[]> {
-    return this.prisma.basicPallet.findMany();
+    const basicpallets = await this.prisma.basicPallet.findMany();
+    if (!basicpallets) {
+      throw new NotFoundException('basicpalletが存在しません。');
+    }
+    return basicpallets;
   }
-
-  /*
-  async findOne(id: number) {
-    return this.prisma.basicPallet.findUnique({
-      where: { id: id },
-    });
-  }
-*/
 
   async findBasicPalletId(palletId: string): Promise<FindBasicPalletResponse> {
     if (!palletId) {
@@ -53,6 +69,9 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     const basicpallet = await this.prisma.basicPallet.findUnique({
       where: { palletId: palletId },
     });
+    if (!basicpallet) {
+      throw new NotFoundException('指定したbasicPalletが存在しません。');
+    }
     const ret: FindBasicPalletResponse = {
       palletId: palletId,
       name: basicpallet.name,
@@ -70,6 +89,9 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     const basicpallet = await this.prisma.basicPallet.findUnique({
       where: { name: name },
     });
+    if (!basicpallet) {
+      throw new NotFoundException('指定したbasicPalletが存在しません。');
+    }
     const ret: FindBasicPalletResponse = {
       palletId: basicpallet.palletId,
       name: name,
@@ -89,6 +111,8 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
+    } else if (!palletId) {
+      throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.update({
       where: { palletId: palletId },
@@ -101,6 +125,7 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     const ret: UpdateBasicPalletResponse = {
       status: 201,
       message: '更新しました。',
+      palletId: palletId,
     };
     return ret;
   }
@@ -110,7 +135,9 @@ export class BasicPalletService implements BasicPalletServiceInterface {
       where: { palletId: palletId },
     });
     if (!basicpallet) {
-      throw new NotFoundException('ベーシックパレットが存在しません。');
+      throw new NotFoundException('指定したベーシックパレットが存在しません。');
+    } else if (!palletId) {
+      throw new NotAcceptableException('palletIdが指定されていません。');
     }
     await this.prisma.basicPallet.delete({
       where: { palletId: palletId },
