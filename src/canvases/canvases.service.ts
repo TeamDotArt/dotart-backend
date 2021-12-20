@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { jwtDecoded } from '../common/helpers/jwtDecoded';
 // Service
@@ -21,6 +26,7 @@ import {
 import { DecodedDto } from '../auth/dto/decoded.dto';
 import { CanvasesServiceInterface } from './interface/canvases.service.interface';
 import { UsersServiceInterface } from '../users/interface/users.service.interface';
+import { Canvases } from '@prisma/client';
 
 @Injectable()
 export class CanvasesService implements CanvasesServiceInterface {
@@ -34,10 +40,34 @@ export class CanvasesService implements CanvasesServiceInterface {
     req: FastifyRequest,
     data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
+    }
+    if (!data.canvasId) {
+      throw new BadRequestException('canvasIdが未入力です。');
+    } else if (!data.userId) {
+      throw new BadRequestException('userIdが未入力です。');
+    } else if (!data.canvasName) {
+      throw new BadRequestException('canvasNameが未入力です。');
+    } else if (!data.canvasRange) {
+      throw new BadRequestException('canvasRangeが未入力です。');
+    } else if (!data.pallet) {
+      throw new BadRequestException('palletが未入力です。');
+    } else if (!data.canvasesData) {
+      throw new BadRequestException('canvasDataが未入力です。');
+    }
+    const distictCanvas: Canvases = await this.prisma.canvases.findFirst({
+      where: { canvasId: data.canvasId },
+    });
+    if (distictCanvas) {
+      throw new BadRequestException('すでにcanvasが存在します。');
     }
     await this.prisma.canvases.create({
       data: {
@@ -58,7 +88,12 @@ export class CanvasesService implements CanvasesServiceInterface {
   }
 
   async findAll(req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -114,10 +149,24 @@ export class CanvasesService implements CanvasesServiceInterface {
     req: FastifyRequest,
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
+    }
+    if (!data.canvasId) {
+      throw new BadRequestException('canvasIdが未入力です。');
+    } else if (!data.canvasName) {
+      throw new BadRequestException('canvasNameが未入力です。');
+    } else if (!data.pallet) {
+      throw new BadRequestException('palletが未入力です。');
+    } else if (!data.canvasesData) {
+      throw new BadRequestException('canvasesDataが未入力です。');
     }
     const canvases = await this.prisma.canvases.findMany({
       where: {
@@ -161,7 +210,12 @@ export class CanvasesService implements CanvasesServiceInterface {
     req: FastifyRequest,
     data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
