@@ -26,26 +26,20 @@ import {
 import { DecodedDto } from '../auth/dto/decoded.dto';
 import { CanvasesServiceInterface } from './interface/canvases.service.interface';
 import { UsersServiceInterface } from '../users/interface/users.service.interface';
-import { Canvases } from '@prisma/client';
 
 @Injectable()
 export class CanvasesService implements CanvasesServiceInterface {
   constructor(
-    private prisma: PrismaService,
+    private readonly _prismaService: PrismaService,
     @Inject('UsersServiceInterface')
-    private readonly usersService: UsersServiceInterface,
+    private readonly _usersService: UsersServiceInterface,
   ) {}
 
   async create(
     req: FastifyRequest,
     data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -88,17 +82,12 @@ export class CanvasesService implements CanvasesServiceInterface {
   }
 
   async findAll(req: FastifyRequest): Promise<FindAllCanvasResponse[]> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
-    const user = await this.usersService.getUserIdById(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const canvas = await this.prisma.canvases.findMany({
+    const canvas = await this._prismaService.canvases.findMany({
       where: { userId: user },
     });
     if (!canvas) {
@@ -111,7 +100,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     if (!canvasId) {
       throw new NotFoundException('canvasIdが存在しません。');
     }
-    const canvas = await this.prisma.canvases.findUnique({
+    const canvas = await this._prismaService.canvases.findUnique({
       where: { canvasId: canvasId },
     });
     const ret: FindCanvasResponse = {
@@ -130,7 +119,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     if (!canvasNaeme) {
       throw new NotFoundException('canvasNameが存在しません。');
     }
-    const canvas = await this.prisma.canvases.findFirst({
+    const canvas = await this._prismaService.canvases.findFirst({
       where: { canvasName: canvasNaeme },
     });
     const ret: FindCanvasResponse = {
@@ -149,12 +138,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     req: FastifyRequest,
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -176,7 +160,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     if (!canvases) {
       throw new NotFoundException('作成しているキャンバスが存在しません。');
     }
-    const canvas = await this.prisma.canvases.findUnique({
+    const canvas = await this._prismaService.canvases.findUnique({
       where: {
         canvasId: data.canvasId,
       },
@@ -192,7 +176,7 @@ export class CanvasesService implements CanvasesServiceInterface {
         '指定したキャンバスと保存されているキャンバスが一致しません。',
       );
     }
-    await this.prisma.canvases.update({
+    await this._prismaService.canvases.update({
       where: {
         canvasId: canvas.canvasId,
       },
@@ -210,23 +194,18 @@ export class CanvasesService implements CanvasesServiceInterface {
     req: FastifyRequest,
     data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     const user = await this.usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const canvases = await this.prisma.canvases.findMany({
+    const canvases = await this._prismaService.canvases.findMany({
       where: { userId: user },
     });
     if (!canvases) {
       throw new NotFoundException('作成しているキャンバスが存在しません。');
     }
-    const canvas = await this.prisma.canvases.findUnique({
+    const canvas = await this._prismaService.canvases.findUnique({
       where: {
         canvasId: data.canvasId,
       },
@@ -242,7 +221,7 @@ export class CanvasesService implements CanvasesServiceInterface {
         '指定したキャンバスと保存されているキャンバスが一致しません。',
       );
     }
-    await this.prisma.canvases.delete({
+    await this._prismaService.canvases.delete({
       where: { canvasId: canvas.canvasId },
     });
     const ret: RemoveCanvasResponse = {

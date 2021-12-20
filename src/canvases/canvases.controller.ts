@@ -45,7 +45,7 @@ import {
 export class CanvasesController implements CanvasesControllerInterface {
   constructor(
     @Inject('CanvasesServiceInterface')
-    private readonly canvasesService: CanvasesServiceInterface,
+    private readonly _canvasesService: CanvasesServiceInterface,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -64,7 +64,7 @@ export class CanvasesController implements CanvasesControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
-    return this.canvasesService.create(authorization, data);
+    return this._canvasesService.create(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -76,7 +76,7 @@ export class CanvasesController implements CanvasesControllerInterface {
   getCanvases(
     @Req() authorization: FastifyRequest,
   ): Promise<FindAllCanvasResponse[]> {
-    return this.canvasesService.findAll(authorization);
+    return this._canvasesService.findAll(authorization);
   }
 
   @Get('findCanvasId/:canvasId')
@@ -92,7 +92,7 @@ export class CanvasesController implements CanvasesControllerInterface {
   getCanvas(
     @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findCanvasId(canvasParam.canvasId);
+    return this._canvasesService.findCanvasId(canvasParam.canvasId);
   }
 
   @Get('findCanvasName/:canvasName')
@@ -108,7 +108,7 @@ export class CanvasesController implements CanvasesControllerInterface {
   getCanvasByName(
     @Param() canvasParam: FindCanvasParam,
   ): Promise<FindCanvasResponse> {
-    return this.canvasesService.findCanvasByName(canvasParam.canvasName);
+    return this._canvasesService.findCanvasByName(canvasParam.canvasName);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -122,7 +122,7 @@ export class CanvasesController implements CanvasesControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
-    return this.canvasesService.update(authorization, data);
+    return this._canvasesService.update(authorization, data);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -135,6 +135,6 @@ export class CanvasesController implements CanvasesControllerInterface {
     @Req() authorization: FastifyRequest,
     @Body() data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
-    return this.canvasesService.remove(authorization, data);
+    return this._canvasesService.remove(authorization, data);
   }
 }

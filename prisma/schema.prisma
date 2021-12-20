@@ -20,7 +20,9 @@ model User {
   password        String
   // 認証系
   emailVerified   Boolean   @default(false) @map(name: "email_verified")
-  active          Boolean   @default(true)
+  isLoggedIn      Boolean   @default(false)
+  loginType       Login     @default(EMAIL)
+  // 認証日時
   confirmedAt     DateTime? @map(name: "confirmed_at")
   // ユーザ情報
   userPallet    UserPallet[]
@@ -86,4 +88,12 @@ model BasicPallet {
 enum Role {
   USER
   ADMIN
+}
+
+// ログインタイプ
+enum Login {
+  EMAIL
+  GOOGLE
+  FACEBOOK
+  LINE
 }

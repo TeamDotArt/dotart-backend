@@ -7,7 +7,7 @@ import { LineHandler } from './lineHandler';
 
 @Injectable()
 export class UserHandler {
-  constructor(private readonly lineHandler: LineHandler) {}
+  constructor(private readonly _lineHandler: LineHandler) {}
 
   // handler
   async userEvent(event: MessageEvent) {
@@ -23,7 +23,7 @@ export class UserHandler {
 
     switch (messageObj[1]) {
       case '使い方':
-        await this.lineHandler.replyMessage(
+        await this._lineHandler.replyMessage(
           event.replyToken,
           textMessage(
             '個人チャットではコマンドは使い方しか存在しません。\nhttps://dotart.riml.work\nをお楽しみください！',

@@ -23,7 +23,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 @Injectable()
 export class BasicPalletService implements BasicPalletServiceInterface {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly _prismaService: PrismaService) {}
 
   async create(
     data: CreateBasicPalletRequest,
@@ -43,7 +43,7 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     } else if (!data.name) {
       throw new NotAcceptableException('nameが未入力です。');
     }
-    await this.prisma.basicPallet.create({ data: data });
+    await this._prismaService.basicPallet.create({ data: data });
 
     const ret: CreateBasicPalletResponse = {
       status: 201,
@@ -59,14 +59,20 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     if (!basicpallets) {
       throw new NotFoundException('basicpalletが存在しません。');
     }
-    return basicpallets;
+    return this._prismaService.basicPallet.findMany();
+  }
+
+  async findOne(id: number) {
+    return this.prisma.basicPallet.findUnique({
+      where: { id: id },
+    });
   }
 
   async findBasicPalletId(palletId: string): Promise<FindBasicPalletResponse> {
     if (!palletId) {
       throw new NotFoundException('palletIdが存在しません。');
     }
-    const basicpallet = await this.prisma.basicPallet.findUnique({
+    const basicpallet = await this._prismaService.basicPallet.findUnique({
       where: { palletId: palletId },
     });
     if (!basicpallet) {
@@ -86,7 +92,7 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     if (!name) {
       throw new NotFoundException('palletnameが存在しません。');
     }
-    const basicpallet = await this.prisma.basicPallet.findUnique({
+    const basicpallet = await this._prismaService.basicPallet.findUnique({
       where: { name: name },
     });
     if (!basicpallet) {
@@ -106,15 +112,16 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     palletId: string,
     data: UpdateBasicPalletRequest,
   ): Promise<UpdateBasicPalletResponse> {
-    const basicpallet: BasicPallet = await this.prisma.basicPallet.findUnique({
-      where: { palletId: palletId },
-    });
+    const basicpallet: BasicPallet =
+      await this._prismaService.basicPallet.findUnique({
+        where: { palletId: palletId },
+      });
     if (!basicpallet) {
       throw new NotFoundException('ベーシックパレットが存在しません。');
     } else if (!palletId) {
       throw new NotAcceptableException('palletIdが指定されていません。');
     }
-    await this.prisma.basicPallet.update({
+    await this._prismaService.basicPallet.update({
       where: { palletId: palletId },
       data: {
         name: data.name,
@@ -131,15 +138,16 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   }
 
   async remove(palletId: string): Promise<RemoveBasicPalletResponse> {
-    const basicpallet: BasicPallet = await this.prisma.basicPallet.findUnique({
-      where: { palletId: palletId },
-    });
+    const basicpallet: BasicPallet =
+      await this._prismaService.basicPallet.findUnique({
+        where: { palletId: palletId },
+      });
     if (!basicpallet) {
       throw new NotFoundException('指定したベーシックパレットが存在しません。');
     } else if (!palletId) {
       throw new NotAcceptableException('palletIdが指定されていません。');
     }
-    await this.prisma.basicPallet.delete({
+    await this._prismaService.basicPallet.delete({
       where: { palletId: palletId },
     });
     const ret: RemoveBasicPalletResponse = {

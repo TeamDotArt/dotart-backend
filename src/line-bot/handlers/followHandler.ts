@@ -6,10 +6,10 @@ import { LineHandler } from './lineHandler';
 
 @Injectable()
 export class FollowHandler {
-  constructor(private readonly lineHandler: LineHandler) {}
+  constructor(private readonly _lineHandler: LineHandler) {}
 
   async followEvent(events: FollowEvent): Promise<void> {
-    const profile = await this.lineHandler.getProfile(events.source.userId);
+    const profile = await this._lineHandler.getProfile(events.source.userId);
     const text = `友だち追加ありがとうございます\n${profile.displayName}さんはじめまして！\nDotArt公式アカウントです！\nhttps://dotart.riml.work\n\nぜひ楽しんでいただけたら嬉しいです！`;
     const message: Message[] = [
       textMessage(text),
@@ -19,6 +19,6 @@ export class FollowHandler {
         '友だち追加ありがとうございます!DotArt公式アカウントです!',
       ),
     ];
-    this.lineHandler.replyMessage(events.replyToken, message);
+    this._lineHandler.replyMessage(events.replyToken, message);
   }
 }

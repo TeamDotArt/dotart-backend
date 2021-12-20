@@ -10,13 +10,13 @@ type PasswordOmitUser = Omit<User, 'password'>;
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject('AuthServiceInterface')
-    private readonly authService: AuthServiceInterface,
+    private readonly _authService: AuthServiceInterface,
   ) {
     super();
   }
 
   async validate(data: User): Promise<PasswordOmitUser> {
-    const user = await this.authService.validateUser(data);
+    const user = await this._authService.validateUser(data);
 
     if (!user) {
       throw new UnauthorizedException('不正なリクエストです。');

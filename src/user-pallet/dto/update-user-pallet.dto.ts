@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Constants } from '../../common/constants';
+import { ResponseBase } from '../../common/dtoBase/response.dtoBase';
 import { UserPallet } from '../entities/user-pallet.entity';
 
 export class UpdateUserPalletRequest {
@@ -13,15 +14,7 @@ export class UpdateUserPalletRequest {
   data: UserPallet['data'];
 }
 
-export class UpdateUserPalletResponse {
-  @ApiProperty({ description: Constants.VERIFY_STATUS })
-  @IsNumber()
-  status: number;
-
-  @ApiProperty({ description: Constants.VERIFY_MESSAGE })
-  @IsString()
-  message: string;
-
+export class UpdateUserPalletResponse extends ResponseBase {
   @ApiProperty({ description: Constants.PROPERTY_USER_PALLET })
   @IsString()
   palletId: UserPallet['palletId'];

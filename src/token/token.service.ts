@@ -14,13 +14,13 @@ import { TokenServiceInterface } from './interface/token.service.interface';
 
 @Injectable()
 export class TokenService implements TokenServiceInterface {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly _prismaService: PrismaService) {}
 
   /**
    * UserIdからtokenを取得する
    */
   async getToken(userId: string): Promise<AccessTokenResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         userId: userId,
       },
@@ -32,7 +32,7 @@ export class TokenService implements TokenServiceInterface {
    * UserIdからrefreshTokenを取得する
    */
   async getRefreshToken(userId: string): Promise<RefreshTokenResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         userId: userId,
       },
@@ -44,7 +44,7 @@ export class TokenService implements TokenServiceInterface {
    * UserIdからEmailTokenを取得する
    */
   async getEmailToken(userId: string): Promise<EmailTokenResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         userId: userId,
       },
@@ -56,7 +56,7 @@ export class TokenService implements TokenServiceInterface {
    * EmailTokenからUserIdを取得する
    */
   async getUserIdByEmailToken(emailToken: string): Promise<UserIdResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         emailToken: emailToken,
       },
@@ -70,7 +70,7 @@ export class TokenService implements TokenServiceInterface {
   async getUserIdByPasswordToken(
     passwordToken: string,
   ): Promise<UserIdResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         passwordToken: passwordToken,
       },
@@ -82,7 +82,7 @@ export class TokenService implements TokenServiceInterface {
    * UserIdからPasswordTokenを取得する
    */
   async getPasswordToken(userId: string): Promise<PasswordTokenResponse> {
-    const findToken = await this.prisma.token.findUnique({
+    const findToken = await this._prismaService.token.findUnique({
       where: {
         userId: userId,
       },
@@ -95,7 +95,7 @@ export class TokenService implements TokenServiceInterface {
    */
   async createEmailToken(userId: string): Promise<EmailTokenResponse> {
     const emailToken = generateEmailToken();
-    const token = await this.prisma.token.create({
+    const token = await this._prismaService.token.create({
       data: {
         userId: userId,
         emailToken: emailToken,
@@ -111,7 +111,7 @@ export class TokenService implements TokenServiceInterface {
     accessToken: string,
     userId: string,
   ): Promise<AccessTokenResponse> {
-    await this.prisma.token.upsert({
+    await this._prismaService.token.upsert({
       where: { userId: userId },
       update: {
         token: accessToken,
@@ -131,7 +131,7 @@ export class TokenService implements TokenServiceInterface {
     userId: string,
     passwordToken: string | null,
   ): Promise<PasswordTokenResponse> {
-    const token = await this.prisma.token.update({
+    const token = await this._prismaService.token.update({
       where: { userId: userId },
       data: { passwordToken: passwordToken },
     });
@@ -142,7 +142,7 @@ export class TokenService implements TokenServiceInterface {
    * UserIdからトークンを削除する
    */
   async removeTokenByUserId(userId: string): Promise<RemoveTokenResponse> {
-    await this.prisma.token.delete({
+    await this._prismaService.token.delete({
       where: { userId: userId },
     });
 

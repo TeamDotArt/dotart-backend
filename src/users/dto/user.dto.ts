@@ -13,7 +13,7 @@ export class UserDto {
 
   @Exclude()
   emailVerified: boolean;
-  active: boolean;
+  isLoggedIn: boolean;
   @Exclude()
   createdAt: string;
   @Exclude()

@@ -65,7 +65,12 @@ export class User {
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()
-  active: PrismaUser['active'];
+  isLoggedIn: PrismaUser['isLoggedIn'];
+
+  @ApiProperty({ description: Constants.PROPERTY_LOGIN_TYPE })
+  @IsOptional()
+  @IsString()
+  loginType: PrismaUser['loginType'];
 
   // 時間系
 

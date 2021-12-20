@@ -48,7 +48,7 @@ export class ConfirmedUserResponse {
   @ApiProperty({ description: Constants.PROPERTY_ACTIVE })
   @IsBoolean()
   @Exclude()
-  active: User['active'];
+  isLoggedIn: User['isLoggedIn'];
 
   @ApiProperty({ description: Constants.PROPERTY_CREATED_AT })
   @IsDate()

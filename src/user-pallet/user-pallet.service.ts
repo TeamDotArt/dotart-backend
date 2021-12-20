@@ -31,21 +31,16 @@ import { UsersServiceInterface } from '../users/interface/users.service.interfac
 @Injectable()
 export class UserPalletService implements UserPalletServiceInterface {
   constructor(
-    private prisma: PrismaService,
+    private readonly _prismaService: PrismaService,
     @Inject('UsersServiceInterface')
-    private readonly usersService: UsersServiceInterface,
+    private readonly _usersService: UsersServiceInterface,
   ) {}
 
   async create(
     req: FastifyRequest,
     data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
+    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
     const user: User = await this.usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -61,7 +56,7 @@ export class UserPalletService implements UserPalletServiceInterface {
     if (distictUserPallet) {
       throw new BadRequestException('すでにuserpalletが存在します。');
     }
-    await this.prisma.userPallet.create({
+    await this._prismaService.userPallet.create({
       data: {
         palletId: data.palletId,
         userId: data.userId,
@@ -69,9 +64,10 @@ export class UserPalletService implements UserPalletServiceInterface {
         data: data.data,
       },
     });
-    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
-      where: { userId: user.userId },
-    });
+    const userpallet: UserPallet =
+      await this._prismaService.userPallet.findFirst({
+        where: { userId: user.userId },
+      });
     const ret: CreateUserPalletResponse = {
       status: 201,
       message: 'ユーザーパレットを生成しました。',
@@ -81,14 +77,14 @@ export class UserPalletService implements UserPalletServiceInterface {
   }
 
   async findAll(): Promise<FindAllUserPalletResponse[]> {
-    return this.prisma.userPallet.findMany();
+    return this._prismaService.userPallet.findMany();
   }
 
   async findUserPalletId(palletId: string): Promise<FindUserPalletResponse> {
     if (!palletId) {
       throw new NotFoundException('palletIdが存在しません。');
     }
-    const pallet = await this.prisma.userPallet.findUnique({
+    const pallet = await this._prismaService.userPallet.findUnique({
       where: { palletId: palletId },
     });
     if (!pallet) {
@@ -107,7 +103,7 @@ export class UserPalletService implements UserPalletServiceInterface {
     if (!name) {
       throw new NotFoundException('palletnameが存在しません。');
     }
-    const pallet = await this.prisma.userPallet.findFirst({
+    const pallet = await this._prismaService.userPallet.findFirst({
       where: { name: name },
     });
     if (!pallet) {
@@ -126,26 +122,22 @@ export class UserPalletService implements UserPalletServiceInterface {
     req: FastifyRequest,
     data: UpdateUserPalletRequest,
   ): Promise<UpdateUserPalletResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
     if (!data.name) {
       throw new BadRequestException('nameが未入力です。');
     }
-    const user: User = await this.usersService.findUserById(decoded.id);
+    const user: User = await this._usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
-      where: { userId: user.userId },
-    });
+    const userpallet: UserPallet =
+      await this._prismaService.userPallet.findFirst({
+        where: { userId: user.userId },
+      });
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
-    await this.prisma.userPallet.update({
+    await this._prismaService.userPallet.update({
       where: { palletId: userpallet.palletId },
       data: {
         name: data.name,
@@ -161,23 +153,19 @@ export class UserPalletService implements UserPalletServiceInterface {
   }
 
   async remove(req: FastifyRequest): Promise<RemoveUserPalletResponse> {
-    let decoded: DecodedDto = undefined;
-    try {
-      decoded = jwtDecoded(req.headers.authorization);
-    } catch {
-      throw new BadRequestException('reqが不正です。');
-    }
-    const user: User = await this.usersService.findUserById(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user: User = await this._usersService.findUserById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const userpallet: UserPallet = await this.prisma.userPallet.findFirst({
-      where: { userId: user.userId },
-    });
+    const userpallet: UserPallet =
+      await this._prismaService.userPallet.findFirst({
+        where: { userId: user.userId },
+      });
     if (!userpallet) {
       throw new NotFoundException('ユーザパレットが存在しません。');
     }
-    await this.prisma.userPallet.delete({
+    await this._prismaService.userPallet.delete({
       where: { palletId: userpallet.palletId },
     });
     const ret: RemoveUserPalletResponse = {

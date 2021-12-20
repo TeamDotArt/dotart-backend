@@ -44,11 +44,11 @@ import { AuthServiceInterface } from './interface/auth.service.interface';
 export class AuthService implements AuthServiceInterface {
   constructor(
     @Inject('UsersServiceInterface')
-    private readonly usersService: UsersServiceInterface,
+    private readonly _usersService: UsersServiceInterface,
     @Inject('TokenServiceInterface')
-    private readonly tokenService: TokenServiceInterface,
-    private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly _tokenService: TokenServiceInterface,
+    private readonly _jwtService: JwtService,
+    private readonly _prismaService: PrismaService,
   ) {}
 
   /**
@@ -60,7 +60,7 @@ export class AuthService implements AuthServiceInterface {
     if (!data.userId || !data.password) {
       throw new NotFoundException('userIdまたはパスワードが存在しません。');
     }
-    const user: User = await this.usersService.validateFindByUserId(
+    const user: User = await this._usersService.validateFindByUserId(
       data.userId,
     ); // DBからUserを取得
 
@@ -80,10 +80,10 @@ export class AuthService implements AuthServiceInterface {
     const user = await this.validateUser(data);
 
     // ログイン情報をactiveにする
-    await this.prisma.user.update({
+    await this._prismaService.user.update({
       where: { userId: user.userId },
       data: {
-        active: true,
+        isLoggedIn: true,
       },
     });
 
@@ -96,8 +96,8 @@ export class AuthService implements AuthServiceInterface {
     };
 
     // トークン作成、登録
-    const token = this.jwtService.sign(payload);
-    const accessToken = await this.tokenService.setAccessToken(
+    const token = this._jwtService.sign(payload);
+    const accessToken = await this._tokenService.setAccessToken(
       token,
       payload.userId,
     );
@@ -114,17 +114,17 @@ export class AuthService implements AuthServiceInterface {
    */
   async logout(req: FastifyRequest): Promise<LogOutUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const userId: string = await this.usersService.getUserIdById(decoded.id);
+    const userId: string = await this._usersService.getUserIdById(decoded.id);
 
     // ログイン情報を非アクティブにする
-    await this.prisma.user.update({
+    await this._prismaService.user.update({
       where: { id: decoded.id },
       data: {
-        active: false,
+        isLoggedIn: false,
       },
     });
-
-    await this.tokenService.removeTokenByUserId(userId);
+    console.log(req);
+    await this._tokenService.removeTokenByUserId(userId);
 
     return { status: 201, message: 'ログアウトしました。' };
   }
@@ -138,7 +138,7 @@ export class AuthService implements AuthServiceInterface {
       throw new NotFoundException('userIdが存在しません。');
     }
     // userIdを元にユーザが存在するかチェック
-    const userFound = await this.prisma.user.findUnique({
+    const userFound = await this._prismaService.user.findUnique({
       where: { userId: user.userId },
     });
 
@@ -150,17 +150,17 @@ export class AuthService implements AuthServiceInterface {
     const hash = getHash(user.password);
 
     // userを作成
-    const createdUser = await this.prisma.user.create({
+    const createdUser = await this._prismaService.user.create({
       data: {
         userId: user.userId,
         name: user.name,
         email: user.email,
         password: hash,
-        active: true,
+        isLoggedIn: true,
       },
     });
 
-    const token = await this.tokenService.createEmailToken(user.userId);
+    const token = await this._tokenService.createEmailToken(user.userId);
 
     // emailチェックのためメール送信する
     sendEmailToken(createdUser.email, token.emailToken);
@@ -180,14 +180,14 @@ export class AuthService implements AuthServiceInterface {
       throw new NotFoundException('emailTokenが存在しません。');
     }
 
-    const user = await this.usersService.findUserByEmailToken(emailToken);
+    const user = await this._usersService.findUserByEmailToken(emailToken);
 
     if (user.emailVerified) {
       throw new NotAcceptableException('メール認証が完了しています');
     }
 
     // 認証されたので認証日時を保管
-    const confirmedUser = await this.prisma.user.update({
+    const confirmedUser = await this._prismaService.user.update({
       where: {
         id: user.id,
       },
@@ -208,7 +208,7 @@ export class AuthService implements AuthServiceInterface {
     req: FastifyRequest,
   ): Promise<PasswordResetReqResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user = await this.usersService.getUserProfileById(decoded.id);
+    const user = await this._usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -216,7 +216,7 @@ export class AuthService implements AuthServiceInterface {
 
     const passwordToken = generatePasswordToken(user.userId);
 
-    const token = await this.tokenService.setPasswordToken(
+    const token = await this._tokenService.setPasswordToken(
       user.userId,
       passwordToken,
     );
@@ -239,7 +239,7 @@ export class AuthService implements AuthServiceInterface {
       throw new NotFoundException('passwordResetTokenが存在しません。');
     }
 
-    const findToken = await this.usersService.findUserByEmailToken(token);
+    const findToken = await this._usersService.findUserByEmailToken(token);
 
     if (!findToken) {
       throw new NotAcceptableException(
@@ -251,7 +251,7 @@ export class AuthService implements AuthServiceInterface {
 
     const password = getHash(data.password);
 
-    await this.prisma.user.update({
+    await this._prismaService.user.update({
       where: {
         userId: userId,
       },
@@ -260,7 +260,7 @@ export class AuthService implements AuthServiceInterface {
       },
     });
 
-    await this.tokenService.setPasswordToken(userId, null);
+    await this._tokenService.setPasswordToken(userId, null);
 
     return {
       status: 201,
@@ -273,7 +273,7 @@ export class AuthService implements AuthServiceInterface {
    */
   async me(req: FastifyRequest): Promise<MeResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user = await this.usersService.getUserProfileById(decoded.id);
+    const user = await this._usersService.getUserProfileById(decoded.id);
 
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
@@ -283,10 +283,9 @@ export class AuthService implements AuthServiceInterface {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      emailVerified: user.emailVerified
-        ? 'メールアドレス確認済みです'
-        : '未認証',
+      emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      confirmedAt: user.confirmedAt,
     };
 
     return {
