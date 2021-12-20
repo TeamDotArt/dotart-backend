@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 // Service
@@ -184,11 +189,22 @@ export class UsersService implements UsersServiceInterface {
     req: FastifyRequest,
     data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
+
+    if (!data.email) {
+      throw new BadRequestException('emailが指定されていません。');
+    } else if (data.password.length < 8) {
+      throw new NotFoundException('passwordが8文字未満です。');
+    }
+
     const user: User = await this.prisma.user.findUnique({
       where: { id: decoded.id },
     });
-
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
@@ -223,7 +239,12 @@ export class UsersService implements UsersServiceInterface {
    * @description ユーザの削除
    */
   async remove(req: FastifyRequest): Promise<RemoveUserResponse> {
-    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    let decoded: DecodedDto = undefined;
+    try {
+      decoded = jwtDecoded(req.headers.authorization);
+    } catch {
+      throw new BadRequestException('reqが不正です。');
+    }
     const user: User = await this.prisma.user.findUnique({
       where: { id: decoded.id },
     });
