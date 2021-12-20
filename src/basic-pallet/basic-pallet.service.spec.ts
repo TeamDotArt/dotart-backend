@@ -173,7 +173,7 @@ describe('BasicPalletService', () => {
           result = await service.remove(palletId);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(NotFoundException);
+          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
           console.log(err);
         }
       });

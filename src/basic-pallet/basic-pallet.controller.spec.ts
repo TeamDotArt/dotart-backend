@@ -1,11 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+// Service
 import { TokenService } from '../token/token.service';
 import { UsersService } from '../users/users.service';
 import { PrismaService } from '../common/prisma.service';
-import { BasicPalletController } from './basic-pallet.controller';
 import { BasicPalletService } from './basic-pallet.service';
+// Controller
+import { BasicPalletController } from './basic-pallet.controller';
+//Guard
 import { RoleGuard } from '../auth/guards/role.guard';
+// DTO
 import { CreateBasicPalletRequest } from './dto/create-basic-pallet.dto';
+// Exception
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 
@@ -80,7 +85,7 @@ describe('BasicPalletController', () => {
           result = await basicPalletController.deleteBasicPallet(palletId);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
+          expect(err).toBeInstanceOf(NotFoundException);
           console.log(err);
         }
       });
