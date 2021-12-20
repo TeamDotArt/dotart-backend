@@ -24,7 +24,10 @@ import { CanvasesServiceInterface } from './interface/canvases.service.interface
 // Guards
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Dto
-import { RemoveCanvasResponse } from './dto/delete-canvas.dto';
+import {
+  RemoveCanvasRequest,
+  RemoveCanvasResponse,
+} from './dto/delete-canvas.dto';
 import { FindAllCanvasResponse } from './dto/findAll-canvas.dto';
 import { FindCanvasResponse, FindCanvasParam } from './dto/find-canvas.dto';
 import { CanvasesControllerInterface } from './interface/canvases.controller.interface';
@@ -126,11 +129,11 @@ export class CanvasesController implements CanvasesControllerInterface {
   @Delete()
   // Swagger定義
   @ApiOperation({ summary: 'キャンバス削除' })
-  @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasResponse })
+  @ApiResponse({ status: HttpStatus.OK, type: RemoveCanvasRequest })
   // フックメソッド
   deleteCanvas(
     @Req() authorization: FastifyRequest,
-    @Body() data: RemoveCanvasResponse,
+    @Body() data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
     return this.canvasesService.remove(authorization, data);
   }
