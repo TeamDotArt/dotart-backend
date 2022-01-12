@@ -28,9 +28,10 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   async create(
     data: CreateBasicPalletRequest,
   ): Promise<CreateBasicPalletResponse> {
-    const basicpallet: BasicPallet = await this.prisma.basicPallet.findUnique({
-      where: { palletId: data.palletId },
-    });
+    const basicpallet: BasicPallet =
+      await this._prismaService.basicPallet.findUnique({
+        where: { palletId: data.palletId },
+      });
     if (basicpallet) {
       throw new PrismaClientKnownRequestError(
         'ベーシックパレットがすでに存在します',
@@ -55,7 +56,7 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   }
 
   async findAll(): Promise<FindAllBasicPalletResponse[]> {
-    const basicpallets = await this.prisma.basicPallet.findMany();
+    const basicpallets = await this._prismaService.basicPallet.findMany();
     if (!basicpallets) {
       throw new NotFoundException('basicpalletが存在しません。');
     }
@@ -63,7 +64,7 @@ export class BasicPalletService implements BasicPalletServiceInterface {
   }
 
   async findOne(id: number) {
-    return this.prisma.basicPallet.findUnique({
+    return this._prismaService.basicPallet.findUnique({
       where: { id: id },
     });
   }
@@ -132,7 +133,6 @@ export class BasicPalletService implements BasicPalletServiceInterface {
     const ret: UpdateBasicPalletResponse = {
       status: 201,
       message: '更新しました。',
-      palletId: palletId,
     };
     return ret;
   }

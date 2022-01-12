@@ -15,7 +15,10 @@ import { User } from '../users/entities/user.entity';
 // Dto
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
-import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
+import {
+  RemoveUserPalletRequest,
+  RemoveUserPalletResponse,
+} from './dto/delete-user-pallet.dto';
 import {
   UpdateUserPalletRequest,
   UpdateUserPalletResponse,
@@ -40,18 +43,18 @@ export class UserPalletService implements UserPalletServiceInterface {
     req: FastifyRequest,
     data: CreateUserPalletRequest,
   ): Promise<CreateUserPalletResponse> {
-    const decoded: DecodedDto = jwt_decode(req.headers.authorization);
-    const user: User = await this.usersService.findUserById(decoded.id);
+    const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+    const user: User = await this._usersService.findUserById(decoded.id);
+    let distictUserPallet: UserPallet = null;
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
     if (!data.palletId) {
       throw new BadRequestException('palletIdが未入力です。');
     }
-    const distictUserPallet: UserPallet =
-      await this.prisma.userPallet.findFirst({
-        where: { palletId: data.palletId },
-      });
+    distictUserPallet = await this._prismaService.userPallet.findFirst({
+      where: { palletId: data.palletId },
+    });
 
     if (distictUserPallet) {
       throw new BadRequestException('すでにuserpalletが存在します。');
@@ -152,18 +155,38 @@ export class UserPalletService implements UserPalletServiceInterface {
     return ret;
   }
 
-  async remove(req: FastifyRequest): Promise<RemoveUserPalletResponse> {
+  async remove(
+    req: FastifyRequest,
+    data: RemoveUserPalletRequest,
+  ): Promise<RemoveUserPalletResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user: User = await this._usersService.findUserById(decoded.id);
+    const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
-    const userpallet: UserPallet =
-      await this._prismaService.userPallet.findFirst({
-        where: { userId: user.userId },
-      });
+    const userpalletes = await this._prismaService.userPallet.findMany({
+      where: { userId: user },
+    });
+    if (!userpalletes) {
+      throw new NotFoundException(
+        '作成しているユーザーパレットが存在しません。',
+      );
+    }
+    const userpallet = await this._prismaService.userPallet.findUnique({
+      where: {
+        palletId: data.palletId,
+      },
+    });
     if (!userpallet) {
-      throw new NotFoundException('ユーザパレットが存在しません。');
+      throw new NotFoundException('指定したユーザーパレットが存在しません。');
+    }
+    const palletId = userpalletes.filter(
+      (userpalletes) => userpalletes.palletId === userpallet.palletId,
+    );
+    if (!palletId.length) {
+      throw new NotFoundException(
+        '指定したユーザーパレットと保存されているユーザーパレットが一致しません。',
+      );
     }
     await this._prismaService.userPallet.delete({
       where: { palletId: userpallet.palletId },

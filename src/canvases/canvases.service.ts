@@ -40,7 +40,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     data: CreateCanvasRequest,
   ): Promise<CreateCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user = await this.usersService.getUserIdById(decoded.id);
+    const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
@@ -57,13 +57,14 @@ export class CanvasesService implements CanvasesServiceInterface {
     } else if (!data.canvasesData) {
       throw new BadRequestException('canvasDataが未入力です。');
     }
-    const distictCanvas: Canvases = await this.prisma.canvases.findFirst({
-      where: { canvasId: data.canvasId },
-    });
+    const distictCanvas: FindCanvasResponse =
+      await this._prismaService.canvases.findFirst({
+        where: { canvasId: data.canvasId },
+      });
     if (distictCanvas) {
       throw new BadRequestException('すでにcanvasが存在します。');
     }
-    await this.prisma.canvases.create({
+    await this._prismaService.canvases.create({
       data: {
         canvasId: data.canvasId,
         userId: user,
@@ -139,7 +140,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     data: UpdateCanvasRequest,
   ): Promise<UpdateCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user = await this.usersService.getUserIdById(decoded.id);
+    const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
@@ -152,7 +153,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     } else if (!data.canvasesData) {
       throw new BadRequestException('canvasesDataが未入力です。');
     }
-    const canvases = await this.prisma.canvases.findMany({
+    const canvases = await this._prismaService.canvases.findMany({
       where: {
         userId: user,
       },
@@ -195,7 +196,7 @@ export class CanvasesService implements CanvasesServiceInterface {
     data: RemoveCanvasRequest,
   ): Promise<RemoveCanvasResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
-    const user = await this.usersService.getUserIdById(decoded.id);
+    const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }
