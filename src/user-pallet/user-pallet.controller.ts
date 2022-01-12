@@ -35,7 +35,10 @@ import {
 } from './dto/update-user-pallet.dto';
 import { FindAllUserPalletResponse } from './dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from './dto/find-user-pallet.dto';
-import { RemoveUserPalletResponse } from './dto/delete-user-pallet.dto';
+import {
+  RemoveUserPalletRequest,
+  RemoveUserPalletResponse,
+} from './dto/delete-user-pallet.dto';
 
 @ApiTags('user-pallet')
 @Controller('user-pallet')
@@ -135,7 +138,8 @@ export class UserPalletController implements UserPalletControllerInterface {
   // フックメソッド
   async deleteUserPallet(
     @Req() authorization: FastifyRequest,
+    @Body() data: RemoveUserPalletRequest,
   ): Promise<RemoveUserPalletResponse> {
-    return this._userPalletService.remove(authorization);
+    return this._userPalletService.remove(authorization, data);
   }
 }
