@@ -36,13 +36,19 @@ describe('UsersController', () => {
     controller = module.get<UsersController>(UsersController);
   });
 
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTY0MDE1NzY2MSwiZXhwIjoxNjQwMTU4ODYxfQ.PJ0ejcXc3DU5r-19U2B5KRlyntyxBOVu5G_tcncMTNk';
   describe('正常系', () => {
     describe('getUsers', () => {
       it('全ユーザ検索のテスト', async () => {
         let result;
         try {
-          result = await controller.getUsers();
           console.log('全ユーザ検索');
+          result = await controller.getUsers();
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
@@ -56,8 +62,8 @@ describe('UsersController', () => {
         const userId: FindUserParam = { userId: 'test2' };
         let result;
         try {
-          result = await controller.getUser(userId);
           console.log('userIdから単一ユーザ検索');
+          result = await controller.getUser(userId);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -70,8 +76,7 @@ describe('UsersController', () => {
       it('ユーザーデータ更新のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -100,8 +105,8 @@ describe('UsersController', () => {
         };
         let result;
         try {
-          result = await controller.updateProfile(req, mock);
           console.log('ユーザーデータ更新のテスト');
+          result = await controller.updateProfile(req, mock);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -114,8 +119,7 @@ describe('UsersController', () => {
       it('ユーザーデータ削除のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -138,11 +142,11 @@ describe('UsersController', () => {
         };
         let result;
         try {
-          result = await controller.deleteUser(req);
           console.log('ユーザーデータ削除のテスト');
+          result = await controller.deleteUser(req);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
+          expect(err).toBeInstanceOf(NotFoundException);
           console.log(err);
         }
       });
@@ -154,8 +158,8 @@ describe('UsersController', () => {
       it('全ユーザ検索（DBにない）', async () => {
         let result;
         try {
-          result = await controller.getUsers();
           console.log('全ユーザ検索（DBにない）');
+          result = await controller.getUsers();
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -169,8 +173,8 @@ describe('UsersController', () => {
         const userId: FindUserParam = { userId: '' };
         let result;
         try {
-          result = await controller.getUser(userId);
           console.log('userIdによる単一取得のテスト（userId未入力）');
+          result = await controller.getUser(userId);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -184,8 +188,8 @@ describe('UsersController', () => {
         const userId: FindUserParam = { userId: 'testtest' };
         let result;
         try {
-          result = await controller.getUser(userId);
           console.log('userIdによる単一取得のテスト（userIdが存在しない）');
+          result = await controller.getUser(userId);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -198,8 +202,7 @@ describe('UsersController', () => {
       it('ユーザーデータ更新のテスト(emailが未入力)', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -228,8 +231,8 @@ describe('UsersController', () => {
         };
         let result;
         try {
-          result = await controller.updateProfile(req, mock);
           console.log('ユーザーデータ更新のテスト(emailが未入力)');
+          result = await controller.updateProfile(req, mock);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
@@ -241,8 +244,7 @@ describe('UsersController', () => {
     it('ユーザーデータ更新のテスト(passが8文字未満)', async () => {
       const req: FastifyRequest = {
         headers: {
-          authorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+          authorization: token,
         },
         id: undefined,
         params: undefined,
@@ -271,8 +273,8 @@ describe('UsersController', () => {
       };
       let result;
       try {
-        result = await controller.updateProfile(req, mock);
         console.log('ユーザーデータ更新のテスト(passが8文字未満)');
+        result = await controller.updateProfile(req, mock);
         console.log(result);
       } catch (err) {
         expect(err).toBeInstanceOf(NotFoundException);
@@ -314,10 +316,9 @@ describe('UsersController', () => {
       try {
         console.log('ユーザーデータ更新のテスト(reqが不正)');
         result = await controller.updateProfile(req, mock);
-
         console.log(result);
       } catch (err) {
-        expect(err).toBeInstanceOf(BadRequestException);
+        expect(err).toBeInstanceOf(Error);
         console.log(err);
       }
     });
@@ -351,10 +352,9 @@ describe('UsersController', () => {
         try {
           console.log('ユーザーデータ削除のテスト(reqが不正)');
           result = await controller.deleteUser(req);
-
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(BadRequestException);
+          expect(err).toBeInstanceOf(Error);
           console.log(err);
         }
       });
