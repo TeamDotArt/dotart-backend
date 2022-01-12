@@ -9,6 +9,7 @@ import { CreateUserPalletRequest } from './dto/create-user-pallet.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { UpdateUserPalletRequest } from './dto/update-user-pallet.dto';
+import { RemoveUserPalletRequest } from './dto/delete-user-pallet.dto';
 
 describe('UserPalletService', () => {
   let service: UserPalletService;
@@ -33,13 +34,14 @@ describe('UserPalletService', () => {
     expect(service).toBeDefined();
   });
 
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTY0MDE1NzY2MSwiZXhwIjoxNjQwMTU4ODYxfQ.PJ0ejcXc3DU5r-19U2B5KRlyntyxBOVu5G_tcncMTNk';
   describe('正常系', () => {
     describe('create', () => {
       it('ユーザパレット生成のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -87,8 +89,8 @@ describe('UserPalletService', () => {
         };
         let result;
         try {
-          result = await service.create(req, body);
           console.log('ユーザパレット生成');
+          result = await service.create(req, body);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
@@ -98,11 +100,11 @@ describe('UserPalletService', () => {
     });
 
     describe('findAll', () => {
-      it('全ユーザ検索のテスト', async () => {
+      it('全ユーザパレット検索のテスト', async () => {
         let result;
         try {
+          console.log('全ユーザパレット検索');
           result = await service.findAll();
-          console.log('全ユーザ検索');
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
@@ -112,12 +114,12 @@ describe('UserPalletService', () => {
     });
 
     describe('findUserPalletId', () => {
-      it('palletIdから単一ユーザ検索のテスト', async () => {
+      it('palletIdから単一ユーザパレット検索のテスト', async () => {
         const palletId = 'mono1';
         let result;
         try {
-          result = await service.findUserPalletId(palletId);
           console.log('palletIdから単一ユーザパレット検索');
+          result = await service.findUserPalletId(palletId);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -131,8 +133,8 @@ describe('UserPalletService', () => {
         const name = 'マイパレット（モノトーン）';
         let result;
         try {
-          result = await service.findUserPalletByName(name);
           console.log('nameから単一ユーザパレット検索');
+          result = await service.findUserPalletByName(name);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -144,8 +146,7 @@ describe('UserPalletService', () => {
       it('ユーザパレット更新のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -191,8 +192,8 @@ describe('UserPalletService', () => {
         };
         let result;
         try {
-          result = await service.update(req, data);
           console.log('ユーザパレット更新のテスト');
+          result = await service.update(req, data);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -205,8 +206,7 @@ describe('UserPalletService', () => {
       it('ユーザパレット削除のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -227,10 +227,11 @@ describe('UserPalletService', () => {
           socket: undefined,
           connection: undefined,
         };
+        const body: RemoveUserPalletRequest = { palletId: 'mono1' };
         let result;
         try {
-          result = await service.remove(req);
           console.log('ユーザパレット削除のテスト');
+          result = await service.remove(req, body);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
@@ -295,7 +296,7 @@ describe('UserPalletService', () => {
           result = await service.create(req, body);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(BadRequestException);
+          expect(err).toBeInstanceOf(Error);
           console.log(err);
         }
       });
@@ -303,8 +304,7 @@ describe('UserPalletService', () => {
       it('ユーザパレット生成(palletIdが未入力)のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -358,12 +358,13 @@ describe('UserPalletService', () => {
           console.log(err);
         }
       });
+    });
 
-      it('ユーザパレット生成(palletIdが重複)のテスト', async () => {
+    describe('createUserPallet', () => {
+      it('ユーザパレット生成のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -409,7 +410,7 @@ describe('UserPalletService', () => {
         };
         let result;
         try {
-          console.log('ユーザパレット生成(palletIdが重複)');
+          console.log('ユーザパレット生成');
           result = await service.create(req, body);
           console.log(result);
         } catch (err) {
@@ -421,8 +422,7 @@ describe('UserPalletService', () => {
       it('ユーザパレット生成(palletIdが重複)のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -478,7 +478,7 @@ describe('UserPalletService', () => {
       });
 
       describe('findUserPalletId', () => {
-        it('palletIdから単一ユーザ検索(palletIdが未入力)のテスト', async () => {
+        it('palletIdから単一ユーザパレット検索(palletIdが未入力)のテスト', async () => {
           const palletId = '';
           let result;
           try {
@@ -491,7 +491,7 @@ describe('UserPalletService', () => {
           }
         });
 
-        it('palletIdから単一ユーザ検索(palletIdが存在しない)のテスト', async () => {
+        it('palletIdから単一ユーザパレット検索(palletIdが存在しない)のテスト', async () => {
           const palletId = 'testtest';
           let result;
           try {
@@ -585,11 +585,11 @@ describe('UserPalletService', () => {
           };
           let result;
           try {
-            result = await service.update(req, data);
             console.log('ユーザパレット更新のテスト(reqが不正)');
+            result = await service.update(req, data);
             console.log(result);
           } catch (err) {
-            expect(err).toBeInstanceOf(BadRequestException);
+            expect(err).toBeInstanceOf(Error);
             console.log(err);
           }
         });
@@ -598,8 +598,7 @@ describe('UserPalletService', () => {
       it('ユーザパレット更新(nameが未入力)のテスト', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -645,8 +644,8 @@ describe('UserPalletService', () => {
         };
         let result;
         try {
-          result = await service.update(req, data);
           console.log('ユーザパレット更新のテスト(nameが未入力)');
+          result = await service.update(req, data);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
@@ -680,23 +679,22 @@ describe('UserPalletService', () => {
           socket: undefined,
           connection: undefined,
         };
+        const body: RemoveUserPalletRequest = { palletId: 'mono1' };
         let result;
         try {
-          result = await service.remove(req);
           console.log('ユーザパレット削除のテスト(reqが不正)');
+          result = await service.remove(req, body);
           console.log(result);
         } catch (err) {
-          expect(err).toBeInstanceOf(BadRequestException);
+          expect(err).toBeInstanceOf(Error);
           console.log(err);
         }
       });
-    });
-    describe('remove', () => {
-      it('ユーザパレット削除のテスト', async () => {
+
+      it('ユーザパレット削除のテスト(bodyが未入力)', async () => {
         const req: FastifyRequest = {
           headers: {
-            authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcklkIjoidGVzdDIiLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTYzODk0Njc4MSwiZXhwIjoxNjM4OTQ3OTgxfQ.i9bRym8TFoBWc73bIjTWouKow2mDwwx7a1K4-xrBzB8',
+            authorization: token,
           },
           id: undefined,
           params: undefined,
@@ -717,10 +715,47 @@ describe('UserPalletService', () => {
           socket: undefined,
           connection: undefined,
         };
+        const body: RemoveUserPalletRequest = { palletId: '' };
         let result;
         try {
-          result = await service.remove(req);
-          console.log('ユーザパレット削除のテスト');
+          console.log('ユーザパレット削除(bodyが未入力)のテスト');
+          result = await service.remove(req, body);
+          console.log(result);
+        } catch (err) {
+          expect(err).toBeInstanceOf(NotFoundException);
+          console.log(err);
+        }
+      });
+
+      it('ユーザパレット重複テスト用データの削除のテスト', async () => {
+        const req: FastifyRequest = {
+          headers: {
+            authorization: token,
+          },
+          id: undefined,
+          params: undefined,
+          raw: undefined,
+          query: undefined,
+          log: undefined,
+          server: undefined,
+          body: undefined,
+          req: undefined,
+          ip: '',
+          hostname: '',
+          url: '',
+          protocol: 'http',
+          method: '',
+          routerPath: '',
+          routerMethod: '',
+          is404: false,
+          socket: undefined,
+          connection: undefined,
+        };
+        const body: RemoveUserPalletRequest = { palletId: 'mono1' };
+        let result;
+        try {
+          console.log('ユーザパレット重複テスト用データ削除のテスト');
+          result = await service.remove(req, body);
           console.log(result);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
