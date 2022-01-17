@@ -30,7 +30,6 @@ describe('BasicPalletService', () => {
   it('サービスがUndefinedではないか', () => {
     expect(service).toBeDefined();
   });
-
   describe('正常系', () => {
     describe('create', () => {
       it('ベーシックパレット生成のテスト', async () => {
@@ -40,14 +39,10 @@ describe('BasicPalletService', () => {
           description: 'ベーシックパレットのテストです',
           data: '[test]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット生成のテスト');
-          result = await service.create(mock);
-          console.log(result);
+          await service.create(mock);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
 
@@ -58,14 +53,10 @@ describe('BasicPalletService', () => {
           description: 'ベーシックパレットのテストです',
           data: '[testtest]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット生成のテスト');
-          result = await service.create(mock);
-          console.log(result);
+          await service.create(mock);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -73,28 +64,20 @@ describe('BasicPalletService', () => {
     describe('removeBasicPalletData', () => {
       it('ベーシックパレット削除のテスト', async () => {
         const palletId = 'test';
-        let result;
         try {
-          console.log('ベーシックパレット削除のテスト');
-          result = await service.remove(palletId);
-          console.log(result);
+          service.remove(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
 
     describe('findAll', () => {
       it('ベーシックパレット全取得のテスト', async () => {
-        let result;
         try {
-          console.log('ベーシックパレット全取得のテスト');
-          result = await service.findAll();
-          console.log(result);
+          await service.findAll();
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -102,14 +85,10 @@ describe('BasicPalletService', () => {
     describe('findPalletId/:palletId', () => {
       it('palletIdによる単一取得のテスト', async () => {
         const palletId = 'test2';
-        let result;
         try {
-          console.log('palletIdによる単一取得のテスト');
-          result = await service.findBasicPalletId(palletId);
-          console.log(result);
+          await service.findBasicPalletId(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -117,14 +96,10 @@ describe('BasicPalletService', () => {
     describe('findName/:name', () => {
       it('nameによる単一取得のテスト', async () => {
         const name = 'test2n';
-        let result;
         try {
-          console.log('nameによる単一取得のテスト');
-          result = await service.findBasicPalletByName(name);
-          console.log(result);
+          await service.findBasicPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -137,14 +112,10 @@ describe('BasicPalletService', () => {
           description: '使いやすそうな色をまとめてみました。',
           data: '[testtest]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット更新のテスト');
-          result = await service.update(palletId, mock);
-          console.log(result);
+          await service.update(palletId, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -157,14 +128,10 @@ describe('BasicPalletService', () => {
           description: '使いやすそうな色をまとめてみました。',
           data: '[testtest]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット更新のテスト（更新前に戻す）');
-          result = await service.update(palletId, mock);
-          console.log(result);
+          await service.update(palletId, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -172,14 +139,10 @@ describe('BasicPalletService', () => {
     describe('deleteBasicPallet', () => {
       it('ベーシックパレット削除のテスト', async () => {
         const palletId = 'test2';
-        let result;
         try {
-          console.log('ベーシックパレット削除のテスト');
-          result = await service.remove(palletId);
-          console.log(result);
+          await service.remove(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -194,14 +157,10 @@ describe('BasicPalletService', () => {
           description: 'ベーシックパレットのテストです',
           data: '[test]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット生成のテスト(palletId未入力)');
-          result = await service.create(mock);
-          console.log(result);
+          await service.create(mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotAcceptableException);
-          console.log(err);
         }
       });
 
@@ -212,14 +171,10 @@ describe('BasicPalletService', () => {
           description: 'ベーシックパレットのテストです',
           data: '[test]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット生成のテスト(name未入力)');
-          result = await service.create(mock);
-          console.log(result);
+          await service.create(mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotAcceptableException);
-          console.log(err);
         }
       });
     });
@@ -227,14 +182,11 @@ describe('BasicPalletService', () => {
     describe('removeBasicPalletData', () => {
       it('ベーシックパレット削除のテスト(palletId未入力)', async () => {
         const palletId = '';
-        let result;
         try {
-          console.log('ベーシックパレット削除のテスト(palletId未入力)');
-          result = await service.remove(palletId);
-          console.log(result);
+          ('ベーシックパレット削除のテスト(palletId未入力)');
+          await service.remove(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -242,14 +194,10 @@ describe('BasicPalletService', () => {
     describe('findPalletId/:palletId', () => {
       it('palletIdによる単一取得のテスト（palletId未入力）', async () => {
         const palletId = '';
-        let result;
         try {
-          console.log('palletIdによる単一取得のテスト（palletId未入力）');
-          result = await service.findBasicPalletId(palletId);
-          console.log(result);
+          await service.findBasicPalletId(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -257,14 +205,10 @@ describe('BasicPalletService', () => {
     describe('findName/:name', () => {
       it('nameによる単一取得のテスト(name未入力)', async () => {
         const name = '';
-        let result;
         try {
-          console.log('nameによる単一取得のテスト(name未入力)');
-          result = await service.findBasicPalletByName(name);
-          console.log(result);
+          await service.findBasicPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -277,14 +221,10 @@ describe('BasicPalletService', () => {
           description: '使いやすそうな色をまとめてみました。',
           data: '[test]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット更新のテスト(palletId未入力)');
-          result = await service.update(palletId, mock);
-          console.log(result);
+          await service.update(palletId, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -292,14 +232,10 @@ describe('BasicPalletService', () => {
     describe('removeBasicPalletData', () => {
       it('ベーシックパレット削除のテスト(palletIdがDBにない)', async () => {
         const palletId = 'test999';
-        let result;
         try {
-          console.log('ベーシックパレット削除のテスト(palletIdがDBにない)');
-          result = await service.remove(palletId);
-          console.log(result);
+          await service.remove(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -307,14 +243,10 @@ describe('BasicPalletService', () => {
     describe('findPalletId/:palletId', () => {
       it('palletIdによる単一取得のテスト(palletIdがDBにない)', async () => {
         const palletId = 'standardtest';
-        let result;
         try {
-          console.log('palletIdによる単一取得のテスト(palletIdがDBにない)');
-          result = await service.findBasicPalletId(palletId);
-          console.log(result);
+          await service.findBasicPalletId(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -322,14 +254,10 @@ describe('BasicPalletService', () => {
     describe('findName/:name', () => {
       it('nameによる単一取得のテスト(palletIdがDBにない)', async () => {
         const name = 'スタンダードtest';
-        let result;
         try {
-          console.log('nameによる単一取得のテスト(palletIdがDBにない)');
-          result = await service.findBasicPalletByName(name);
-          console.log(result);
+          await service.findBasicPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -342,14 +270,10 @@ describe('BasicPalletService', () => {
           description: '使いやすそうな色をまとめてみました。',
           data: '[test]',
         };
-        let result;
         try {
-          console.log('ベーシックパレット更新のテスト(palletIdがDBにない)');
-          result = await service.update(palletId, mock);
-          console.log(result);
+          await service.update(palletId, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -357,14 +281,10 @@ describe('BasicPalletService', () => {
     describe('deleteBasicPallet', () => {
       it('ベーシックパレット削除のテスト(palletIdがDBにない)', async () => {
         const palletId = 'testtest';
-        let result;
         try {
-          console.log('ベーシックパレット削除のテスト(palletIdがDBにない)');
-          result = await service.remove(palletId);
-          console.log(result);
+          await service.remove(palletId);
         } catch (err) {
-          expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
+          expect(err).toBeInstanceOf(NotFoundException);
         }
       });
     });

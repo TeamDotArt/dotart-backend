@@ -98,14 +98,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -135,14 +131,10 @@ describe('CanvasesService', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('全キャンバス検索');
-          result = await service.findAll(req);
-          console.log(result);
+          await service.findAll(req);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -150,14 +142,10 @@ describe('CanvasesService', () => {
     describe('findCanvasId', () => {
       it('canvasIdから単一キャンバス検索のテスト', async () => {
         const canvasId = '1';
-        let result;
         try {
-          console.log('canvasIdから単一キャンバス検索');
-          result = await service.findCanvasId(canvasId);
-          console.log(result);
+          await service.findCanvasId(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -165,14 +153,10 @@ describe('CanvasesService', () => {
     describe('findCanvasByName', () => {
       it('canvasNameから単一キャンバス検索のテスト', async () => {
         const canvasName = 'サンプル作品';
-        let result;
         try {
-          console.log('canvasNameから単一キャンバス検索');
-          result = await service.findCanvasByName(canvasName);
-          console.log(result);
+          await service.findCanvasByName(canvasName);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -237,14 +221,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -275,14 +255,10 @@ describe('CanvasesService', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
         try {
-          console.log('キャンバス削除のテスト');
-          result = await service.remove(req, body);
-          console.log(result);
+          await service.remove(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -351,14 +327,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(reqが不正)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -423,14 +395,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasIdが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -495,14 +463,11 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
+
         try {
-          console.log('キャンバス生成(userIdが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -567,14 +532,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasNameが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -639,14 +600,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasRangeが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -692,14 +649,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(palletが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -754,14 +707,10 @@ describe('CanvasesService', () => {
           },
           canvasesData: undefined,
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasesDataが未入力)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -828,14 +777,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
@@ -900,14 +845,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(bodyが重複)');
-          result = await service.create(req, body);
-          console.log(result);
+          await service.create(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -937,14 +878,10 @@ describe('CanvasesService', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('全キャンバス検索(reqが不正)');
-          result = await service.findAll(req);
-          console.log(result);
+          await service.findAll(req);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });
@@ -952,14 +889,10 @@ describe('CanvasesService', () => {
     describe('findCanvasId', () => {
       it('canvasIdから単一キャンバス検索(canvasIdが未入力)のテスト', async () => {
         const canvasId = '';
-        let result;
         try {
-          console.log('canvasIdから単一キャンバス検索(canvasIdが未入力)');
-          result = await service.findCanvasId(canvasId);
-          console.log(result);
+          await service.findCanvasId(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -967,14 +900,10 @@ describe('CanvasesService', () => {
     describe('findCanvasByName', () => {
       it('canvasNameから単一キャンバス検索(canvasNameが未入力)のテスト', async () => {
         const canvasName = '';
-        let result;
         try {
-          console.log('canvasNameから単一キャンバス検索(canvasNameが未入力)');
-          result = await service.findCanvasByName(canvasName);
-          console.log(result);
+          await service.findCanvasByName(canvasName);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -1039,14 +968,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(reqが不正)');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -1109,14 +1034,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasIdが未入力)');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1179,14 +1100,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasNameが未入力)');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1230,14 +1147,10 @@ describe('CanvasesService', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(palletが未入力)');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1290,14 +1203,10 @@ describe('CanvasesService', () => {
           },
           canvasesData: undefined,
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasesDataが未入力)');
-          result = await service.update(req, mock);
-          console.log(result);
+          await service.update(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -1328,14 +1237,10 @@ describe('CanvasesService', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
         try {
-          console.log('キャンバス削除のテスト(reqが不正)');
-          result = await service.remove(req, body);
-          console.log(result);
+          await service.remove(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -1364,14 +1269,10 @@ describe('CanvasesService', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '' };
-        let result;
         try {
-          console.log('キャンバス削除のテスト(bodyが未入力)');
-          result = await service.remove(req, body);
-          console.log(result);
+          await service.remove(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
@@ -1400,14 +1301,10 @@ describe('CanvasesService', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
         try {
-          console.log('キャンバス削除重複テスト用データののテスト');
-          result = await service.remove(req, body);
-          console.log(result);
+          await service.remove(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });

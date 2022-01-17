@@ -35,14 +35,10 @@ describe('UsersService', () => {
   describe('正常系', () => {
     describe('findAll', () => {
       it('全ユーザ検索のテスト', async () => {
-        let result;
         try {
-          console.log('全ユーザ検索');
-          result = await service.findAll();
-          console.log(result);
+          await service.findAll();
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -50,14 +46,11 @@ describe('UsersService', () => {
     describe('findUserById', () => {
       it('ユーザを固有IDから検索のテスト', async () => {
         const id = 7;
-        let result;
         try {
-          console.log('ユーザを固有IDから検索');
-          result = await service.findUserById(id);
-          console.log(result);
+          ('ユーザを固有IDから検索');
+          await service.findUserById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -65,14 +58,11 @@ describe('UsersService', () => {
     describe('findUserByEmailToken', () => {
       it('emailTokenから検索のテスト', async () => {
         const emailToken = '85233640';
-        let result;
+
         try {
-          console.log('emailTokenから検索');
-          result = await service.findUserByEmailToken(emailToken);
-          console.log(result);
+          await service.findUserByEmailToken(emailToken);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -81,14 +71,10 @@ describe('UsersService', () => {
       it('passwordTokenからUserの検索のテスト', async () => {
         const passwordToken =
           'JDJiJDEwJE5HL1IxU21kNC5YbzdFTktWSnA4OU9SeFVWNHhWUm02R3RjUlBFeVpoSGprVG9vSTc3RG95';
-        let result;
         try {
-          console.log('passwordTokenからUserの検索');
-          result = await service.findUserByPasswordToken(passwordToken);
-          console.log(result);
+          await service.findUserByPasswordToken(passwordToken);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -96,14 +82,10 @@ describe('UsersService', () => {
     describe('getUserIdById', () => {
       it('ユーザ固有IDからユーザIDを検索のテスト', async () => {
         const id = 7;
-        let result;
         try {
-          console.log('ユーザ固有IDからユーザIDを検索');
-          result = await service.getUserIdById(id);
-          console.log(result);
+          await service.getUserIdById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -111,14 +93,10 @@ describe('UsersService', () => {
     describe('getUserIdByName', () => {
       it('ユーザ名からユーザIDを検索のテスト', async () => {
         const name = 'admin';
-        let result;
         try {
-          console.log('ユーザ名からユーザIDを検索');
-          result = await service.getUserIdByName(name);
-          console.log(result);
+          await service.getUserIdByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -126,14 +104,10 @@ describe('UsersService', () => {
     describe('getUserProfileById', () => {
       it('ユーザ固有IDからプロフィール情報を検索のテスト', async () => {
         const id = 7;
-        let result;
         try {
-          console.log('ユーザ固有IDからプロフィール情報を検索');
-          result = await service.getUserProfileById(id);
-          console.log(result);
+          await service.getUserProfileById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -141,14 +115,10 @@ describe('UsersService', () => {
     describe('getUserProfile', () => {
       it('ユーザIDからプロフィール情報を検索のテスト', async () => {
         const userId = 'test2';
-        let result;
         try {
-          console.log('ユーザIDからプロフィール情報を検索');
-          result = await service.getUserProfile(userId);
-          console.log(result);
+          await service.getUserProfile(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -156,14 +126,10 @@ describe('UsersService', () => {
     describe('validateFindByUserId', () => {
       it('ユーザIDからユーザデータを取得(認証用)のテスト', async () => {
         const userId = 'test2';
-        let result;
         try {
-          console.log('ユーザIDからユーザデータを取得(認証用)');
-          result = await service.validateFindByUserId(userId);
-          console.log(result);
+          await service.validateFindByUserId(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -199,14 +165,10 @@ describe('UsersService', () => {
           password: 'test2222',
           name: 'test2',
         };
-        let result;
         try {
-          console.log('ユーザのProfileを更新');
-          result = await service.updateProfile(req, mock);
-          console.log(result);
+          await service.updateProfile(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -236,14 +198,10 @@ describe('UsersService', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('ユーザの削除');
-          result = await service.remove(req);
-          console.log(result);
+          await service.remove(req);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -253,14 +211,10 @@ describe('UsersService', () => {
     describe('findUserById', () => {
       it('ユーザを固有IDから検索のテスト(idがない場合)', async () => {
         const id = undefined;
-        let result;
         try {
-          console.log('ユーザを固有IDから検索(idがない場合)');
-          result = await service.findUserById(id);
-          console.log(result);
+          await service.findUserById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -268,14 +222,10 @@ describe('UsersService', () => {
     describe('findUserByEmailToken', () => {
       it('emailTokenから検索のテスト(emailTokenが未入力)', async () => {
         const emailToken = '';
-        let result;
         try {
-          console.log('emailTokenから検索(emailTokenが未入力)');
-          result = await service.findUserByEmailToken(emailToken);
-          console.log(result);
+          await service.findUserByEmailToken(emailToken);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -283,14 +233,10 @@ describe('UsersService', () => {
     describe('findUserByPasswordToken', () => {
       it('passwordTokenからUserの検索のテスト（PasswordTokenが未入力）', async () => {
         const passwordToken = '';
-        let result;
         try {
-          console.log('passwordTokenからUserの検索（PasswordTokenが未入力）');
-          result = await service.findUserByPasswordToken(passwordToken);
-          console.log(result);
+          await service.findUserByPasswordToken(passwordToken);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -298,14 +244,10 @@ describe('UsersService', () => {
     describe('getUserIdById', () => {
       it('ユーザ固有IDからユーザIDを検索のテスト(固有IDが未入力)', async () => {
         const id = undefined;
-        let result;
         try {
-          console.log('ユーザ固有IDからユーザIDを検索(固有IDが未入力)');
-          result = await service.getUserIdById(id);
-          console.log(result);
+          await service.getUserIdById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -313,14 +255,10 @@ describe('UsersService', () => {
     describe('getUserIdByName', () => {
       it('ユーザ名からユーザIDを検索のテスト', async () => {
         const name = '';
-        let result;
         try {
-          console.log('ユーザ名からユーザIDを検索(nameが未入力)');
-          result = await service.getUserIdByName(name);
-          console.log(result);
+          await service.getUserIdByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -328,14 +266,10 @@ describe('UsersService', () => {
     describe('getUserProfileById', () => {
       it('ユーザ固有IDからプロフィール情報を検索のテスト(idが未入力', async () => {
         const id = undefined;
-        let result;
         try {
-          console.log('ユーザ固有IDからプロフィール情報を検索(idが未入力)');
-          result = await service.getUserProfileById(id);
-          console.log(result);
+          await service.getUserProfileById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -343,14 +277,10 @@ describe('UsersService', () => {
     describe('getUserProfile', () => {
       it('ユーザIDからプロフィール情報を検索のテスト(userIdが未入力)', async () => {
         const userId = '';
-        let result;
         try {
-          console.log('ユーザIDからプロフィール情報を検索(userIdが未入力)');
-          result = await service.getUserProfile(userId);
-          console.log(result);
+          await service.getUserProfile(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -358,14 +288,10 @@ describe('UsersService', () => {
     describe('validateFindByUserId', () => {
       it('ユーザIDからユーザデータを取得(認証用)(userIdが未入力)のテスト', async () => {
         const userId = '';
-        let result;
         try {
-          console.log('ユーザIDからユーザデータを取得(認証用)(userIdが未入力)');
-          result = await service.validateFindByUserId(userId);
-          console.log(result);
+          await service.validateFindByUserId(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -401,14 +327,10 @@ describe('UsersService', () => {
           password: 'test',
           name: 'test2',
         };
-        let result;
         try {
-          console.log('ユーザのProfileを更新(reqが不正)');
-          result = await service.updateProfile(req, mock);
-          console.log(result);
+          await service.updateProfile(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });
@@ -444,14 +366,10 @@ describe('UsersService', () => {
           password: '',
           name: '',
         };
-        let result;
         try {
-          console.log('ユーザのProfileを更新(mockが未入力)');
-          result = await service.updateProfile(req, mock);
-          console.log(result);
+          await service.updateProfile(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -481,14 +399,10 @@ describe('UsersService', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('ユーザの削除(reqが未入力)');
-          result = await service.remove(req);
-          console.log(result);
+          await service.remove(req);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });
