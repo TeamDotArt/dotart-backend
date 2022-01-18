@@ -47,7 +47,6 @@ describe('UsersService', () => {
       it('ユーザを固有IDから検索のテスト', async () => {
         const id = 7;
         try {
-          ('ユーザを固有IDから検索');
           await service.findUserById(id);
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
@@ -58,7 +57,6 @@ describe('UsersService', () => {
     describe('findUserByEmailToken', () => {
       it('emailTokenから検索のテスト', async () => {
         const emailToken = '85233640';
-
         try {
           await service.findUserByEmailToken(emailToken);
         } catch (err) {
