@@ -45,14 +45,10 @@ describe('UsersController', () => {
   describe('正常系', () => {
     describe('getUsers', () => {
       it('全ユーザ検索のテスト', async () => {
-        let result;
         try {
-          console.log('全ユーザ検索');
-          result = await controller.getUsers();
-          console.log(result);
+          await controller.getUsers();
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -60,14 +56,10 @@ describe('UsersController', () => {
     describe('getUser', () => {
       it('userIdから単一ユーザ検索のテスト', async () => {
         const userId: FindUserParam = { userId: 'test2' };
-        let result;
         try {
-          console.log('userIdから単一ユーザ検索');
-          result = await controller.getUser(userId);
-          console.log(result);
+          await controller.getUser(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -103,14 +95,10 @@ describe('UsersController', () => {
           password: 'test2222',
           name: 'test2',
         };
-        let result;
         try {
-          console.log('ユーザーデータ更新のテスト');
-          result = await controller.updateProfile(req, mock);
-          console.log(result);
+          await controller.updateProfile(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -140,14 +128,10 @@ describe('UsersController', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('ユーザーデータ削除のテスト');
-          result = await controller.deleteUser(req);
-          console.log(result);
+          await controller.deleteUser(req);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -156,14 +140,10 @@ describe('UsersController', () => {
   describe('異常系', () => {
     describe('getUsers', () => {
       it('全ユーザ検索（DBにない）', async () => {
-        let result;
         try {
-          console.log('全ユーザ検索（DBにない）');
-          result = await controller.getUsers();
-          console.log(result);
+          await controller.getUsers();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -171,14 +151,10 @@ describe('UsersController', () => {
     describe('getUser/:userId', () => {
       it('userIdによる単一取得のテスト（userId未入力）', async () => {
         const userId: FindUserParam = { userId: '' };
-        let result;
         try {
-          console.log('userIdによる単一取得のテスト（userId未入力）');
-          result = await controller.getUser(userId);
-          console.log(result);
+          await controller.getUser(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -186,14 +162,10 @@ describe('UsersController', () => {
     describe('getUser/:userId', () => {
       it('userIdによる単一取得のテスト（userIdが存在しない）', async () => {
         const userId: FindUserParam = { userId: 'testtest' };
-        let result;
         try {
-          console.log('userIdによる単一取得のテスト（userIdが存在しない）');
-          result = await controller.getUser(userId);
-          console.log(result);
+          await controller.getUser(userId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -229,14 +201,10 @@ describe('UsersController', () => {
           password: 'test2222',
           name: 'test2',
         };
-        let result;
         try {
-          console.log('ユーザーデータ更新のテスト(emailが未入力)');
-          result = await controller.updateProfile(req, mock);
-          console.log(result);
+          await controller.updateProfile(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -271,14 +239,10 @@ describe('UsersController', () => {
         password: 'test',
         name: 'test2',
       };
-      let result;
       try {
-        console.log('ユーザーデータ更新のテスト(passが8文字未満)');
-        result = await controller.updateProfile(req, mock);
-        console.log(result);
+        await controller.updateProfile(req, mock);
       } catch (err) {
         expect(err).toBeInstanceOf(NotFoundException);
-        console.log(err);
       }
     });
 
@@ -312,14 +276,10 @@ describe('UsersController', () => {
         password: 'test',
         name: 'test2',
       };
-      let result;
       try {
-        console.log('ユーザーデータ更新のテスト(reqが不正)');
-        result = await controller.updateProfile(req, mock);
-        console.log(result);
+        await controller.updateProfile(req, mock);
       } catch (err) {
         expect(err).toBeInstanceOf(Error);
-        console.log(err);
       }
     });
 
@@ -348,14 +308,10 @@ describe('UsersController', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('ユーザーデータ削除のテスト(reqが不正)');
-          result = await controller.deleteUser(req);
-          console.log(result);
+          await controller.deleteUser(req);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });

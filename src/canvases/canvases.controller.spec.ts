@@ -112,14 +112,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -149,14 +145,10 @@ describe('CanvasesController', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('全キャンバス検索');
-          result = await controller.getCanvases(req);
-          console.log(result);
+          await controller.getCanvases(req);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -167,14 +159,10 @@ describe('CanvasesController', () => {
           canvasId: '1',
           canvasName: 'サンプル作品',
         };
-        let result;
         try {
-          console.log('canvasIdから単一キャンバス検索');
-          result = await controller.getCanvas(canvasId);
-          console.log(result);
+          await controller.getCanvas(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -185,14 +173,10 @@ describe('CanvasesController', () => {
           canvasId: '1',
           canvasName: 'サンプル作品',
         };
-        let result;
         try {
-          console.log('canvasNameから単一キャンバス検索');
-          result = await controller.getCanvasByName(canvasId);
-          console.log(result);
+          await controller.getCanvasByName(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(TypeError);
-          console.log(err);
         }
       });
     });
@@ -257,14 +241,11 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
+
         try {
-          console.log('キャンバス更新のテスト');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -295,14 +276,11 @@ describe('CanvasesController', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
+
         try {
-          console.log('キャンバス削除のテスト');
-          result = await controller.deleteCanvas(req, body);
-          console.log(result);
+          await controller.deleteCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -371,14 +349,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(reqが不正)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -443,14 +417,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasIdが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -515,14 +485,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(userIdが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -587,14 +553,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasNameが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -659,14 +621,11 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
+
         try {
-          console.log('キャンバス生成(canvasRangeが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -712,14 +671,11 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
+
         try {
-          console.log('キャンバス生成(palletが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -774,14 +730,10 @@ describe('CanvasesController', () => {
           },
           canvasesData: undefined,
         };
-        let result;
         try {
-          console.log('キャンバス生成(canvasesDataが未入力)');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -848,14 +800,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス生成');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
@@ -920,14 +868,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス(bodyが重複)生成');
-          result = await controller.createCanvas(req, body);
-          console.log(result);
+          await controller.createCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -957,14 +901,10 @@ describe('CanvasesController', () => {
           socket: undefined,
           connection: undefined,
         };
-        let result;
         try {
-          console.log('全キャンバス検索(reqが不正)');
-          result = await controller.getCanvases(req);
-          console.log(result);
+          await controller.getCanvases(req);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });
@@ -975,14 +915,10 @@ describe('CanvasesController', () => {
           canvasId: '',
           canvasName: 'サンプル作品',
         };
-        let result;
         try {
-          console.log('canvasIdから単一キャンバス検索(canvasIdが未入力)');
-          result = await controller.getCanvas(canvasId);
-          console.log(result);
+          await controller.getCanvas(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -993,14 +929,10 @@ describe('CanvasesController', () => {
           canvasId: '1',
           canvasName: '',
         };
-        let result;
         try {
-          console.log('canvasNameから単一キャンバス検索(canvasNameが未入力)');
-          result = await controller.getCanvasByName(canvasId);
-          console.log(result);
+          await controller.getCanvasByName(canvasId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -1065,14 +997,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(reqが不正)');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -1135,14 +1063,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasIdが未入力)');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1205,14 +1129,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasNameが未入力)');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1256,14 +1176,10 @@ describe('CanvasesController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(palletが未入力)');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -1316,14 +1232,10 @@ describe('CanvasesController', () => {
           },
           canvasesData: undefined,
         };
-        let result;
         try {
-          console.log('キャンバス更新のテスト(canvasesDataが未入力)');
-          result = await controller.updateCanvas(req, mock);
-          console.log(result);
+          await controller.updateCanvas(req, mock);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -1354,14 +1266,10 @@ describe('CanvasesController', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
         try {
-          console.log('キャンバス削除のテスト(reqが不正)');
-          result = await controller.deleteCanvas(req, body);
-          console.log(result);
+          await controller.deleteCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -1390,14 +1298,10 @@ describe('CanvasesController', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '' };
-        let result;
         try {
-          console.log('キャンバス削除のテスト(bodyが未入力)');
-          result = await controller.deleteCanvas(req, body);
-          console.log(result);
+          await controller.deleteCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
@@ -1426,14 +1330,10 @@ describe('CanvasesController', () => {
           connection: undefined,
         };
         const body: RemoveCanvasRequest = { canvasId: '1' };
-        let result;
         try {
-          console.log('キャンバス重複テスト用データの削除のテスト');
-          result = await controller.deleteCanvas(req, body);
-          console.log(result);
+          await controller.deleteCanvas(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });

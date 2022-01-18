@@ -100,28 +100,20 @@ describe('UserPalletController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('ユーザパレット生成');
-          result = await controller.createUserPallet(req, body);
-          console.log(result);
+          await controller.createUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
 
     describe('getUserPallets', () => {
       it('全ユーザパレット検索のテスト', async () => {
-        let result;
         try {
-          console.log('全ユーザパレット検索');
-          result = await controller.getUserPallets();
-          console.log(result);
+          await controller.getUserPallets();
         } catch (err) {
           expect(err).toBeInstanceOf(PrismaClientKnownRequestError);
-          console.log(err);
         }
       });
     });
@@ -129,14 +121,10 @@ describe('UserPalletController', () => {
     describe('getUserPallet', () => {
       it('palletIdから単一ユーザパレット検索のテスト', async () => {
         const palletId = 'mono1';
-        let result;
         try {
-          console.log('palletIdから単一ユーザパレット検索');
-          result = await controller.getUserPallet(palletId);
-          console.log(result);
+          await controller.getUserPallet(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -144,14 +132,10 @@ describe('UserPalletController', () => {
     describe('getUserPalletByName', () => {
       it('nameから単一ユーザパレット検索のテスト', async () => {
         const name = 'マイパレット（モノトーン）';
-        let result;
         try {
-          console.log('nameから単一ユーザパレット検索');
-          result = await controller.getUserPalletByName(name);
-          console.log(result);
+          await controller.getUserPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -204,14 +188,10 @@ describe('UserPalletController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('ユーザパレット更新のテスト');
-          result = await controller.updateUserPallet(req, data);
-          console.log(result);
+          await controller.updateUserPallet(req, data);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -242,14 +222,10 @@ describe('UserPalletController', () => {
           connection: undefined,
         };
         const body: RemoveUserPalletRequest = { palletId: 'mono1' };
-        let result;
         try {
-          console.log('ユーザパレット削除のテスト');
-          result = await controller.deleteUserPallet(req, body);
-          console.log(result);
+          await controller.deleteUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -304,14 +280,10 @@ describe('UserPalletController', () => {
             'rgb(0, 0, 0)',
           ],
         };
-        let result;
         try {
-          console.log('ユーザパレット生成(reqが不正)');
-          result = await controller.createUserPallet(req, body);
-          console.log(result);
+          await controller.createUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
 
@@ -362,14 +334,10 @@ describe('UserPalletController', () => {
             'rgb(0, 0, 0)',
           ],
         };
-        let result;
         try {
-          console.log('ユーザパレット生成(palletIdが未入力)');
-          result = await controller.createUserPallet(req, body);
-          console.log(result);
+          await controller.createUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -422,14 +390,10 @@ describe('UserPalletController', () => {
             'rgb(0, 0, 0)',
           ],
         };
-        let result;
         try {
-          console.log('ユーザパレット生成');
-          result = await controller.createUserPallet(req, body);
-          console.log(result);
+          await controller.createUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
 
@@ -480,14 +444,10 @@ describe('UserPalletController', () => {
             'rgb(0, 0, 0)',
           ],
         };
-        let result;
         try {
-          console.log('ユーザパレット生成(palletIdが重複)');
-          result = await controller.createUserPallet(req, body);
-          console.log(result);
+          await controller.createUserPallet(req, body);
         } catch (err) {
           expect(err).toBeInstanceOf(BadRequestException);
-          console.log(err);
         }
       });
     });
@@ -495,29 +455,19 @@ describe('UserPalletController', () => {
     describe('getUserPallet', () => {
       it('palletIdから単一ユーザパレット検索(palletIdが未入力)のテスト', async () => {
         const palletId = '';
-        let result;
         try {
-          console.log('palletIdから単一ユーザパレット検索(palletIdが未入力)');
-          result = await controller.getUserPallet(palletId);
-          console.log(result);
+          await controller.getUserPallet(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
       it('palletIdから単一ユーザパレット検索(palletIdが存在しない)のテスト', async () => {
         const palletId = 'testtest';
-        let result;
         try {
-          console.log(
-            'palletIdから単一ユーザパレット検索(palletIdが存在しない)',
-          );
-          result = await controller.getUserPallet(palletId);
-          console.log(result);
+          await controller.getUserPallet(palletId);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -525,27 +475,19 @@ describe('UserPalletController', () => {
     describe('getUserPalletByName', () => {
       it('nameから単一ユーザパレット検索のテスト(nameが未入力)', async () => {
         const name = '';
-        let result;
         try {
-          console.log('nameから単一ユーザパレット検索(nameが未入力)');
-          result = await controller.getUserPalletByName(name);
-          console.log(result);
+          await controller.getUserPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
 
       it('nameから単一ユーザパレット検索のテスト(nameが存在しない)', async () => {
         const name = 'testtest';
-        let result;
         try {
-          console.log('nameから単一ユーザパレット検索(nameが存在しない)');
-          result = await controller.getUserPalletByName(name);
-          console.log(result);
+          await controller.getUserPalletByName(name);
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          console.log(err);
         }
       });
     });
@@ -598,14 +540,10 @@ describe('UserPalletController', () => {
             ],
           },
         };
-        let result;
         try {
-          console.log('ユーザパレット更新のテスト(reqが不正)');
-          result = await controller.updateUserPallet(req, data);
-          console.log(result);
+          await controller.updateUserPallet(req, data);
         } catch (err) {
           expect(err).toBeInstanceOf(Error);
-          console.log(err);
         }
       });
     });
@@ -657,14 +595,10 @@ describe('UserPalletController', () => {
           ],
         },
       };
-      let result;
       try {
-        console.log('ユーザパレット更新のテスト(nameが未入力)');
-        result = await controller.updateUserPallet(req, data);
-        console.log(result);
+        await controller.updateUserPallet(req, data);
       } catch (err) {
         expect(err).toBeInstanceOf(BadRequestException);
-        console.log(err);
       }
     });
   });
@@ -695,14 +629,10 @@ describe('UserPalletController', () => {
         connection: undefined,
       };
       const body: RemoveUserPalletRequest = { palletId: 'mono1' };
-      let result;
       try {
-        console.log('ユーザパレット削除のテスト(reqが不正)');
-        result = await controller.deleteUserPallet(req, body);
-        console.log(result);
+        await controller.deleteUserPallet(req, body);
       } catch (err) {
         expect(err).toBeInstanceOf(Error);
-        console.log(err);
       }
     });
 
@@ -731,14 +661,10 @@ describe('UserPalletController', () => {
         connection: undefined,
       };
       const body: RemoveUserPalletRequest = { palletId: '' };
-      let result;
       try {
-        console.log('ユーザパレット削除のテスト（bodyが未入力）');
-        result = await controller.deleteUserPallet(req, body);
-        console.log(result);
+        await controller.deleteUserPallet(req, body);
       } catch (err) {
         expect(err).toBeInstanceOf(NotFoundException);
-        console.log(err);
       }
     });
 
@@ -767,14 +693,10 @@ describe('UserPalletController', () => {
         connection: undefined,
       };
       const body: RemoveUserPalletRequest = { palletId: 'mono1' };
-      let result;
       try {
-        console.log('ユーザパレット重複テスト用データの削除のテスト');
-        result = await controller.deleteUserPallet(req, body);
-        console.log(result);
+        await controller.deleteUserPallet(req, body);
       } catch (err) {
         expect(err).toBeInstanceOf(NotFoundException);
-        console.log(err);
       }
     });
   });
