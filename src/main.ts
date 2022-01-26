@@ -6,6 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const apiPrefix = 'api/v1';
@@ -43,8 +44,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  const port = process.env.PORT || 5000;
-  await app.listen(port);
-  console.log(`listen to http://localhost:${port}/${apiPrefix}`);
+  const configService = app.get(ConfigService);
+  const PORT = configService.get('PORT') || 5000;
+  await app.listen(PORT);
+  console.log(`listen to http://localhost:${PORT}/${apiPrefix}`);
 }
 bootstrap();
