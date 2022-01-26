@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 // Service
@@ -187,10 +192,16 @@ export class UsersService implements UsersServiceInterface {
     data: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     const decoded: DecodedDto = jwtDecoded(req.headers.authorization);
+
+    if (!data.email) {
+      throw new BadRequestException('emailが指定されていません。');
+    } else if (data.password.length < 8) {
+      throw new NotFoundException('passwordが8文字未満です。');
+    }
+
     const user: User = await this._prismaService.user.findUnique({
       where: { id: decoded.id },
     });
-
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
     }

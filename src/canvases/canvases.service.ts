@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { jwtDecoded } from '../common/helpers/jwtDecoded';
 // Service
@@ -38,6 +43,26 @@ export class CanvasesService implements CanvasesServiceInterface {
     const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
+    }
+    if (!data.canvasId) {
+      throw new BadRequestException('canvasIdが未入力です。');
+    } else if (!data.userId) {
+      throw new BadRequestException('userIdが未入力です。');
+    } else if (!data.canvasName) {
+      throw new BadRequestException('canvasNameが未入力です。');
+    } else if (!data.canvasRange) {
+      throw new BadRequestException('canvasRangeが未入力です。');
+    } else if (!data.pallet) {
+      throw new BadRequestException('palletが未入力です。');
+    } else if (!data.canvasesData) {
+      throw new BadRequestException('canvasDataが未入力です。');
+    }
+    const distictCanvas: FindCanvasResponse =
+      await this._prismaService.canvases.findFirst({
+        where: { canvasId: data.canvasId },
+      });
+    if (distictCanvas) {
+      throw new BadRequestException('すでにcanvasが存在します。');
     }
     await this._prismaService.canvases.create({
       data: {
@@ -118,6 +143,15 @@ export class CanvasesService implements CanvasesServiceInterface {
     const user = await this._usersService.getUserIdById(decoded.id);
     if (!user) {
       throw new NotFoundException('ユーザが存在しません。');
+    }
+    if (!data.canvasId) {
+      throw new BadRequestException('canvasIdが未入力です。');
+    } else if (!data.canvasName) {
+      throw new BadRequestException('canvasNameが未入力です。');
+    } else if (!data.pallet) {
+      throw new BadRequestException('palletが未入力です。');
+    } else if (!data.canvasesData) {
+      throw new BadRequestException('canvasesDataが未入力です。');
     }
     const canvases = await this._prismaService.canvases.findMany({
       where: {

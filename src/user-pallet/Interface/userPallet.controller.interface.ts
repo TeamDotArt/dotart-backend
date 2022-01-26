@@ -1,7 +1,10 @@
 import { FastifyRequest } from 'fastify';
 import { FindAllUserPalletResponse } from '../dto/findAll-user-pallet.dto';
 import { FindUserPalletResponse } from '../dto/find-user-pallet.dto';
-import { RemoveUserPalletResponse } from '../dto/delete-user-pallet.dto';
+import {
+  RemoveUserPalletRequest,
+  RemoveUserPalletResponse,
+} from '../dto/delete-user-pallet.dto';
 import {
   CreateUserPalletRequest,
   CreateUserPalletResponse,
@@ -34,5 +37,6 @@ export interface UserPalletControllerInterface {
   // ユーザパレットの削除処理
   deleteUserPallet(
     authorization: FastifyRequest,
+    userPallet: RemoveUserPalletRequest,
   ): Promise<RemoveUserPalletResponse>;
 }
