@@ -23,9 +23,6 @@
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
-  "engines": {
-    "npm": "当プロジェクトではnpmではなくyarnを利用してください。"
-  },
   "dependencies": {
     "@line/bot-sdk": "^7.4.0",
     "@nestjs/common": "^8.0.0",
