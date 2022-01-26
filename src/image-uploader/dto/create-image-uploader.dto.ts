@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { Constants } from 'src/common/constants';
+import { Constants } from '../../common/constants';
 
 export class CreateImageUploaderDto {
   @ApiProperty({ description: Constants.PROPERTY_IMAGE_UPLOADER_ID })
