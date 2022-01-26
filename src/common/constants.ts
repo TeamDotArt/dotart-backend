@@ -72,4 +72,8 @@ export class Constants {
     'Dotart',
     'dotArt',
   ];
+
+  // image uploader
+  public static readonly PROPERTY_IMAGE_UPLOADER_ID =
+    'base64エンコードされた画像';
 }
