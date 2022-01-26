@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TokenModule } from './token/token.module';
 import { UserPalletModule } from './user-pallet/user-pallet.module';
 import { LineBotModule } from './line-bot/line-bot.module';
+import { ImageUploaderModule } from './image-uploader/image-uploader.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LineBotModule } from './line-bot/line-bot.module';
     TokenModule,
     UsersModule,
     UserPalletModule,
+    ImageUploaderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
