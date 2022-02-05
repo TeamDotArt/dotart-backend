@@ -8,6 +8,8 @@ import { UserHandler } from './handlers/userHandler';
 import { GroupHandler } from './handlers/groupHandler';
 import { RoomHandler } from './handlers/roomHandler';
 import { LineHandler } from './handlers/lineHandler';
+import { PostbackHandler } from './handlers/postbackHandler';
+import { CommandHandler } from './handlers/commandHandler';
 
 @Module({
   controllers: [LineBotController],
@@ -19,6 +21,8 @@ import { LineHandler } from './handlers/lineHandler';
     GroupHandler,
     RoomHandler,
     LineHandler,
+    PostbackHandler,
+    CommandHandler,
   ],
 })
 export class LineBotModule {}

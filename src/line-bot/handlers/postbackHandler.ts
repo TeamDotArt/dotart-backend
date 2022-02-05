@@ -1,30 +1,23 @@
-import { MessageEvent, Group } from '@line/bot-sdk';
+import { Group, PostbackEvent } from '@line/bot-sdk';
 import { Injectable } from '@nestjs/common';
 import { prefix } from '../helper/prefix';
 import { textMessage } from '../messageTemplate/textMessage';
-import { MessageTypes } from '../types/message';
 import { CommandHandler } from './commandHandler';
 import { LineHandler } from './lineHandler';
 
 @Injectable()
-export class GroupHandler {
+export class PostbackHandler {
   constructor(
     private readonly _commandHandler: CommandHandler,
     private readonly _lineHandler: LineHandler,
   ) {}
 
-  // handler
-  async groupEvent(event: MessageEvent) {
-    const { message, replyToken, source } = event;
-    if (!(message.type === MessageTypes.TEXT)) {
-      return;
-    }
-    // prefixをdotartまたはDotArtに設定
-    const messageObj = message.text.split(' ');
+  async postbackEvent(event: PostbackEvent) {
+    const { postback, replyToken, source } = event;
+    const messageObj = postback.data.split(' ');
     if (!prefix(messageObj[0])) {
       return;
     }
-    // group情報
     const group = source as Group;
 
     switch (messageObj[1]) {
@@ -32,6 +25,7 @@ export class GroupHandler {
         const retUsageCarousel = await this._commandHandler.uasgeEvacuation();
         await this._lineHandler.replyMessage(replyToken, retUsageCarousel);
         break;
+
       // const retUsage = await this._commandHandler.usage();
       // const retUsage2 = await this._commandHandler.usage2();
       // const retUsage3 = await this._commandHandler.usage3();
@@ -92,12 +86,6 @@ export class GroupHandler {
         const retdotartGame = await this._commandHandler.dotartGame();
         await this._lineHandler.replyMessage(replyToken, retdotartGame);
         break;
-
-      // 未認証のアカウントは不可
-      // case 'グループメンバー全取得':
-      //   const req = await this._lineHandler.getGroupMemberIds(group.groupId);
-      //   console.log(req);
-      //   break;
 
       case 'メンバーのプロフィールを取得':
         await this._commandHandler.getProfile(replyToken, group);
