@@ -6,6 +6,7 @@ import { GroupHandler } from './handlers/groupHandler';
 import { JoinHandler } from './handlers/joinHandler';
 import { RoomHandler } from './handlers/roomHandler';
 import { UserHandler } from './handlers/userHandler';
+import { PostbackHandler } from './handlers/postbackHandler';
 // Types
 import { EventTypes } from './types/event';
 import { SourceTypes } from './types/source';
@@ -18,6 +19,7 @@ export class LineBotService {
     private readonly _userHandler: UserHandler,
     private readonly _groupHandler: GroupHandler,
     private readonly _roomHandler: RoomHandler,
+    private readonly _postbackHandler: PostbackHandler,
   ) {}
 
   // eventHandler
@@ -75,6 +77,7 @@ export class LineBotService {
       // Postback
       case EventTypes.POSTBACK:
         console.log('Event -> postback');
+        await this._postbackHandler.postbackEvent(events);
         break;
 
       default:
